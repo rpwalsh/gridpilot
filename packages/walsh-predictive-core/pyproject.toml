@@ -1,0 +1,13 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "walsh-predictive-core"
+version = "0.1.0"
+description = "Walsh Predictive Mathematics Core: deterministic evidence-weighted reasoning for renewable operations intelligence"
+requires-python = ">=3.11"
+dependencies = ["gridforge-domain>=0.1.0"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/gridforge_predictive"]

@@ -1,0 +1,30 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gridforge-api"
+version = "0.1.0"
+description = "GridForge FastAPI REST service"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "gridforge-domain>=0.1.0",
+    "walsh-predictive-core>=0.1.0",
+    "gridforge-forecasting>=0.1.0",
+    "gridforge-anomaly>=0.1.0",
+    "gridforge-dispatch>=0.1.0",
+    "gridforge-recommendations>=0.1.0",
+    "gridforge-adapter-open-meteo>=0.1.0",
+    "gridforge-adapter-noaa-nws>=0.1.0",
+    "gridforge-adapter-nasa-power>=0.1.0",
+    "gridforge-adapter-nrel>=0.1.0",
+    "gridforge-adapter-eia>=0.1.0",
+    "gridforge-adapter-entsoe>=0.1.0",
+    "pydantic-settings>=2.0",
+    "httpx>=0.24",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/gridforge_api"]

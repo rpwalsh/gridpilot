@@ -1,0 +1,10 @@
+{
+  "response": {
+    "total": 2,
+    "dateFormat": "YYYY-MM-DDThh",
+    "data": [
+      {"period": "2024-01-15T06", "respondent": "MISO", "type": "D", "value": 85200},
+      {"period": "2024-01-15T07", "respondent": "MISO", "type": "D", "value": 88500}
+    ]
+  }
+}
