@@ -31,7 +31,7 @@ class PortfolioForecastRequest(BaseModel):
 
 @router.post("/forecasts/site")
 async def forecast_site(req: SiteForecastRequest) -> dict:
-    trace = DecisionTrace(model_versions={"forecasting": "0.1.0", "walsh_core": "0.1.0"})
+    trace = DecisionTrace(model_versions={"forecasting": "0.1.0", "predictive_core": "0.1.0"})
 
     if req.asset_type == "wind_turbine" and req.wind_speed_mps is not None:
         point_forecast = wind_power_output_kw(req.wind_speed_mps, req.capacity_kw)

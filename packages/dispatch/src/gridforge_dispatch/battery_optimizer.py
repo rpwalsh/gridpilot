@@ -43,7 +43,7 @@ def optimize_dispatch(
     window_hours: int = 4,
 ) -> DispatchResult:
     """Optimize battery dispatch action based on SoC, price signals, and generation forecast."""
-    trace = DecisionTrace(model_versions={"dispatch": "0.1.0", "walsh_core": "0.1.0"})
+    trace = DecisionTrace(model_versions={"dispatch": "0.1.0", "predictive_core": "0.1.0"})
     reasoning: list[str] = []
 
     usable_kwh = capacity_kwh * (current_soc_pct - _MIN_SOC_PCT) / 100.0

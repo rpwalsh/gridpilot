@@ -7,7 +7,7 @@ name = "gridforge-anomaly"
 version = "0.1.0"
 description = "GridForge anomaly detection with causal attribution"
 requires-python = ">=3.11"
-dependencies = ["gridforge-domain>=0.1.0", "walsh-predictive-core>=0.1.0", "gridforge-forecasting>=0.1.0"]
+dependencies = ["gridforge-domain>=0.1.0", "gridforge-predictive>=0.1.0", "gridforge-forecasting>=0.1.0"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/gridforge_anomaly"]

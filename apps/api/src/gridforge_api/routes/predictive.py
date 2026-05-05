@@ -31,7 +31,7 @@ class SignalStateRequest(BaseModel):
 
 @router.post("/signal-state")
 async def normalize_signal_state(req: SignalStateRequest) -> dict:
-    trace = DecisionTrace(model_versions={"walsh_core": "0.1.0"})
+    trace = DecisionTrace(model_versions={"predictive_core": "0.1.0"})
     now = datetime.now(timezone.utc)
     raw_signals = {
         s.name: Signal(
@@ -77,7 +77,7 @@ class ResidualRequest(BaseModel):
 
 @router.post("/residual")
 async def residual(req: ResidualRequest) -> dict:
-    trace = DecisionTrace(model_versions={"walsh_core": "0.1.0"})
+    trace = DecisionTrace(model_versions={"predictive_core": "0.1.0"})
     result = compute_residual(req.expected, req.actual, req.capacity, req.threshold_pct)
     trace.add_step(
         "compute_residual",
@@ -102,7 +102,7 @@ class ForecastBoundsRequest(BaseModel):
 
 @router.post("/forecast-bounds")
 async def forecast_bounds(req: ForecastBoundsRequest) -> dict:
-    trace = DecisionTrace(model_versions={"walsh_core": "0.1.0"})
+    trace = DecisionTrace(model_versions={"predictive_core": "0.1.0"})
     bounds = compute_forecast_bounds(req.point_forecast, req.historical_errors, req.uncertainty_factors)
     trace.add_step(
         "compute_bounds",
@@ -127,7 +127,7 @@ class ReconcileRequest(BaseModel):
 
 @router.post("/reconcile")
 async def reconcile(req: ReconcileRequest) -> dict:
-    trace = DecisionTrace(model_versions={"walsh_core": "0.1.0"})
+    trace = DecisionTrace(model_versions={"predictive_core": "0.1.0"})
     result = reconcile_forecast(req.raw_forecast_mwh, req.historical_errors, telemetry_deviation_pct=req.telemetry_deviation_pct)
     trace.add_step(
         "reconcile",
@@ -153,7 +153,7 @@ class CausalAttributionRequest(BaseModel):
 
 @router.post("/causal-attribution")
 async def causal_attribution(req: CausalAttributionRequest) -> dict:
-    trace = DecisionTrace(model_versions={"walsh_core": "0.1.0"})
+    trace = DecisionTrace(model_versions={"predictive_core": "0.1.0"})
     now = datetime.now(timezone.utc)
 
     raw_signals = {
@@ -199,7 +199,7 @@ class ConfidenceRequest(BaseModel):
 
 @router.post("/confidence")
 async def confidence_score(req: ConfidenceRequest) -> dict:
-    trace = DecisionTrace(model_versions={"walsh_core": "0.1.0"})
+    trace = DecisionTrace(model_versions={"predictive_core": "0.1.0"})
     graph = EvidenceGraph(hypothesis=req.hypothesis)
     for node in req.evidence_nodes:
         graph.add_evidence(

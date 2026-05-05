@@ -23,7 +23,7 @@ Base URL: `http://localhost:8000/api/v1`
 ### Dispatch
 - `POST /dispatch/optimize` — optimize battery dispatch action
 
-### Predictive Core (Walsh)
+### Predictive Operations Core
 - `POST /predictive/signal-state` — normalize and validate signal state
 - `POST /predictive/residual` — compute production residual
 - `POST /predictive/forecast-bounds` — compute p10/p50/p90 bounds

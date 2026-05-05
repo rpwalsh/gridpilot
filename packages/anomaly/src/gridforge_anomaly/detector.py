@@ -38,7 +38,7 @@ def detect_anomaly(
     threshold_pct: float = 10.0,
 ) -> Optional[AnomalyFinding]:
     """Detect anomaly in asset telemetry and return a finding with causal hypotheses."""
-    trace = DecisionTrace(model_versions={"anomaly": "0.1.0", "walsh_core": "0.1.0"})
+    trace = DecisionTrace(model_versions={"anomaly": "0.1.0", "predictive_core": "0.1.0"})
     now_utc = telemetry.timestamp_utc
 
     if telemetry.output_kw is None:

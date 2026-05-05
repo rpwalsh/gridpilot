@@ -57,7 +57,7 @@ def generate_recommendations(
     recommendations: list[Recommendation] = []
 
     for finding in findings:
-        trace = DecisionTrace(model_versions={"recommendations": "0.1.0", "walsh_core": "0.1.0"})
+        trace = DecisionTrace(model_versions={"recommendations": "0.1.0", "predictive_core": "0.1.0"})
         top_cause = finding.hypotheses[0].cause if finding.hypotheses else "unknown"
         top_confidence = finding.hypotheses[0].confidence if finding.hypotheses else 0.5
 

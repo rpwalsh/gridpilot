@@ -5,7 +5,7 @@ from .routes import providers, ingest, forecasts, anomalies, recommendations, di
 
 app = FastAPI(
     title="GridForge API",
-    description="Walsh renewable-energy operations intelligence platform",
+    description="GridForge: Renewable Operations Intelligence Platform",
     version="0.1.0",
     docs_url="/docs",
     redoc_url="/redoc",

@@ -14,7 +14,7 @@ GridForge uses a hexagonal/ports-and-adapters architecture. The core domain is p
 ├──────────────┬──────────────────────────────┤
 │ Forecasting  │ Anomaly │ Dispatch │ Recs     │
 ├──────────────┴──────────────────────────────┤
-│         Walsh Predictive Core                │
+│         Predictive Operations Core                │
 ├──────────────┬──────────────────────────────┤
 │   Domain Models + Protocols                  │
 ├──────────────┴──────────────────────────────┤
@@ -36,9 +36,9 @@ Adapters gracefully degrade:
 - Rate limit → exponential backoff, then raise ProviderRateLimitError
 - Schema error → raise ProviderSchemaError
 
-## Walsh Predictive Core
+## Predictive Operations Core
 
-The `walsh-predictive-core` package implements deterministic evidence-weighted reasoning:
+The `predictive` package implements deterministic evidence-weighted reasoning:
 - **SignalState**: normalizes and validates input signals
 - **EvidenceGraph**: builds weighted evidence chains for hypotheses
 - **CausalAttribution**: ranks causal hypotheses by evidence confidence
