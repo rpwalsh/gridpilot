@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom'
 
 const NAV_ITEMS = [
   { path: '/portfolio', label: 'Portfolio' },
+  { path: '/evaluate', label: 'Site Evaluation' },
   { path: '/forecast', label: 'Forecast' },
   { path: '/health', label: 'Asset Health' },
   { path: '/dispatch', label: 'Dispatch' },
