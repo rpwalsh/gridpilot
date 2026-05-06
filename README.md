@@ -1,50 +1,122 @@
 # Dispatch Layer
 
-> **Dispatch Layer is a utility-grade instrumentation console for SCADA telemetry,
-> forecast envelopes, residual fields, spectral transforms, temporal playback,
-> source integrity, and audit metadata.**
+Dispatch Layer is a view-only plant data display for utility and renewable operations.
 
-Dispatch Layer renders measured and derived data surfaces.
-It does not generate recommendations, findings, insights, summaries, reports,
-instructions, action items, or natural-language interpretations.
+It is built as the reference application for [`risklab-ui`](https://github.com/rpwalsh/risklab-ui) and [`risklab-charts`](https://github.com/rpwalsh/risklab-charts) — a visual system for rendering high-density operational data: SCADA telemetry, source status, forecast bands, residual fields, signal patterns, temporal replay, and source records.
+
+Forecasting is one supported data surface. The product center is visualization: making complex plant and grid data visible, replayable, and inspectable without generating operator instructions, automated language output, or tasking lists.
+
+---
+
+## Built on RiskLab
+
+Dispatch Layer applies the RiskLab visual stack to utility and plant data:
+
+| Layer | Role |
+|---|---|
+| [`risklab-ui`](https://github.com/rpwalsh/risklab-ui) | Application shell, panels, metric rails, source tables, field grids, status surfaces, playback controls, workbench layout |
+| [`risklab-charts`](https://github.com/rpwalsh/risklab-charts) | Time-series charts, forecast bands, heatmaps, residual fields, spectral plots, coherence views, coverage bars, replay and signal charts |
+| Dispatch Layer | Utility/plant domain implementation: SCADA telemetry, source connectors, back-test, signal patterns, audit records |
+
+So the stack story is:
+
+```
+risklab-ui      — visual grammar and application shell
+risklab-charts  — charting and instrument surfaces
+Dispatch Layer  — utility/SCADA plant-data reference application
+```
+
+---
+
+## What It Shows
+
+```
+Live plant values         — numeric measurements with units
+Data freshness            — source age, quality codes, stale flags
+Source status             — provider health, latency, integrity
+Forecast bands            — p10 / p50 / p90 forecast envelopes
+Actual vs expected        — observed − model, direction, magnitude
+Replay                    — replayable historical state by interval
+Signal patterns           — repeating structure, seasonal cycles
+Event log                 — threshold crossings and deviation events
+Source records            — provider, capture time, query, hash
+```
 
 ---
 
 ## Product Boundary
 
-See [docs/product-boundary.md](docs/product-boundary.md).
+Dispatch Layer is view-only. It does not control equipment, write setpoints, issue dispatch instructions, or generate automated language output.
 
 The hard constraint:
 
 > The hard part is not drawing a forecast chart.
 > The hard part is knowing whether the data behind the chart deserves to be trusted.
 
-Every text string in the UI behaves like an instrument label, table header, field
-name, unit, route title, status enum, or audit key.  No generated English prose.
+Every text string in the UI behaves like an instrument label, table header, field name, unit, status enum, or audit key. No generated prose.
+
+See [docs/product-boundary.md](docs/product-boundary.md).
 
 ---
 
-## What It Renders
+## Visual Surfaces
 
+Dispatch Layer uses `risklab-charts` to render multiple utility-grade data surfaces:
+
+- Telemetry time series
+- Forecast bands
+- Residual fields
+- Source quality heatmaps
+- Signal patterns
+- Coverage bars
+- Temporal replay
+- Source-state matrices
+- Threshold overlays
+- Source record tables
+
+Then forecasting is one bullet, not the headline.
+
+---
+
+## Dashboard Pages
+
+| Page           | Renders |
+|----------------|---------|
+| Overview       | Provider availability, signal coverage, source state |
+| Asset State    | Z-score deviation per asset vs. physics-model expected |
+| Live Data      | SCADA fleet — actual vs. expected, deviation events, fault codes |
+| Forecast Band  | P10/P50/P90 production envelope |
+| Back-Test      | Holdout validation — forecast bands, residual field, signal patterns |
+| Site Analysis  | Signal scoring, forecast context, confidence, drift, audit trace |
+| Storage State  | Battery window — net generation, demand, SoC context |
+| Source Status  | Provider health — latency, freshness, configuration |
+| Sources        | Connector matrix — OPC UA / MQTT / SiteWise / OTel / Parquet state |
+| Source Record  | Full pipeline audit — step, input, output, data mode, provider |
+
+---
+
+## Back-Test (Holdout Validation)
+
+The Back-Test page renders from real cached source snapshots, not live API calls:
+
+1. Load a real weather/grid source snapshot from `data/source_snapshots/`
+2. Split into training window and holdout window
+3. Compute forecast bands from training data only
+4. Overlay holdout actuals for post-hoc validation
+5. Render: coverage, RMSE, MAE, MAPE, bias, signal patterns
+
+To capture a real weather snapshot:
+
+```bash
+python scripts/capture_weather_snapshot.py \
+  --lat 31.97 \
+  --lon -102.08 \
+  --start 2000-01-01 \
+  --end 2024-12-31 \
+  --out data/source_snapshots/weather/open_meteo_west_texas_2000_2024.json
 ```
-values              — numeric measurements with units
-series              — time-ordered sequences
-bands               — p10 / p50 / p90 forecast envelopes
-deltas              — observed − expected
-states              — NOMINAL / WATCH / HIGH / CRITICAL / STALE / MISSING / CONFLICT
-timestamps          — source, server, ingest
-threshold crossings — band violations, z-score thresholds
-source status       — freshness, quality code, latency, integrity %
-residuals           — signed error field
-spectra             — harmonic amplitude by frequency
-coherence           — frequency-domain agreement
-coverage            — fraction of actuals inside forecast band
-calibration         — bias, MAE, RMSE, MAPE
-latency             — p50 / p95 / p99 ingest and API latency
-integrity           — freshness, missingness, duplicate, conflict rates
-audit hashes        — SHA-256 of data + config + model version
-playback frames     — replayable historical state snapshots
-```
+
+See `data/source_snapshots/weather/README.md`.
 
 ---
 
@@ -54,7 +126,7 @@ playback frames     — replayable historical state snapshots
 Provider adapters (Open-Meteo, NASA POWER, NOAA NWS, NREL, EIA, ENTSO-E)
   → signal normalization
   → site structural state
-  → forecast envelope (P10/P50/P90)
+  → forecast band (P10/P50/P90)
   → data-quality confidence scoring
   → structural drift detection
   → audit trace
@@ -64,7 +136,7 @@ Provider adapters (Open-Meteo, NASA POWER, NOAA NWS, NREL, EIA, ENTSO-E)
 Industrial connectors (read-only):
   OPC UA / MQTT / AWS IoT SiteWise / S3-Parquet / OpenTelemetry-OTLP
   → TelemetrySample (timestamp + quality + value + audit_hash)
-  → connector state matrix (PipelineState page)
+  → connector state matrix (Source Status page)
 ```
 
 ---
@@ -78,7 +150,7 @@ Industrial connectors (read-only):
 | `dispatchlayer_forecasting`            | P10/P50/P90 envelope computation |
 | `dispatchlayer_anomaly`                | Z-score deviation detection → `DeviationEvent` |
 | `dispatchlayer_signals`                | `SignalEvent` + `ThresholdState` evaluator |
-| `dispatchlayer_dispatch`               | Battery dispatch window analysis |
+| `dispatchlayer_dispatch`               | Battery storage state analysis |
 | `dispatchlayer_simulation`             | Physics simulation |
 | `dispatchlayer_connector_otel`         | OpenTelemetry/OTLP platform observability |
 | `dispatchlayer_connector_opcua`        | OPC UA read-only SCADA connector |
@@ -91,11 +163,15 @@ See [docs/connector-strategy.md](docs/connector-strategy.md).
 
 ---
 
-## Read-Only Connector Boundary
+## Source Snapshots
 
-All industrial connectors are read-only.  No operational command path is
-implemented.  Dispatch Layer subscribes, reads, queries, and replays.
-It does not write, command, or dispatch.
+Dispatch Layer does not use mock proof data.
+
+Back-Test views are rendered from cached source snapshots captured from real provider APIs or exported operational archives. Cached snapshots are used so the application remains deterministic, reproducible, and does not repeatedly call external APIs during review.
+
+Each source snapshot includes provider metadata, query parameters, capture time, schema version, record count, and content hash.
+
+See `data/source_snapshots/weather/README.md`.
 
 ---
 
@@ -128,9 +204,7 @@ make dashboard   # terminal 2 — Vite on :5173
 make verify   # pytest + lint-language (forbidden-term check) + frontend build
 ```
 
-The `lint-language` step greps source files for forbidden instrumentation boundary
-terms (`recommendation`, `finding`, `insight`, `suggest`, `advice`, etc.).
-It fails the build if any are found outside the allowlisted docs.
+The `lint-language` step greps source files for forbidden instrumentation boundary terms. It fails the build if any are found outside the allowlisted docs.
 
 ---
 
@@ -142,56 +216,23 @@ GET  /providers
 GET  /providers/health
 GET  /connectors/state          — connector matrix
 GET  /connectors/protocols
-POST /sites/evaluate
-GET  /telemetry/snapshot
-POST /telemetry/ingest
+POST /sites/evaluate            — L→G→P pipeline evaluation
 POST /forecasts/site
 POST /anomalies/detect          — returns deviation_detected + DeviationEvent
 POST /signals/evaluate          — returns SignalEvent list with ThresholdState
-POST /dispatch/optimize
-GET  /audit/traces
+POST /dispatch/optimize         — battery storage state analysis
+GET  /audit/trace/{trace_id}
 ```
-
----
-
-## Dashboard Pages
-
-| Page             | Renders |
-|------------------|---------|
-| System Overview  | Provider availability, signal coverage, source state |
-| Snapshot Analysis| Signal scoring, forecast context, confidence, drift, audit trace |
-| Telemetry        | SCADA fleet — actual vs. expected, deviation events, fault codes |
-| Asset State      | Z-score deviation per asset vs. physics-model expected |
-| Forecast Envelope| P10/P50/P90 production envelope |
-| Dispatch Analysis| Battery dispatch window — net generation, demand, SoC context |
-| Audit Trace      | Full pipeline audit — step, input, output, data mode, provider |
-| Source State     | Provider health — latency, freshness, configuration |
-| Proofs           | Holdout validation — forecast bands, residual field, spectral agreement, temporal playback helix |
-| Pipeline State   | Connector matrix — OPC UA / MQTT / SiteWise / OTel / Parquet state |
-
----
-
-## Proofs (Holdout Validation)
-
-The Proofs page is a blind holdout validation surface:
-
-1. Train / calibrate on **2000–2024 data only**
-2. Generate P10/P50/P90 bands without seeing 2025 actuals
-3. Overlay actual 2025 series for post-hoc validation
-4. Report: coverage, RMSE, MAE, MAPE, bias, spectral agreement
-5. Render: temporal playback signature helix (365 × 24 h deviation field)
-
-The point is not to claim prediction.  It is to prove calibration.
 
 ---
 
 ## Testing
 
 ```bash
-pytest --import-mode=importlib -q
+make test
 ```
 
-All tests use recorded fixtures.  No external calls are made.
+All tests use recorded fixtures. No external calls are made.
 
 ---
 

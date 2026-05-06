@@ -1,6 +1,6 @@
 # DispatchLayer — Quickstart
 
-Three ways to run DispatchLayer: Docker Compose (recommended), local Python + Node, or API-only.
+Three ways to run DispatchLayer: Docker Compose (preferred), local Python + Node, or API-only.
 
 ---
 

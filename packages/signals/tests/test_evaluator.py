@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 
 from dispatchlayer_anomaly.conditions import AnomalyCondition
 from dispatchlayer_anomaly.detector import DeviationEvent
-from dispatchlayer_predictive.decision_trace import DecisionTrace
+from dispatchlayer_predictive.decision_trace import AuditTrace
 
 from dispatchlayer_signals.evaluator import evaluate_signal_events, rank_signal_events
 from dispatchlayer_signals.signal_event import ThresholdState
@@ -15,7 +15,7 @@ def _make_event(
     asset_id: str = "WTG-001",
     site_id: str = "SITE-A",
 ) -> DeviationEvent:
-    trace = DecisionTrace(model_versions={"test": "0.1"})
+    trace = AuditTrace(model_versions={"test": "0.1"})
     return DeviationEvent(
         event_id="dev_test_001",
         asset_id=asset_id,
@@ -26,7 +26,7 @@ def _make_event(
         actual_output_kw=1000.0 * (1 + residual_pct / 100),
         confidence=0.9,
         hypotheses=[],
-        decision_trace=trace,
+        audit_trace=trace,
     )
 
 

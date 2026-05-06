@@ -100,9 +100,9 @@ All inference responses include an `audit_trace` object:
 ## Product boundary
 
 Dispatch Layer is read-only. The API does not:
-- Generate recommendations or operator instructions
-- Return `why_now`, `risk_if_ignored`, or narrative text fields
+- Generate operator instructions or automated language output
+- Return prose response fields or control flags
 - Issue commands or write setpoints
-- Run language models or chatbot responses
+- Run language models or automated response engines
 
 All responses are structured data: numbers, enums, timestamps, IDs, and audit records.

@@ -106,7 +106,7 @@ Values outside these ranges are flagged as anomalous. Anomalous signals get a co
 
 2. **G** builds site state: expected output ~42 MW (capacity factor 0.84 after temperature derating). Structural confidence 0.91 (all signals fresh, no provider degradation).
 
-3. **P** forecasts 24-hour window: p50 = 38 MWh. Spread is p10 = 32 / p90 = 44. ε_G is the dominant term because the −11% residual suggests the structural model is underestimating derating. Trust score: 0.79.
+3. **P** forecasts 24-hour window: p50 = 38 MWh. Spread is p10 = 32 / p90 = 44. ε_G is the dominant term because the −11% residual indicates the structural model is underestimating derating. Trust score: 0.79.
 
 ---
 

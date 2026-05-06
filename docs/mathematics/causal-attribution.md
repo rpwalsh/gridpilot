@@ -4,7 +4,7 @@
 
 When a significant production residual is detected, causal attribution identifies the most likely physical causes and quantifies the confidence of each hypothesis.
 
-This is not a recommendation engine. Causal attribution produces a ranked list of hypotheses — each hypothesis names a physical cause and gives a confidence score derived from the input signal values. The engineer decides what to do with that information.
+This is not a generative output engine. Causal attribution produces a ranked list of hypotheses — each hypothesis names a physical cause and gives a confidence score derived from the input signal values. The engineer decides what to do with that information.
 
 ---
 
