@@ -4,16 +4,16 @@
  */
 
 /**
- * HelixDisplay â€” volumetric 3D helix temporal playback surface.
+ * HelixDisplay  volumetric 3D helix temporal playback surface.
  *
- * Renders 365 days Ã— 24 hours = 8 760 points as a pseudo-3D cylinder helix.
- * - Horizontal axis: Day of year (past â†’ future)
+ * Renders 365 days  24 hours = 8 760 points as a pseudo-3D cylinder helix.
+ * - Horizontal axis: Day of year (past  future)
  * - Angular position: Time of day (00:00 at bottom of each ring, 12:00 at top)
- * - Color scale: deep teal (âˆ’3Ïƒ) â†’ forest green (0) â†’ gold (+3Ïƒ)
+ * - Color scale: deep teal (3)  forest green (0)  gold (+3)
  * - Depth-sorted rendering: front rings brighter and larger
  *
  * Data is deterministic and generated from a physics-informed seasonal +
- * daily profile â€” no Math.random(), reproducible across renders.
+ * daily profile  no Math.random(), reproducible across renders.
  */
 
 import { useEffect, useRef, useMemo } from 'react'
@@ -22,7 +22,7 @@ const N_DAYS     = 365
 const H_PER_DAY  = 24
 const SIGMA_MAX  = 3.0
 
-// â”€â”€ Deterministic data generation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+//  Deterministic data generation 
 function generateHelixData(): Float32Array {
   const data = new Float32Array(N_DAYS * H_PER_DAY)
   for (let d = 0; d < N_DAYS; d++) {
@@ -42,25 +42,25 @@ function generateHelixData(): Float32Array {
   return data
 }
 
-// â”€â”€ Color mapping: teal â†’ green â†’ gold â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+//  Color mapping: teal  green  gold 
 function devColor(dev: number, alpha: number): string {
-  const t = (dev + SIGMA_MAX) / (2 * SIGMA_MAX) // 0 â€¦ 1
+  const t = (dev + SIGMA_MAX) / (2 * SIGMA_MAX) // 0  1
   let r: number, g: number, b: number
   if (t < 0.5) {
-    const u = t * 2                          // 0 â†’ 1
-    r = Math.round(14  + u * (22  - 14 ))   // #0e7490 â†’ #16a34a
+    const u = t * 2                          // 0  1
+    r = Math.round(14  + u * (22  - 14 ))   // #0e7490  #16a34a
     g = Math.round(116 + u * (163 - 116))
     b = Math.round(144 + u * (74  - 144))
   } else {
-    const u = (t - 0.5) * 2                 // 0 â†’ 1
-    r = Math.round(22  + u * (251 - 22 ))   // #16a34a â†’ #fbbf24
+    const u = (t - 0.5) * 2                 // 0  1
+    r = Math.round(22  + u * (251 - 22 ))   // #16a34a  #fbbf24
     g = Math.round(163 + u * (191 - 163))
     b = Math.round(74  + u * (36  - 74 ))
   }
   return `rgba(${r},${g},${b},${alpha.toFixed(3)})`
 }
 
-// â”€â”€ Canvas render â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+//  Canvas render 
 interface Pt { sx: number; sy: number; depth: number; dev: number }
 
 function renderHelix(
@@ -77,7 +77,7 @@ function renderHelix(
   const plotW = w - mL - mR
   const plotH = h - mT - mB
 
-  // Helix axis: bottom-left â†’ top-right
+  // Helix axis: bottom-left  top-right
   const x0 = mL + plotW * 0.04
   const y0 = mT + plotH * 0.88
   const x1 = mL + plotW * 0.96
@@ -89,7 +89,7 @@ function renderHelix(
   const dX = dDX / diagLen   // normalised diagonal direction
   const dY = dDY / diagLen
 
-  // Perpendicular to axis (in screen plane â€” this gives the ring height)
+  // Perpendicular to axis (in screen plane  this gives the ring height)
   const pX = -dY
   const pY =  dX
 
@@ -104,7 +104,7 @@ function renderHelix(
     const ax = x0 + t * dDX
     const ay = y0 + t * dDY
     for (let hi = 0; hi < H_PER_DAY; hi++) {
-      // theta=0 â†’ midnight at bottom of ring; theta=Ï€ â†’ noon at top
+      // theta=0  midnight at bottom of ring; theta=  noon at top
       const theta = 2 * Math.PI * hi / H_PER_DAY
       const cosT  = Math.cos(theta)
       const sinT  = Math.sin(theta)
@@ -122,7 +122,7 @@ function renderHelix(
 
   // Draw
   for (const pt of pts) {
-    const front = (pt.depth + 1) * 0.5     // 0â€¦1
+    const front = (pt.depth + 1) * 0.5     // 01
     const alpha = 0.18 + 0.82 * front
     const size  = 0.7  + 1.4  * front
     ctx.fillStyle = devColor(pt.dev, alpha)
@@ -131,7 +131,7 @@ function renderHelix(
     ctx.fill()
   }
 
-  // â”€â”€ Time-of-day labels (left axis, at day 0) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  //  Time-of-day labels (left axis, at day 0) 
   ctx.globalAlpha = 0.7
   ctx.fillStyle   = '#7ab87a'
   ctx.font        = '9px monospace'
@@ -151,7 +151,7 @@ function renderHelix(
     ctx.fillText(tl.label, ax0 - 5, ly + 3)
   }
 
-  // â”€â”€ Day axis labels (bottom) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  //  Day axis labels (bottom) 
   ctx.textAlign = 'center'
   const dayLabels = [
     { d: 0,   label: 'Jan' },
@@ -167,7 +167,7 @@ function renderHelix(
     ctx.fillText(dl.label, lx, ly)
   }
 
-  // â”€â”€ Î£ color scale legend â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  //   color scale legend 
   const legW  = plotW * 0.45
   const legX  = mL + (plotW - legW) / 2
   const legY  = h - mB + 10
@@ -183,14 +183,14 @@ function renderHelix(
   ctx.fillStyle = '#7ab87a'
   ctx.font      = '8px monospace'
   ctx.textAlign = 'center'
-  ctx.fillText('âˆ’3Ïƒ', legX,              legY + legH + 11)
+  ctx.fillText('3', legX,              legY + legH + 11)
   ctx.fillText('  0', legX + legW / 2,   legY + legH + 11)
-  ctx.fillText('+3Ïƒ', legX + legW,        legY + legH + 11)
+  ctx.fillText('+3', legX + legW,        legY + legH + 11)
 
   ctx.globalAlpha = 1
 }
 
-// â”€â”€ Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+//  Component 
 export default function HelixDisplay() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const data      = useMemo(() => generateHelixData(), [])
@@ -209,7 +209,8 @@ export default function HelixDisplay() {
       width={640}
       height={380}
       style={{ width: '100%', height: 'auto', display: 'block', borderRadius: 6 }}
-      aria-label="Temporal Playback â€” Signature Helix"
+      aria-label="Temporal Playback  Signature Helix"
     />
   )
 }
+

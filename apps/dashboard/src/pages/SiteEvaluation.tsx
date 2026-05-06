@@ -23,7 +23,7 @@ const DEFAULT_SITE = {
   capacity_mw: 50,
   window_hours: 24,
   data_mode: 'live',
-  // optional signal overrides â€” leave blank to let live provider fill these
+  // optional signal overrides  leave blank to let live provider fill these
   ghi_wm2: '',
   temperature_c: '',
   wind_speed_mps: '',
@@ -58,7 +58,7 @@ export default function SiteEvaluation() {
       const r = await axios.post('/api/v1/sites/evaluate', payload)
       setResult(r.data)
     } catch (e: any) {
-      setError(e.response?.data?.detail || 'Evaluation failed â€” ensure the API is running')
+      setError(e.response?.data?.detail || 'Evaluation failed  ensure the API is running')
     }
     setLoading(false)
   }
@@ -95,8 +95,8 @@ export default function SiteEvaluation() {
       <div className="gp-page-header">
         <h1 className="gp-page-title">Snapshot Analysis</h1>
         <p className="gp-page-subtitle">
-          Ingest a site snapshot and run the full analysis pipeline: signal scoring â†’
-          structural state â†’ forecast context â†’ data-quality confidence â†’ drift detection â†’ audit trace.
+          Ingest a site snapshot and run the full analysis pipeline: signal scoring 
+          structural state  forecast context  data-quality confidence  drift detection  audit trace.
           Live mode fetches real weather signals from Open-Meteo for the given coordinates.
         </p>
       </div>
@@ -132,8 +132,8 @@ export default function SiteEvaluation() {
         </div>
 
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
-          {numInp('GHI (W/mÂ²)', 'ghi_wm2', 'from provider')}
-          {numInp('Temperature (Â°C)', 'temperature_c', 'from provider')}
+          {numInp('GHI (W/m)', 'ghi_wm2', 'from provider')}
+          {numInp('Temperature (C)', 'temperature_c', 'from provider')}
           {numInp('Wind (m/s)', 'wind_speed_mps', 'from provider')}
           {numInp('Grid demand (MW)', 'grid_demand_mw')}
           {numInp('Forecast residual (%)', 'forecast_residual_pct')}
@@ -145,7 +145,7 @@ export default function SiteEvaluation() {
           Enter values to override provider signals.
         </div>
         <button onClick={run} disabled={loading} className="gp-btn gp-btn--primary">
-          {loading ? <><span className="gp-spinner" style={{ width: 14, height: 14, borderWidth: 2 }} /> Analyzingâ€¦</> : 'Analyze Snapshot'}
+          {loading ? <><span className="gp-spinner" style={{ width: 14, height: 14, borderWidth: 2 }} /> Analyzing</> : 'Analyze Snapshot'}
         </button>
         {error && <div className="gp-callout gp-callout--danger" style={{ marginTop: '0.75rem' }}>{error}</div>}
       </DashboardCard>
@@ -234,7 +234,7 @@ export default function SiteEvaluation() {
           </DashboardCard>
 
           {/* Audit Trace */}
-          <DashboardCard title="Audit Trace â€” Analysis Pipeline">
+          <DashboardCard title="Audit Trace  Analysis Pipeline">
             <AuditTimeline
               steps={result.audit_trace?.steps ?? []}
               traceId={result.audit_trace?.trace_id}
@@ -246,3 +246,4 @@ export default function SiteEvaluation() {
     </div>
   )
 }
+

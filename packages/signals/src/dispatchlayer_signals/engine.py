@@ -2,7 +2,7 @@
 # All rights reserved. Professional preview only.
 
 """
-Threshold crossing engine â€” converts deviation events to structured signal events.
+Threshold crossing engine  converts deviation events to structured signal events.
 
 Output is measured state: threshold codes, severity levels, residuals.
 No prose, no operator instructions, no text interpretations.
@@ -38,3 +38,4 @@ __all__ = [
     "state_severity",
     "AnomalyCondition",
 ]
+

@@ -20,7 +20,7 @@ export default function NavRail() {
     <nav className="gp-shell__nav">
       <div className="gp-nav-rail">
         <Link to="/" className="gp-nav-rail__brand">
-          <div className="gp-nav-rail__brand-icon">âš¡</div>
+          <div className="gp-nav-rail__brand-icon">DL</div>
           <span>DispatchLayer</span>
         </Link>
 
@@ -37,3 +37,4 @@ export default function NavRail() {
     </nav>
   )
 }
+

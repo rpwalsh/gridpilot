@@ -87,7 +87,7 @@ export default function AssetHealth() {
         </p>
       </div>
 
-      <DashboardCard title="Filters" action={<button onClick={refresh} disabled={loading} className="gp-btn gp-btn--sm">{loading ? 'âŸ³ Loadingâ€¦' : 'âŸ³ Refresh'}</button>}>
+      <DashboardCard title="Filters" action={<button onClick={refresh} disabled={loading} className="gp-btn gp-btn--sm">{loading ? ' Loading' : ' Refresh'}</button>}>
         <label className="gp-label" style={{ marginBottom: 0 }}>
           Site
           <select className="gp-select" value={siteId} onChange={e => setSiteId(e.target.value)}>
@@ -121,7 +121,7 @@ export default function AssetHealth() {
             const badgeColor = h?.anomaly_detected ? 'red' : 'green'
 
             return (
-              <DashboardCard key={a.asset_id} title={a.asset_id} subtitle={`${a.asset_type} Â· ${a.site_id}`}>
+              <DashboardCard key={a.asset_id} title={a.asset_id} subtitle={`${a.asset_type}  ${a.site_id}`}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.6rem' }}>
                   <StatusBadge label={badge} color={badgeColor} />
                   <div style={{ fontSize: '0.8rem', color: 'var(--gp-text-muted)' }}>
@@ -130,14 +130,14 @@ export default function AssetHealth() {
                 </div>
 
                 <div className="gp-signal-grid">
-                  <div className="gp-signal-kv"><span className="gp-signal-kv__key">Power kW</span><span className="gp-signal-kv__val">{a.power_kw != null ? a.power_kw.toFixed(2) : 'â€”'}</span></div>
-                  <div className="gp-signal-kv"><span className="gp-signal-kv__key">Expected kW</span><span className="gp-signal-kv__val">{a.expected_power_kw != null ? a.expected_power_kw.toFixed(2) : 'â€”'}</span></div>
-                  <div className="gp-signal-kv"><span className="gp-signal-kv__key">Residual %</span><span className="gp-signal-kv__val">{residual != null ? `${residual.toFixed(1)}%` : 'â€”'}</span></div>
-                  <div className="gp-signal-kv"><span className="gp-signal-kv__key">Availability %</span><span className="gp-signal-kv__val">{a.availability_pct != null ? a.availability_pct.toFixed(1) : 'â€”'}</span></div>
-                  <div className="gp-signal-kv"><span className="gp-signal-kv__key">Temperature Â°C</span><span className="gp-signal-kv__val">{a.temperature_c != null ? a.temperature_c.toFixed(1) : 'â€”'}</span></div>
-                  <div className="gp-signal-kv"><span className="gp-signal-kv__key">Wind m/s</span><span className="gp-signal-kv__val">{a.wind_speed_mps != null ? a.wind_speed_mps.toFixed(2) : 'â€”'}</span></div>
-                  <div className="gp-signal-kv"><span className="gp-signal-kv__key">Quality</span><span className="gp-signal-kv__val">{a.quality_score != null ? `${Math.round(a.quality_score * 100)}%` : 'â€”'}</span></div>
-                  <div className="gp-signal-kv"><span className="gp-signal-kv__key">Health score</span><span className="gp-signal-kv__val">{h?.health_score != null ? `${Math.round(h.health_score * 100)}%` : 'â€”'}</span></div>
+                  <div className="gp-signal-kv"><span className="gp-signal-kv__key">Power kW</span><span className="gp-signal-kv__val">{a.power_kw != null ? a.power_kw.toFixed(2) : ''}</span></div>
+                  <div className="gp-signal-kv"><span className="gp-signal-kv__key">Expected kW</span><span className="gp-signal-kv__val">{a.expected_power_kw != null ? a.expected_power_kw.toFixed(2) : ''}</span></div>
+                  <div className="gp-signal-kv"><span className="gp-signal-kv__key">Residual %</span><span className="gp-signal-kv__val">{residual != null ? `${residual.toFixed(1)}%` : ''}</span></div>
+                  <div className="gp-signal-kv"><span className="gp-signal-kv__key">Availability %</span><span className="gp-signal-kv__val">{a.availability_pct != null ? a.availability_pct.toFixed(1) : ''}</span></div>
+                  <div className="gp-signal-kv"><span className="gp-signal-kv__key">Temperature C</span><span className="gp-signal-kv__val">{a.temperature_c != null ? a.temperature_c.toFixed(1) : ''}</span></div>
+                  <div className="gp-signal-kv"><span className="gp-signal-kv__key">Wind m/s</span><span className="gp-signal-kv__val">{a.wind_speed_mps != null ? a.wind_speed_mps.toFixed(2) : ''}</span></div>
+                  <div className="gp-signal-kv"><span className="gp-signal-kv__key">Quality</span><span className="gp-signal-kv__val">{a.quality_score != null ? `${Math.round(a.quality_score * 100)}%` : ''}</span></div>
+                  <div className="gp-signal-kv"><span className="gp-signal-kv__key">Health score</span><span className="gp-signal-kv__val">{h?.health_score != null ? `${Math.round(h.health_score * 100)}%` : ''}</span></div>
                 </div>
 
                 {h?.fault_code && (
@@ -153,3 +153,4 @@ export default function AssetHealth() {
     </div>
   )
 }
+

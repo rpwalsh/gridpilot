@@ -115,7 +115,7 @@ export default function PortfolioOverview() {
           <h1 className="gp-page-title">Overview</h1>
         </div>
         <button onClick={refresh} disabled={loading} className="gp-btn gp-btn--sm">
-          {loading ? 'âŸ³ Refreshingâ€¦' : 'âŸ³ Refresh'}
+          {loading ? ' Refreshing' : ' Refresh'}
         </button>
       </div>
 
@@ -124,8 +124,8 @@ export default function PortfolioOverview() {
       {summary && (
         <>
           <div className="gp-stat-grid">
-            <StatCard label="Sites" value={summary.totals.site_count} sub={`${summary.totals.solar_site_count} solar Â· ${summary.totals.wind_site_count} wind`} />
-            <StatCard label="Hourly Rows" value={fmtNumber(summary.totals.total_hourly_points)} sub={`${summary.coverage.years} years Â· ${summary.coverage.time_resolution}`} accent="var(--gp-green)" />
+            <StatCard label="Sites" value={summary.totals.site_count} sub={`${summary.totals.solar_site_count} solar  ${summary.totals.wind_site_count} wind`} />
+            <StatCard label="Hourly Rows" value={fmtNumber(summary.totals.total_hourly_points)} sub={`${summary.coverage.years} years  ${summary.coverage.time_resolution}`} accent="var(--gp-green)" />
             <StatCard label="Live Providers" value={liveProviders} sub={`${Object.keys(providerHealth?.providers ?? {}).length} tracked`} accent="var(--gp-blue)" />
             <StatCard label="PVDAQ Systems" value={summary.totals.pvdaq_system_count} sub="metadata tracked" accent="var(--gp-amber)" />
           </div>
@@ -154,7 +154,7 @@ export default function PortfolioOverview() {
                 <XAxis dataKey="name" tick={{ fontSize: 10, fill: 'var(--gp-text-muted)' }} />
                 <YAxis tick={{ fontSize: 10, fill: 'var(--gp-text-muted)' }} />
                 <Tooltip contentStyle={{ borderRadius: 8, border: '1px solid var(--gp-border)', fontSize: 12 }} />
-                <Bar dataKey="ghi" name="GHI (W/mÂ²)" radius={[4, 4, 0, 0]}>
+                <Bar dataKey="ghi" name="GHI (W/m)" radius={[4, 4, 0, 0]}>
                   {weatherBars.map((item) => (
                     <Cell key={item.siteId} fill={item.assetType === 'solar' ? '#fbbf24' : '#60a5fa'} />
                   ))}
@@ -171,9 +171,9 @@ export default function PortfolioOverview() {
                   <th>Type</th>
                   <th>Source</th>
                   <th style={{ textAlign: 'right' }}>Rows</th>
-                  <th style={{ textAlign: 'right' }}>Temp Â°C</th>
+                  <th style={{ textAlign: 'right' }}>Temp C</th>
                   <th style={{ textAlign: 'right' }}>Wind m/s</th>
-                  <th style={{ textAlign: 'right' }}>GHI W/mÂ²</th>
+                  <th style={{ textAlign: 'right' }}>GHI W/m</th>
                 </tr>
               </thead>
               <tbody>
@@ -212,7 +212,7 @@ export default function PortfolioOverview() {
                     <td>
                       <StatusBadge label={(info.status ?? 'unknown').replace(/_/g, ' ')} color={resolveColor(info.status ?? '')} />
                     </td>
-                    <td style={{ textAlign: 'right' }}>{info.latency_ms != null ? `${info.latency_ms} ms` : 'â€”'}</td>
+                    <td style={{ textAlign: 'right' }}>{info.latency_ms != null ? `${info.latency_ms} ms` : ''}</td>
                     <td>{info.degraded_mode ?? ''}</td>
                   </tr>
                 ))}
@@ -224,3 +224,4 @@ export default function PortfolioOverview() {
     </div>
   )
 }
+

@@ -69,9 +69,9 @@ async def providers_health() -> dict:
 
     Notes
     -----
-    Open-Meteo probe: single-hour forecast for (0Â°, 0Â°) â€” intentionally minimal.
-    NASA POWER probe: single-day, single-parameter for (0Â°, 0Â°).
-    NOAA/NWS: gridpoints probe for (0Â°, 0Â°) â€” may return 404 (expected, counts as reachable).
+    Open-Meteo probe: single-hour forecast for (0, 0)  intentionally minimal.
+    NASA POWER probe: single-day, single-parameter for (0, 0).
+    NOAA/NWS: gridpoints probe for (0, 0)  may return 404 (expected, counts as reachable).
     """
     settings = get_settings()
     now_utc = __import__("datetime").datetime.now(__import__("datetime").timezone.utc).isoformat()
@@ -126,3 +126,4 @@ async def providers_health() -> dict:
         "providers": results,
         "warnings": warnings,
     }
+

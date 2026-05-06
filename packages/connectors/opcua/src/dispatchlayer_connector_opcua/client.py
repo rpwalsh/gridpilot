@@ -53,7 +53,7 @@ class OpcUaConnectorClient:
         if self._config.fixture_mode:
             return self._load_fixture(node_ids)
         raise NotImplementedError(
-            "Live OPC UA requires asyncua â€” set fixture_mode=True for offline use"
+            "Live OPC UA requires asyncua  set fixture_mode=True for offline use"
         )
 
     def get_samples(self, node_ids: list[str] | None = None) -> list[TelemetrySample]:
@@ -103,3 +103,4 @@ class OpcUaConnectorClient:
                 unit=item.get("unit"),
             ))
         return nodes
+

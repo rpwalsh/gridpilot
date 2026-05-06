@@ -27,5 +27,6 @@ def test_noaa_nws_contract():
     assert len(forecast.samples) == 2
     # 32F = 0C
     assert abs(forecast.samples[0].temperature_c - 0.0) < 0.1
-    # 10 mph / 2.237 â‰ˆ 4.47 m/s
+    # 10 mph / 2.237  4.47 m/s
     assert abs(forecast.samples[0].wind_speed_mps - 4.47) < 0.1
+

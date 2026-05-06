@@ -4,11 +4,11 @@
 """
 Telemetry ingestion and retrieval endpoints.
 
-POST /api/v1/telemetry/ingest        â€” ingest one or more TelemetryPoint records
-POST /api/v1/telemetry/ingest/csv    â€” (planned) CSV/Parquet upload
-POST /api/v1/telemetry/normalize     â€” normalise raw points to AssetTelemetrySnapshot
-GET  /api/v1/sites/{site_id}/telemetry/latest  â€” latest snapshot per asset in a site
-GET  /api/v1/assets/{asset_id}/health          â€” health summary for a single asset
+POST /api/v1/telemetry/ingest         ingest one or more TelemetryPoint records
+POST /api/v1/telemetry/ingest/csv     (planned) CSV/Parquet upload
+POST /api/v1/telemetry/normalize      normalise raw points to AssetTelemetrySnapshot
+GET  /api/v1/sites/{site_id}/telemetry/latest   latest snapshot per asset in a site
+GET  /api/v1/assets/{asset_id}/health           health summary for a single asset
 
 In a deployed system these endpoints ingest from SCADA historians, edge gateways,
 MQTT streams, OPC UA servers, Modbus gateways, and CSV/Parquet exports.
@@ -316,9 +316,9 @@ _telemetry_store: list[TelemetryPoint] = []
 _snapshot_store: dict[str, list[AssetTelemetrySnapshot]] = {}
 
 
-# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# 
 # Ingest
-# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# 
 
 class TelemetryIngestRequest(BaseModel):
     points: list[TelemetryPoint]
@@ -347,7 +347,7 @@ async def normalize_telemetry(req: TelemetryIngestRequest) -> dict:
     Normalise raw TelemetryPoint records into AssetTelemetrySnapshot summaries.
 
     Groups points by (site_id, asset_id, asset_type) and produces one snapshot
-    per group using the most recent timestamp.  Partial snapshots are allowed â€”
+    per group using the most recent timestamp.  Partial snapshots are allowed 
     missing signals are null.
     """
     from collections import defaultdict
@@ -387,9 +387,9 @@ async def normalize_telemetry(req: TelemetryIngestRequest) -> dict:
     return {"normalized": len(snapshots), "snapshots": snapshots}
 
 
-# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# 
 # Retrieval
-# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# 
 
 @router.get("/sites/{site_id}/telemetry/latest")
 async def site_telemetry_latest(
@@ -399,8 +399,8 @@ async def site_telemetry_latest(
     """
     Latest AssetTelemetrySnapshot per asset at the given site.
 
-    data_mode=source   â€” returns source-backed snapshots loaded from data/source_snapshots
-    data_mode=live     â€” returns the most recent ingested snapshot from the in-process
+    data_mode=source    returns source-backed snapshots loaded from data/source_snapshots
+    data_mode=live      returns the most recent ingested snapshot from the in-process
                          store (populated via POST /telemetry/ingest)
     Fixture mode is intentionally disabled in this production demo path.
     """
@@ -549,3 +549,4 @@ async def overview_source_summary() -> dict:
             "detail": "This public offline bundle contains real 5-year hourly weather/resource data for 10 sites. It does not contain plant SCADA, inverter telemetry, battery telemetry, or measured per-component power timeseries.",
         },
     }
+

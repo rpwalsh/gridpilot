@@ -4,7 +4,7 @@
  */
 
 /**
- * EventStream â€” structured signal event table.
+ * EventStream  structured signal event table.
  *
  * Columns: Time | Source | Channel | Metric | Observed | Expected | Delta | State
  * No prose column. No labels. No descriptions.
@@ -66,14 +66,14 @@ export default function EventStream({ events }: { events: SignalEvent[] }) {
                 {e.observed_value.toFixed(1)} <span style={{ color: 'var(--gp-text-muted)', fontSize: '0.7rem' }}>{e.unit}</span>
               </td>
               <td style={{ textAlign: 'right', color: 'var(--gp-text-secondary)', fontVariantNumeric: 'tabular-nums' }}>
-                {e.expected_value != null ? `${e.expected_value.toFixed(1)} ${e.unit}` : 'â€”'}
+                {e.expected_value != null ? `${e.expected_value.toFixed(1)} ${e.unit}` : ''}
               </td>
               <td style={{
                 textAlign: 'right',
                 fontVariantNumeric: 'tabular-nums',
                 color: e.delta != null && e.delta < 0 ? 'var(--gp-red)' : e.delta != null && e.delta > 0 ? 'var(--gp-green)' : 'var(--gp-text-muted)',
               }}>
-                {e.delta != null ? `${e.delta > 0 ? '+' : ''}${e.delta.toFixed(1)} ${e.unit}` : 'â€”'}
+                {e.delta != null ? `${e.delta > 0 ? '+' : ''}${e.delta.toFixed(1)} ${e.unit}` : ''}
               </td>
               <td>
                 <span style={{
@@ -98,3 +98,4 @@ export default function EventStream({ events }: { events: SignalEvent[] }) {
     </div>
   )
 }
+

@@ -37,7 +37,7 @@ class DeviationEvent:
     decision_trace: DecisionTrace
 
 
-# Backward-compat alias â€” prefer DeviationEvent in new code
+# Backward-compat alias  prefer DeviationEvent in new code
 
 
 def detect_anomaly(
@@ -137,3 +137,4 @@ def detect_anomaly(
         hypotheses=hypotheses,
         decision_trace=trace,
     )
+

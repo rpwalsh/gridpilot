@@ -35,7 +35,6 @@ export default function NavBar() {
       {/* Top strip */}
       <div style={{ display: 'flex', alignItems: 'center', width: '100%', height: 44, padding: '0 1.25rem', gap: '1rem', borderBottom: 'rgba(34,197,94,0.08) 1px solid' }}>
         <Link to="/telemetry" className="gp-nav__brand" style={{ marginRight: '0.5rem', textDecoration: 'none' }}>
-          <span className="gp-nav__brand-icon" style={{ fontSize: 13 }}>DL</span>
           <div>
             <div style={{ fontSize: '0.9rem', fontWeight: 800, lineHeight: 1, color: '#f8fafc' }}>Dispatch Layer</div>
             <div style={{ fontSize: '0.6rem', color: '#4a7a4a', fontWeight: 500, lineHeight: 1, marginTop: 1 }}>

@@ -9,7 +9,7 @@ interface EmptyStateProps {
   icon?: string
 }
 
-export default function EmptyState({ title, message, icon = 'â—‹' }: EmptyStateProps) {
+export default function EmptyState({ title, message, icon = '' }: EmptyStateProps) {
   return (
     <div className="gp-empty">
       <div className="gp-empty__icon">{icon}</div>
@@ -18,3 +18,4 @@ export default function EmptyState({ title, message, icon = 'â—‹' }: EmptyS
     </div>
   )
 }
+

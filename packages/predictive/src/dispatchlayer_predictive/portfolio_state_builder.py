@@ -2,7 +2,7 @@
 # All rights reserved. Professional preview only.
 
 """
-G Layer â€” Portfolio State Builder
+G Layer  Portfolio State Builder
 
 Compresses the scored local interactions (from the L layer) into a finite-
 dimensional site-level and portfolio-level structural state.
@@ -37,19 +37,19 @@ class SiteState:
     capacity_mw: float
 
     # Aggregated signal scores from L layer
-    weather_score: float              # 0â€“1, higher = stronger weather signal present
-    grid_score: float                 # 0â€“1, higher = stronger grid demand context
-    market_score: float               # 0â€“1, higher = stronger price signal
-    forecast_disagreement_score: float  # 0â€“1, higher = larger forecast-vs-actual gap
-    battery_readiness_score: float    # 0â€“1, only for battery/hybrid sites
+    weather_score: float              # 01, higher = stronger weather signal present
+    grid_score: float                 # 01, higher = stronger grid demand context
+    market_score: float               # 01, higher = stronger price signal
+    forecast_disagreement_score: float  # 01, higher = larger forecast-vs-actual gap
+    battery_readiness_score: float    # 01, only for battery/hybrid sites
 
     # Derived state estimates
-    capacity_factor_estimate: float   # 0â€“1, estimated current CF from weather signals
-    derating_risk: float              # 0â€“1, probability of temperature/condition derating
-    data_quality: float               # 0â€“1, overall quality of source data this pass
+    capacity_factor_estimate: float   # 01, estimated current CF from weather signals
+    derating_risk: float              # 01, probability of temperature/condition derating
+    data_quality: float               # 01, overall quality of source data this pass
 
     # Observational noise floor: proportion of signal that is irreducible noise
-    observational_noise: float        # 0â€“1
+    observational_noise: float        # 01
 
     scored_at_utc: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
 
@@ -88,7 +88,7 @@ class PortfolioState:
 
     def structural_error_score(self) -> float:
         """
-        Structural error ÎµG: how well does the structural state represent reality?
+        Structural error G: how well does the structural state represent reality?
 
         Degrades when data quality is low, when many sites have forecast disagreement,
         or when derating risk is elevated.  This is the G-layer term in the predictive
@@ -125,9 +125,9 @@ class PortfolioStateBuilder:
 
         # Estimate capacity factor from weather signal strength
         if asset_type == "solar":
-            capacity_factor_estimate = weather_score * 0.25  # solar CF ~0â€“25%
+            capacity_factor_estimate = weather_score * 0.25  # solar CF ~025%
         elif asset_type == "wind":
-            capacity_factor_estimate = weather_score * 0.40  # wind CF ~0â€“40%
+            capacity_factor_estimate = weather_score * 0.40  # wind CF ~040%
         else:
             capacity_factor_estimate = weather_score * 0.30
 
@@ -168,3 +168,4 @@ class PortfolioStateBuilder:
             portfolio_id=portfolio_id,
             sites=site_states,
         )
+

@@ -6,11 +6,11 @@
 /**
  * TelemetryDashboard page
  *
- * SCADA fleet snapshot â€” shows normalised AssetTelemetrySnapshot for each asset
+ * SCADA fleet snapshot  shows normalised AssetTelemetrySnapshot for each asset
  * using IEC 61400-25 signal names for wind and IEC 61724-1 for solar.
  *
- * data_mode=source  â†’ source-backed snapshots from data/source_snapshots
- * data_mode=live    â†’ most recent ingested snapshots from POST /telemetry/ingest
+ * data_mode=source   source-backed snapshots from data/source_snapshots
+ * data_mode=live     most recent ingested snapshots from POST /telemetry/ingest
  *
  * Hardware telemetry is the operational truth layer.  Public APIs tell the
  * system what should happen; hardware telemetry tells it what actually happened.
@@ -31,7 +31,7 @@ import StatCard from '../components/StatCard'
 import StatusBadge from '../components/StatusBadge'
 import axios from 'axios'
 
-// â”€â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+//  Types 
 
 interface AssetSnapshot {
   asset_id: string
@@ -68,7 +68,7 @@ interface AssetSnapshot {
   _anomaly_notes?: any
 }
 
-// â”€â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+//  Helpers 
 
 function utilPct(snap: AssetSnapshot): number | null {
   if (snap.power_kw == null || snap.capacity_kw == null || snap.capacity_kw === 0) return null
@@ -94,7 +94,7 @@ function healthColor(score: number): string {
   return 'var(--gp-red)'
 }
 
-// â”€â”€â”€ Sub-components â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+//  Sub-components 
 
 function WindTurbineCard({ snap }: { snap: AssetSnapshot }) {
   const res = residualPct(snap)
@@ -113,14 +113,14 @@ function WindTurbineCard({ snap }: { snap: AssetSnapshot }) {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
         <div>
           <div style={{ fontSize: '0.78rem', color: 'var(--gp-text-muted)', marginBottom: 2 }}>
-            {assetTypeLabel(snap.asset_type)} Â· {snap.site_id}
+            {assetTypeLabel(snap.asset_type)}  {snap.site_id}
           </div>
           <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--gp-text-primary)' }}>
-            {snap.power_kw?.toLocaleString() ?? 'â€”'}&thinsp;
+            {snap.power_kw?.toLocaleString() ?? ''}&thinsp;
             <span style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--gp-text-muted)' }}>kW</span>
           </div>
           <div style={{ fontSize: '0.78rem', color: 'var(--gp-text-muted)' }}>
-            of {snap.capacity_kw?.toLocaleString()} kW Â· expected {snap.expected_power_kw?.toLocaleString()} kW
+            of {snap.capacity_kw?.toLocaleString()} kW  expected {snap.expected_power_kw?.toLocaleString()} kW
           </div>
         </div>
         <div style={{ textAlign: 'right' }}>
@@ -152,17 +152,17 @@ function WindTurbineCard({ snap }: { snap: AssetSnapshot }) {
         {[
           { label: 'Wind (hub) m/s', value: snap.wind_speed_mps },
           { label: 'Rotor RPM', value: snap.rotor_rpm },
-          { label: 'Yaw error Â°', value: snap.yaw_error_deg, alarm: Math.abs(snap.yaw_error_deg ?? 0) > 5 },
-          { label: 'Pitch Â°', value: snap.blade_pitch_deg, alarm: (snap.blade_pitch_deg ?? 0) > 10 },
-          { label: 'Gearbox Â°C', value: snap.gearbox_temperature_c, alarm: (snap.gearbox_temperature_c ?? 0) > 70 },
-          { label: 'Gen Â°C', value: snap.generator_temperature_c, alarm: (snap.generator_temperature_c ?? 0) > 80 },
+          { label: 'Yaw error ', value: snap.yaw_error_deg, alarm: Math.abs(snap.yaw_error_deg ?? 0) > 5 },
+          { label: 'Pitch ', value: snap.blade_pitch_deg, alarm: (snap.blade_pitch_deg ?? 0) > 10 },
+          { label: 'Gearbox C', value: snap.gearbox_temperature_c, alarm: (snap.gearbox_temperature_c ?? 0) > 70 },
+          { label: 'Gen C', value: snap.generator_temperature_c, alarm: (snap.generator_temperature_c ?? 0) > 80 },
           { label: 'Vibration mm/s', value: snap.vibration_mm_s, alarm: (snap.vibration_mm_s ?? 0) > 3 },
           { label: 'Avail %', value: snap.availability_pct },
         ].map(({ label, value, alarm }) => (
           <div key={label} className="gp-signal-kv" style={alarm ? { color: 'var(--gp-red-text)' } : {}}>
             <span className="gp-signal-kv__key">{label}</span>
             <span className="gp-signal-kv__val" style={{ fontWeight: alarm ? 800 : 600 }}>
-              {value != null ? value.toFixed(1) : 'â€”'}
+              {value != null ? value.toFixed(1) : ''}
             </span>
           </div>
         ))}
@@ -213,15 +213,15 @@ function SolarInverterCard({ snap }: { snap: AssetSnapshot }) {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
         <div>
           <div style={{ fontSize: '0.78rem', color: 'var(--gp-text-muted)', marginBottom: 2 }}>
-            {assetTypeLabel(snap.asset_type)} Â· {snap.site_id}
+            {assetTypeLabel(snap.asset_type)}  {snap.site_id}
           </div>
           <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--gp-text-primary)' }}>
-            {snap.power_kw?.toLocaleString() ?? 'â€”'}&thinsp;
+            {snap.power_kw?.toLocaleString() ?? ''}&thinsp;
             <span style={{ fontSize: '0.85rem', fontWeight: 500, color: 'var(--gp-text-muted)' }}>kW AC</span>
           </div>
           <div style={{ fontSize: '0.78rem', color: 'var(--gp-text-muted)' }}>
             expected {snap.expected_power_kw?.toLocaleString()} kW
-            {res != null && ` Â· ${res > 0 ? '+' : ''}${res}% residual`}
+            {res != null && `  ${res > 0 ? '+' : ''}${res}% residual`}
           </div>
         </div>
         <StatusBadge label="healthy" color="green" />
@@ -234,12 +234,12 @@ function SolarInverterCard({ snap }: { snap: AssetSnapshot }) {
           { label: 'DC power kW', value: dcPower },
           { label: 'AC power kW', value: snap.ac_power_kw ?? snap.power_kw },
           { label: 'Inverter eff %', value: snap.inverter_efficiency_pct },
-          { label: 'Ambient Â°C', value: snap.temperature_c },
+          { label: 'Ambient C', value: snap.temperature_c },
           { label: 'Avail %', value: snap.availability_pct },
         ].map(({ label, value }) => (
           <div key={label} className="gp-signal-kv">
             <span className="gp-signal-kv__key">{label}</span>
-            <span className="gp-signal-kv__val">{value != null ? value.toLocaleString() : 'â€”'}</span>
+            <span className="gp-signal-kv__val">{value != null ? value.toLocaleString() : ''}</span>
           </div>
         ))}
       </div>
@@ -256,14 +256,14 @@ function BessCard({ snap }: { snap: AssetSnapshot }) {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
         <div>
           <div style={{ fontSize: '0.78rem', color: 'var(--gp-text-muted)', marginBottom: 2 }}>
-            BESS Â· {snap.site_id}
+            BESS  {snap.site_id}
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem' }}>
             <div style={{ fontSize: '1.5rem', fontWeight: 800, color: socColor }}>{soc.toFixed(1)}%</div>
             <div style={{ fontSize: '0.85rem', color: 'var(--gp-text-muted)' }}>SoC</div>
           </div>
           <div style={{ fontSize: '0.78rem', color: 'var(--gp-text-muted)' }}>
-            SoH {snap.state_of_health_pct?.toFixed(1)}% Â· {snap.cycle_count?.toLocaleString()} cycles
+            SoH {snap.state_of_health_pct?.toFixed(1)}%  {snap.cycle_count?.toLocaleString()} cycles
           </div>
         </div>
         <div style={{ textAlign: 'right' }}>
@@ -273,12 +273,12 @@ function BessCard({ snap }: { snap: AssetSnapshot }) {
           />
           {(snap.discharge_power_kw ?? 0) > 0 && (
             <div style={{ fontSize: '0.85rem', fontWeight: 700, marginTop: 4, color: 'var(--gp-amber-text)' }}>
-              â†“ {snap.discharge_power_kw?.toLocaleString()} kW
+               {snap.discharge_power_kw?.toLocaleString()} kW
             </div>
           )}
           {(snap.charge_power_kw ?? 0) > 0 && (
             <div style={{ fontSize: '0.85rem', fontWeight: 700, marginTop: 4, color: 'var(--gp-blue-dark)' }}>
-              â†‘ {snap.charge_power_kw?.toLocaleString()} kW
+               {snap.charge_power_kw?.toLocaleString()} kW
             </div>
           )}
         </div>
@@ -299,16 +299,16 @@ function BessCard({ snap }: { snap: AssetSnapshot }) {
         {[
           { label: 'Pack voltage V', value: snap.pack_voltage_v },
           { label: 'Pack current A', value: snap.dc_current_a },
-          { label: 'Cell temp Â°C', value: snap.cell_temperature_c, alarm: (snap.cell_temperature_c ?? 0) > 40 },
+          { label: 'Cell temp C', value: snap.cell_temperature_c, alarm: (snap.cell_temperature_c ?? 0) > 40 },
           { label: 'Thermal derate', value: snap.thermal_derate_flag ? 'YES' : 'no' },
           { label: 'SoH %', value: snap.state_of_health_pct },
           { label: 'Capacity kW', value: snap.capacity_kw },
           { label: 'Avail %', value: snap.availability_pct },
-          { label: 'Quality', value: snap.quality_score != null ? (snap.quality_score * 100).toFixed(0) + '%' : 'â€”' },
+          { label: 'Quality', value: snap.quality_score != null ? (snap.quality_score * 100).toFixed(0) + '%' : '' },
         ].map(({ label, value, alarm }) => (
           <div key={label} className="gp-signal-kv" style={alarm ? { color: 'var(--gp-red-text)' } : {}}>
             <span className="gp-signal-kv__key">{label}</span>
-            <span className="gp-signal-kv__val">{typeof value === 'number' ? value.toLocaleString() : (value ?? 'â€”')}</span>
+            <span className="gp-signal-kv__val">{typeof value === 'number' ? value.toLocaleString() : (value ?? '')}</span>
           </div>
         ))}
       </div>
@@ -316,7 +316,7 @@ function BessCard({ snap }: { snap: AssetSnapshot }) {
   )
 }
 
-// â”€â”€â”€ Fleet output bar chart â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+//  Fleet output bar chart 
 
 function FleetOutputChart({ assets }: { assets: AssetSnapshot[] }) {
   const data = assets.filter(a => a.power_kw != null).map(a => ({
@@ -347,7 +347,7 @@ function FleetOutputChart({ assets }: { assets: AssetSnapshot[] }) {
   )
 }
 
-// â”€â”€â”€ Main page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+//  Main page 
 
 export default function TelemetryDashboard() {
   const [siteId, setSiteId]     = useState('solar_nrel_golden_1')
@@ -392,7 +392,7 @@ export default function TelemetryDashboard() {
           <div>
             <h1 className="gp-page-title">Telemetry</h1>
             <p className="gp-page-subtitle">
-              SCADA fleet snapshot â€” IEC 61400-25 wind Â· IEC 61724-1 solar Â· BMS telemetry.
+              SCADA fleet snapshot  IEC 61400-25 wind  IEC 61724-1 solar  BMS telemetry.
               Actual vs. expected output, deviation analysis, fault codes.
             </p>
           </div>
@@ -413,7 +413,7 @@ export default function TelemetryDashboard() {
               </select>
             </label>
             <button onClick={fetchTelemetry} disabled={loading} className="gp-btn gp-btn--sm">
-              {loading ? 'âŸ³' : 'âŸ³ Refresh'}
+              {loading ? '' : ' Refresh'}
             </button>
           </div>
         </div>
@@ -495,21 +495,21 @@ export default function TelemetryDashboard() {
               <div>
                 <div style={{ fontWeight: 700, marginBottom: '0.5rem', fontSize: '0.85rem' }}>Available now</div>
                 <ul style={{ margin: 0, paddingLeft: '1.25rem', fontSize: '0.82rem', color: 'var(--gp-text-secondary)', lineHeight: 1.8 }}>
-                  <li><code>POST /api/v1/telemetry/ingest</code> â€” JSON TelemetryPoint array</li>
-                  <li><code>POST /api/v1/telemetry/normalize</code> â€” normalise to AssetTelemetrySnapshot</li>
-                  <li><code>GET /api/v1/sites/{'{site_id}'}/telemetry/latest</code> â€” latest snapshot</li>
-                  <li><code>GET /api/v1/assets/{'{asset_id}'}/health</code> â€” single-asset health</li>
+                  <li><code>POST /api/v1/telemetry/ingest</code>  JSON TelemetryPoint array</li>
+                  <li><code>POST /api/v1/telemetry/normalize</code>  normalise to AssetTelemetrySnapshot</li>
+                  <li><code>GET /api/v1/sites/{'{site_id}'}/telemetry/latest</code>  latest snapshot</li>
+                  <li><code>GET /api/v1/assets/{'{asset_id}'}/health</code>  single-asset health</li>
                 </ul>
               </div>
               <div>
                 <div style={{ fontWeight: 700, marginBottom: '0.5rem', fontSize: '0.85rem' }}>Planned</div>
                 <ul style={{ margin: 0, paddingLeft: '1.25rem', fontSize: '0.82rem', color: 'var(--gp-text-muted)', lineHeight: 1.8 }}>
-                  <li>CSV / Parquet upload â€” POST /api/v1/telemetry/ingest/csv</li>
-                  <li>MQTT â€” pub/sub adapter</li>
-                  <li>OPC UA â€” normalised point reader</li>
-                  <li>Modbus â€” register snapshot adapter</li>
+                  <li>CSV / Parquet upload  POST /api/v1/telemetry/ingest/csv</li>
+                  <li>MQTT  pub/sub adapter</li>
+                  <li>OPC UA  normalised point reader</li>
+                  <li>Modbus  register snapshot adapter</li>
                   <li>SCADA historian connector (OSIsoft PI, Wonderware)</li>
-                  <li>REST webhook â€” push from edge gateway</li>
+                  <li>REST webhook  push from edge gateway</li>
                 </ul>
               </div>
             </div>
@@ -519,3 +519,4 @@ export default function TelemetryDashboard() {
     </div>
   )
 }
+

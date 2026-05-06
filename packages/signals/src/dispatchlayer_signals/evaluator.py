@@ -2,7 +2,7 @@
 # All rights reserved. Professional preview only.
 
 """
-Signal state evaluator â€” converts deviation events to signal events.
+Signal state evaluator  converts deviation events to signal events.
 
 Maps measured deviation conditions to ThresholdState codes.
 Does not produce prose or operator instructions.
@@ -93,3 +93,4 @@ def evaluate_signal_events(
 def rank_signal_events(events: list[SignalEvent]) -> list[SignalEvent]:
     """Sort signal events by state severity descending (CRITICAL first)."""
     return sorted(events, key=lambda e: state_severity(e.state), reverse=True)
+

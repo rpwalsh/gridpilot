@@ -229,10 +229,10 @@ export default function ReplayPage() {
           </div>
           <div className="gp-replay-control-group gp-replay-date-group">
             <input type="date" defaultValue="2019-01-01" className="gp-replay-input" />
-            <span className="gp-replay-arrow">â†’</span>
+            <span className="gp-replay-arrow"></span>
             <input type="date" defaultValue="2019-12-31" className="gp-replay-input" />
           </div>
-          <button className="gp-replay-button gp-replay-button-refresh">âŸ²</button>
+          <button className="gp-replay-button gp-replay-button-refresh"></button>
         </div>
 
         {/* Main 2-column layout */}
@@ -242,7 +242,7 @@ export default function ReplayPage() {
             <div className="gp-panel gp-replay-chart-panel">
 
               <div className="gp-replay-chart-header">
-                <h3 className="gp-replay-chart-title">AC Power (kW) â€” Replay</h3>
+                <h3 className="gp-replay-chart-title">AC Power (kW)  Replay</h3>
                 <div className="gp-replay-playback-controls">
                   <div className="gp-replay-control-item">
                     <label>Speed</label>
@@ -258,15 +258,15 @@ export default function ReplayPage() {
                     </select>
                   </div>
                   <div className="gp-replay-playback-btns">
-                    <button className="gp-replay-btn-icon gp-replay-btn-rewind" title="Rewind">â—„â—„</button>
+                    <button className="gp-replay-btn-icon gp-replay-btn-rewind" title="Rewind"></button>
                     <button 
                       className="gp-replay-btn-icon gp-replay-btn-play"
                       onClick={() => setIsPlaying((prev) => !prev)}
                       title={isPlaying ? 'Pause' : 'Play'}
                     >
-                      {isPlaying ? 'â¸' : 'â–¶'}
+                      {isPlaying ? '' : ''}
                     </button>
-                    <button className="gp-replay-btn-icon gp-replay-btn-forward" title="Forward">â–ºâ–º</button>
+                    <button className="gp-replay-btn-icon gp-replay-btn-forward" title="Forward"></button>
                   </div>
                   <div className="gp-replay-timestamp">{formatTime(currentTimestamp)} CDT</div>
                 </div>
@@ -352,11 +352,11 @@ export default function ReplayPage() {
               {/* Current values row */}
               <div className="gp-replay-values-row">
                 {[
-                  { icon: 'â—¯', label: 'AC Power', value: currentFrame.actual.toFixed(1), unit: 'kW' },
-                  { icon: 'â˜€', label: 'Irradiance', value: currentFrame.irradiance.toFixed(1), unit: 'W/mÂ²' },
-                  { icon: 'ðŸŒ¡', label: 'Ambient Temp', value: currentFrame.temp.toFixed(1), unit: 'Â°C' },
-                  { icon: 'ðŸ’¨', label: 'Wind Speed', value: currentFrame.wind.toFixed(1), unit: 'm/s' },
-                  { icon: 'âœ“', label: 'Quality State', value: currentFrame.quality.toFixed(1), unit: '%', color: '#66d36e' },
+                  { icon: '', label: 'AC Power', value: currentFrame.actual.toFixed(1), unit: 'kW' },
+                  { icon: '', label: 'Irradiance', value: currentFrame.irradiance.toFixed(1), unit: 'W/m' },
+                  { icon: '', label: 'Ambient Temp', value: currentFrame.temp.toFixed(1), unit: 'C' },
+                  { icon: '', label: 'Wind Speed', value: currentFrame.wind.toFixed(1), unit: 'm/s' },
+                  { icon: '', label: 'Quality State', value: currentFrame.quality.toFixed(1), unit: '%', color: '#66d36e' },
                 ].map((item) => (
                   <div key={item.label} className="gp-replay-value-card">
                     <div className="gp-replay-value-icon">{item.icon}</div>
@@ -427,13 +427,13 @@ export default function ReplayPage() {
                   <div className="gp-replay-summary-val">{currentFrame.actual.toFixed(1)}</div>
                 </div>
                 <div className="gp-replay-summary-row">
-                  <div className="gp-replay-summary-metric">POA Irradiance (W/mÂ²)</div>
+                  <div className="gp-replay-summary-metric">POA Irradiance (W/m)</div>
                   <div className="gp-replay-summary-val">{irradianceSummary.min.toFixed(1)}</div>
                   <div className="gp-replay-summary-val">{irradianceSummary.max.toFixed(1)}</div>
                   <div className="gp-replay-summary-val" style={{ color: '#ffc933' }}>{currentFrame.irradiance.toFixed(1)}</div>
                 </div>
                 <div className="gp-replay-summary-row">
-                  <div className="gp-replay-summary-metric">Ambient Temp (Â°C)</div>
+                  <div className="gp-replay-summary-metric">Ambient Temp (C)</div>
                   <div className="gp-replay-summary-val">{tempSummary.min.toFixed(1)}</div>
                   <div className="gp-replay-summary-val">{tempSummary.max.toFixed(1)}</div>
                   <div className="gp-replay-summary-val" style={{ color: '#ff7043' }}>{currentFrame.temp.toFixed(1)}</div>
@@ -450,10 +450,10 @@ export default function ReplayPage() {
             <div className="gp-replay-sidebar-section">
               <h4 className="gp-replay-sidebar-title">DATA QUALITY (summary)</h4>
               <div className="gp-replay-quality-legend-new">
-                <div style={{ color: '#66d36e' }}>â— Good 98.7%</div>
-                <div style={{ color: '#ffc933' }}>â— Missing 0.9%</div>
-                <div style={{ color: '#ff7043' }}>â— Stale 0.4%</div>
-                <div style={{ color: '#5f7688' }}>â— Other 0.0%</div>
+                <div style={{ color: '#66d36e' }}> Good 98.7%</div>
+                <div style={{ color: '#ffc933' }}> Missing 0.9%</div>
+                <div style={{ color: '#ff7043' }}> Stale 0.4%</div>
+                <div style={{ color: '#5f7688' }}> Other 0.0%</div>
               </div>
             </div>
           </aside>
@@ -490,3 +490,4 @@ export default function ReplayPage() {
     </AppShell>
   )
 }
+

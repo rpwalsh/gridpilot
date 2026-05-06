@@ -13,6 +13,10 @@ Audience:
 
 This repository is designed to support practical operational decisions. It is not a marketing site and it is not a research paper archive.
 
+## Dashboard Preview
+
+![DispatchLayer dashboard preview](Screenshot%202026-05-06%20093938.png)
+
 ## Software Summary
 
 DispatchLayer helps operations teams answer four recurring questions:

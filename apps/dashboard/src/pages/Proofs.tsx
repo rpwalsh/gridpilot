@@ -15,7 +15,7 @@ import StatusBadge from '../components/StatusBadge'
 import HelixDisplay from '../components/HelixDisplay'
 import { generateProofResult } from '../lib/proofs'
 
-// â”€â”€ Color tokens â€” dark green + gold theme â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+//  Color tokens  dark green + gold theme 
 const BLUE      = 'var(--gp-blue)'         // gold via CSS var
 const GREEN     = '#4ade80'                 // bright green for dark mode
 const SLATE     = '#7ab87a'                 // medium green for tick labels
@@ -30,7 +30,7 @@ const TOOLTIP_STYLE = {
   color: '#d4f0d4',
 }
 
-// â”€â”€ Custom tooltip: strips band internals â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+//  Custom tooltip: strips band internals 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function ForecastTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null
@@ -49,12 +49,12 @@ function ForecastTooltip({ active, payload, label }: any) {
   )
 }
 
-// â”€â”€ Page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+//  Page 
 export default function Proofs() {
   const result = useMemo(() => generateProofResult(), [])
   const { annual_history, monthly_2025, metrics, spectrum, audit } = result
 
-  // Forecast envelope chart data â€” stacked-area band trick
+  // Forecast envelope chart data  stacked-area band trick
   const forecastChartData = monthly_2025.map(m => ({
     month:      m.month,
     band_low:   m.p10,
@@ -89,7 +89,7 @@ export default function Proofs() {
   return (
     <div className="gp-grid">
 
-      {/* â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/*  Header  */}
       <div className="gp-page-header">
         <div>
           <h1 className="gp-page-title">Proofs</h1>
@@ -105,7 +105,7 @@ export default function Proofs() {
         </div>
       </div>
 
-      {/* â”€â”€ No-leakage marker â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/*  No-leakage marker  */}
       <div style={{
         fontSize: '0.78rem', fontFamily: 'monospace',
         padding: '0.45rem 0.75rem',
@@ -114,15 +114,15 @@ export default function Proofs() {
         borderRadius: 'var(--gp-radius-sm)',
         color: 'var(--gp-text-secondary)',
       }}>
-        leakage: none â€” forecast generated from 2000â€“2024 data only Â· 2025 actuals excluded from training Â· used for post-hoc validation only
+        leakage: none  forecast generated from 20002024 data only  2025 actuals excluded from training  used for post-hoc validation only
       </div>
 
-      {/* â”€â”€ Metric strip â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/*  Metric strip  */}
       <div className="gp-stat-grid">
         <StatCard
           label="Band Coverage"
           value={`${coveragePct}%`}
-          sub="actual inside P10â€“P90"
+          sub="actual inside P10P90"
           accent={coveragePct >= 90 ? 'var(--gp-green)' : coveragePct >= 75 ? 'var(--gp-amber)' : 'var(--gp-red)'}
         />
         <StatCard label="MAE"       value={`${metrics.mae.toLocaleString()} MWh`}  accent={BLUE} />
@@ -137,10 +137,10 @@ export default function Proofs() {
         <StatCard label="Max Error" value={`${metrics.max_abs_error.toLocaleString()} MWh`} accent="var(--gp-red)" />
       </div>
 
-      {/* â”€â”€ Forecast Envelope (hero) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/*  Forecast Envelope (hero)  */}
       <DashboardCard
-        title="Forecast Envelope â€” 2025 Holdout"
-        subtitle={`P10 / P50 / P90 vs observed series Â· holdout ${audit.holdout_period}`}
+        title="Forecast Envelope  2025 Holdout"
+        subtitle={`P10 / P50 / P90 vs observed series  holdout ${audit.holdout_period}`}
       >
         <ResponsiveContainer width="100%" height={300}>
           <ComposedChart data={forecastChartData} margin={{ top: 8, right: 16, bottom: 0, left: 0 }}>
@@ -161,7 +161,7 @@ export default function Proofs() {
               dataKey="band_width" stackId="band"
               fill={BAND_FILL}    stroke={BAND_LINE}
               strokeWidth={1}     strokeDasharray="4 2"
-              legendType="square" name="Forecast Band (P10â€“P90)"
+              legendType="square" name="Forecast Band (P10P90)"
             />
             <Line
               dataKey="p50"    stroke={BLUE}  strokeWidth={2}   dot={false}
@@ -177,12 +177,12 @@ export default function Proofs() {
         </ResponsiveContainer>
       </DashboardCard>
 
-      {/* â”€â”€ Historical Context + Residual Field â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/*  Historical Context + Residual Field  */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
 
         <DashboardCard
           title="Training Window"
-          subtitle="Annual mean generation 2000â€“2025 Â· 50 MW solar site"
+          subtitle="Annual mean generation 20002025  50 MW solar site"
         >
           <ResponsiveContainer width="100%" height={220}>
             <ComposedChart data={contextData} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
@@ -206,8 +206,8 @@ export default function Proofs() {
         </DashboardCard>
 
         <DashboardCard
-          title="Residual Field â€” 2025"
-          subtitle="Observed âˆ’ P50 forecast (MWh) Â· sign indicates over/under"
+          title="Residual Field  2025"
+          subtitle="Observed  P50 forecast (MWh)  sign indicates over/under"
         >
           <ResponsiveContainer width="100%" height={220}>
             <ComposedChart data={residualData} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
@@ -232,10 +232,10 @@ export default function Proofs() {
 
       </div>
 
-      {/* â”€â”€ Spectral Agreement â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/*  Spectral Agreement  */}
       <DashboardCard
         title="Spectral Agreement"
-        subtitle={`Harmonic amplitude â€” ${audit.spectral_method} Â· historical / forecast / observed`}
+        subtitle={`Harmonic amplitude  ${audit.spectral_method}  historical / forecast / observed`}
       >
         <ResponsiveContainer width="100%" height={240}>
           <BarChart data={spectralData} margin={{ top: 8, right: 16, bottom: 0, left: 0 }}>
@@ -251,16 +251,16 @@ export default function Proofs() {
         </ResponsiveContainer>
       </DashboardCard>
 
-      {/* â”€â”€ Temporal Playback â€” Signature Helix â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/*  Temporal Playback  Signature Helix  */}
       <DashboardCard
-        title="Temporal Playback â€” Signature Helix"
-        subtitle="365-day Ã— 24-hour deviation field Â· color: âˆ’3Ïƒ teal â†’ 0 green â†’ +3Ïƒ gold"
+        title="Temporal Playback  Signature Helix"
+        subtitle="365-day  24-hour deviation field  color: 3 teal  0 green  +3 gold"
       >
         <HelixDisplay />
       </DashboardCard>
 
-      {/* â”€â”€ Calibration Table â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
-      <DashboardCard title="Calibration â€” Monthly Accuracy 2025">
+      {/*  Calibration Table  */}
+      <DashboardCard title="Calibration  Monthly Accuracy 2025">
         <table className="gp-table">
           <thead>
             <tr>
@@ -314,7 +314,7 @@ export default function Proofs() {
         </table>
       </DashboardCard>
 
-      {/* â”€â”€ Audit Metadata â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/*  Audit Metadata  */}
       <DashboardCard title="Audit Metadata">
         <table className="gp-table">
           <tbody>
@@ -338,3 +338,4 @@ export default function Proofs() {
     </div>
   )
 }
+

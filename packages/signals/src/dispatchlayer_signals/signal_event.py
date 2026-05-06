@@ -2,7 +2,7 @@
 # All rights reserved. Professional preview only.
 
 """
-Signal event model â€” output of the threshold state evaluator.
+Signal event model  output of the threshold state evaluator.
 
 A SignalEvent is a structured, auditable record of a threshold crossing or
 deviation state.  It contains measured values, expected values, delta, unit,
@@ -71,3 +71,4 @@ class SignalEvent:
             sort_keys=True,
         ).encode()
         return hashlib.sha256(payload).hexdigest()[:16]
+

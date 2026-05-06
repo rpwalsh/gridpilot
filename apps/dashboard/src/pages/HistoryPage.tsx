@@ -97,8 +97,8 @@ export default function HistoryPage() {
 
   const metricLabel = {
     power: 'AC Power (kW)',
-    irradiance: 'Irradiance (W/mÂ²)',
-    temperature: 'Temperature (Â°C)',
+    irradiance: 'Irradiance (W/m)',
+    temperature: 'Temperature (C)',
     wind: 'Wind Speed (m/s)',
   }
 
@@ -198,7 +198,7 @@ export default function HistoryPage() {
           {/* Main Time Series Chart */}
           <div className="gp-panel" style={{ flex: 1, minHeight: '350px' }}>
             <h3 style={{ margin: '12px 0 12px 0', fontSize: '0.875rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-              {metricLabel[metric as keyof typeof metricLabel]} â€” Historical Trend
+              {metricLabel[metric as keyof typeof metricLabel]}  Historical Trend
             </h3>
             <ResponsiveContainer width="100%" height="90%">
               <ComposedChart data={filteredData} margin={{ top: 10, right: 40, left: 0, bottom: 20 }}>
@@ -358,7 +358,7 @@ export default function HistoryPage() {
                 e.currentTarget.style.borderColor = 'rgba(100,181,246,0.6)'
               }}
             >
-              â†“ Export Data
+               Export Data
             </button>
             <button
               style={{
@@ -384,7 +384,7 @@ export default function HistoryPage() {
                 e.currentTarget.style.color = '#707070'
               }}
             >
-              ðŸ“Š Generate Report
+               Generate Report
             </button>
           </div>
 
@@ -404,3 +404,4 @@ export default function HistoryPage() {
     </AppShell>
   )
 }
+

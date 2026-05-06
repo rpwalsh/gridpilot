@@ -6,7 +6,7 @@ POST /api/v1/sites/evaluate
 
 Full analysis pipeline evaluation for a configured renewable site.
 Accepts lat/lon, asset type, and capacity; returns forecast context, data-quality
-confidence, structural drift warning, and audit trace â€” all traceable to source inputs.
+confidence, structural drift warning, and audit trace  all traceable to source inputs.
 
 This endpoint runs in live-provider mode and calls real public adapters
 (Open-Meteo and optional grid-context providers configured by environment).
@@ -50,9 +50,9 @@ def _extract_current_sample_from_forecast(forecast, now: datetime) -> dict:
     }
 
 
-# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# 
 # Models
-# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# 
 
 class SiteEvaluationRequest(BaseModel):
     name: str = "demo_site"
@@ -105,9 +105,9 @@ class SiteEvaluationResponse(BaseModel):
     audit_trace: dict
 
 
-# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# 
 # Provider resolution
-# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# 
 
 async def _resolve_weather_signals(
     req: SiteEvaluationRequest,
@@ -189,16 +189,16 @@ async def _resolve_weather_signals(
     return wind_speed_mps, ghi_wm2, temperature_c, sources, warnings
 
 
-# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# 
 # Endpoint
-# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# 
 
 @router.post("/sites/evaluate", response_model=SiteEvaluationResponse)
 async def evaluate_site(req: SiteEvaluationRequest) -> SiteEvaluationResponse:
     now = datetime.now(timezone.utc)
-    trace = DecisionTrace(model_versions={"predictive_core": "0.1.0", "pipeline": "Lâ†’Gâ†’Pâ†’D"})
+    trace = DecisionTrace(model_versions={"predictive_core": "0.1.0", "pipeline": "LGPD"})
 
-    # â”€â”€ Provider resolution â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    #  Provider resolution 
     wind_speed_mps, ghi_wm2, temperature_c, sources, warnings = (
         await _resolve_weather_signals(req, now)
     )
@@ -332,3 +332,4 @@ async def evaluate_site(req: SiteEvaluationRequest) -> SiteEvaluationResponse:
         },
         audit_trace=trace.to_dict(),
     )
+

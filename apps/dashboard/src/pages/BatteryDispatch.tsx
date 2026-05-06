@@ -40,7 +40,7 @@ export default function BatteryDispatch() {
         window_hours: 4,
       })
       setResult(r.data)
-    } catch { setResult({ error: 'Dispatch optimization failed â€” ensure the API is running' }) }
+    } catch { setResult({ error: 'Dispatch optimization failed  ensure the API is running' }) }
     setLoading(false)
   }
 
@@ -57,7 +57,7 @@ export default function BatteryDispatch() {
     <div className="gp-grid">
       <div className="gp-page-header">
         <h1 className="gp-page-title">Dispatch Analysis</h1>
-        <p className="gp-page-subtitle">Battery charge/discharge state analysis â€” net generation, demand, and SoC context for the dispatch window</p>
+        <p className="gp-page-subtitle">Battery charge/discharge state analysis  net generation, demand, and SoC context for the dispatch window</p>
       </div>
 
       {result && !result.error && (
@@ -92,7 +92,7 @@ export default function BatteryDispatch() {
             <input className="gp-input" type="number" value={demand} onChange={e => setDemand(e.target.value)} style={{ width: 90 }} />
           </label>
           <button onClick={optimize} disabled={loading} className="gp-btn gp-btn--purple">
-            {loading ? <><span className="gp-spinner" style={{ width: 14, height: 14, borderWidth: 2 }} /> Analyzingâ€¦</> : 'Analyze Dispatch Window'}
+            {loading ? <><span className="gp-spinner" style={{ width: 14, height: 14, borderWidth: 2 }} /> Analyzing</> : 'Analyze Dispatch Window'}
           </button>
         </div>
       </DashboardCard>
@@ -140,3 +140,4 @@ export default function BatteryDispatch() {
     </div>
   )
 }
+

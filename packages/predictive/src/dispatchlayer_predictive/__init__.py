@@ -10,7 +10,7 @@ from .causal_attribution import CausalHypothesis, attribute_wind_turbine_underpr
 from .forecast_bounds import ForecastBounds, compute_forecast_bounds
 from .decision_trace import TraceStep, DecisionTrace
 
-# Four-layer Lâ†’Gâ†’Pâ†’D pipeline
+# Four-layer LGPD pipeline
 from .local_signal_scorer import (
     EntityType, InteractionType, ScoredInteraction, LocalScoreSet, LocalSignalScorer,
 )
@@ -36,9 +36,10 @@ __all__ = [
     "SiteState", "PortfolioState", "PortfolioStateBuilder",
     # P layer
     "SitePrediction", "PortfolioPrediction", "PredictiveEvolutionEngine",
-    # D layer â€” internal signal state evaluator
+    # D layer  internal signal state evaluator
     "Priority", "DecisionSet", "DecisionRanker",
     # Trust & drift
     "ErrorTermExplanation", "ForecastTrustScore", "compute_trust_score",
     "DriftRisk", "DriftWarning", "detect_residual_drift", "detect_portfolio_drift",
 ]
+

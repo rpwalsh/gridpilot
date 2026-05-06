@@ -21,7 +21,7 @@ forecasting into renewable-operations terms:
     (b) the forecast model is no longer calibrated to current conditions, or
     (c) an asset or sensor fault is producing a persistent bias.
 
-Detecting this early â€” before the bias compounds across a full dispatch window â€”
+Detecting this early  before the bias compounds across a full dispatch window 
 is one of the key value propositions of the predictive layer.
 """
 from __future__ import annotations
@@ -49,7 +49,7 @@ class DriftWarning:
     reason: str
     likely_effects: list[str] = field(default_factory=list)
     threshold_state_label: str = ""
-    drift_magnitude: float = 0.0   # standardised drift score 0â€“1
+    drift_magnitude: float = 0.0   # standardised drift score 01
 
 
 def detect_residual_drift(
@@ -65,7 +65,7 @@ def detect_residual_drift(
     Parameters
     ----------
     recent_residuals:
-        Forecast error history for the most recent window (e.g. last 6â€“12 observations).
+        Forecast error history for the most recent window (e.g. last 612 observations).
     baseline_residuals:
         Trailing baseline (e.g. last 14 days of forecast errors).
     drift_threshold_std:
@@ -101,12 +101,12 @@ def detect_residual_drift(
         risk = DriftRisk.LOW
         reason = f"Mild residual drift detected ({direction}); within monitoring threshold."
         effects = ["forecast confidence slightly reduced for next window"]
-        action = "Monitor over next 2â€“4 observations before acting."
+        action = "Monitor over next 24 observations before acting."
     elif shift_std < drift_threshold_std * 2:
         risk = DriftRisk.MEDIUM
         reason = f"Residual distribution has shifted ({direction}). Regime may be transitioning."
         effects = [
-            "forecast confidence degraded for next 12â€“18 hours",
+            "forecast confidence degraded for next 1218 hours",
             "dispatch decisions should carry wider uncertainty margin",
         ]
         action = "Refresh forecast reconciliation before next dispatch planning cycle."
@@ -114,7 +114,7 @@ def detect_residual_drift(
         risk = DriftRisk.HIGH
         reason = (
             f"Significant structural drift detected ({direction}). "
-            f"Recent forecast errors are {shift_std:.1f}Ïƒ from baseline."
+            f"Recent forecast errors are {shift_std:.1f} from baseline."
         )
         effects = [
             "forecast model may no longer be calibrated to current conditions",
@@ -179,3 +179,4 @@ def detect_portfolio_drift(
             sum(w.drift_magnitude for w in site_drift_warnings) / total, 3
         ),
     )
+

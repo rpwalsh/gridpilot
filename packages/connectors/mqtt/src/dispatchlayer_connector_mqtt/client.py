@@ -50,7 +50,7 @@ class MqttConnectorClient:
         if self._config.fixture_mode:
             return self._load_fixture()
         raise NotImplementedError(
-            "Live MQTT requires paho-mqtt â€” set fixture_mode=True for offline use"
+            "Live MQTT requires paho-mqtt  set fixture_mode=True for offline use"
         )
 
     def get_samples(self) -> list[TelemetrySample]:
@@ -95,3 +95,4 @@ class MqttConnectorClient:
                 timestamp=datetime.fromisoformat(m["timestamp"]),
             ))
         return messages
+

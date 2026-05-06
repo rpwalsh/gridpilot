@@ -2,7 +2,7 @@
 # All rights reserved. Professional preview only.
 
 """
-D Layer â€” Decision Ranker
+D Layer  Decision Ranker
 
 Takes a predicted state (from the P layer) and ranks operational recommendations
 by their expected value to the operator.
@@ -11,10 +11,10 @@ Ranking formula:
 
     signal_score =
         evidence_strength
-        Ã— confidence
-        Ã— operational_urgency
-        Ã— financial_impact_normalized
-        Ã— constraint_validity
+         confidence
+         operational_urgency
+         financial_impact_normalized
+         constraint_validity
 
 This is not a black box.  Every score is constructed from named evidence signals
 and the full construction is written into the audit trace so an operator can
@@ -107,8 +107,8 @@ class DecisionRanker:
         self,
         evidence_strength: float,
         confidence: float,
-        urgency: float,          # 0â€“1, 1 = act now
-        financial_impact: float, # 0â€“1 normalised
+        urgency: float,          # 01, 1 = act now
+        financial_impact: float, # 01 normalised
         constraint_valid: float = 1.0,
     ) -> float:
         return min(1.0, evidence_strength * confidence * urgency * financial_impact * constraint_valid)
@@ -128,7 +128,7 @@ class DecisionRanker:
         eps_g = prediction.structural_error
         eps_p = prediction.predictive_error
 
-        # --- Forecast trust too low â†’ recommend reforecast
+        # --- Forecast trust too low  recommend reforecast
         if trust < 0.55:
             dominant_term = "structural" if eps_g >= eps_p else "predictive"
             score = self._composite_score(
@@ -157,7 +157,7 @@ class DecisionRanker:
                 audit_trace_id=trace_id,
             ))
 
-        # --- Data quality degraded â†’ review sources
+        # --- Data quality degraded  review sources
         if prediction.observational_noise > 0.10 or eps_g > 0.25:
             score = self._composite_score(
                 evidence_strength=max(eps_g, prediction.observational_noise),
@@ -229,7 +229,7 @@ class DecisionRanker:
         trace_id: str,
     ) -> None:
         trust = prediction.forecast_trust
-        # High SoC + good weather forecast â†’ likely overgeneration â†’ hold or charge more
+        # High SoC + good weather forecast  likely overgeneration  hold or charge more
         if soc_pct > 75.0 and prediction.expected_generation_mwh > 0:
             score = self._composite_score(
                 evidence_strength=soc_pct / 100.0,
@@ -255,7 +255,7 @@ class DecisionRanker:
                 audit_trace_id=trace_id,
             ))
 
-        # Low SoC + good forecast â†’ charge window
+        # Low SoC + good forecast  charge window
         elif soc_pct < 35.0 and prediction.expected_generation_mwh > 0:
             score = self._composite_score(
                 evidence_strength=1.0 - soc_pct / 100.0,
@@ -340,3 +340,4 @@ class DecisionRanker:
             site_id=None,
             signal_events=recs,
         )
+

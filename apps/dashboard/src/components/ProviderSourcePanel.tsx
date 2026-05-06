@@ -4,7 +4,7 @@
  */
 
 /**
- * ProviderSourcePanel â€“ source attribution panel.
+ * ProviderSourcePanel  source attribution panel.
  *
  * Ported from risklab-ui Badge + Timeline patterns.
  * Shows each provider's status, freshness, cache, and degraded-mode warnings
@@ -81,13 +81,13 @@ export default function ProviderSourcePanel({ dataMode, sources, warnings = [] }
               <td style={{ fontSize: '0.78rem', color: 'var(--gp-text-muted)' }}>
                 {s.freshness_utc
                   ? new Date(s.freshness_utc).toLocaleString('en-US', { timeZone: 'UTC', timeZoneName: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })
-                  : 'â€”'}
+                  : ''}
               </td>
               <td style={{ fontSize: '0.78rem', color: 'var(--gp-text-muted)' }}>
-                {s.cache ?? 'â€”'}
+                {s.cache ?? ''}
               </td>
               <td style={{ fontSize: '0.78rem', color: 'var(--gp-text-muted)', textAlign: 'right' }}>
-                {s.latency_ms != null ? `${s.latency_ms} ms` : 'â€”'}
+                {s.latency_ms != null ? `${s.latency_ms} ms` : ''}
               </td>
               <td style={{ fontSize: '0.76rem', color: 'var(--gp-text-muted)', maxWidth: 240 }}>
                 {s.degraded_mode ?? s.fallback ?? s.data_notice ?? s.error ?? ''}
@@ -102,7 +102,7 @@ export default function ProviderSourcePanel({ dataMode, sources, warnings = [] }
         <div className="gp-source-panel__warnings">
           {warnings.map((w, i) => (
             <div key={i} className="gp-source-panel__warning-row">
-              <span style={{ marginRight: 6 }}>âš </span>{w}
+              <span style={{ marginRight: 6 }}></span>{w}
             </div>
           ))}
         </div>
@@ -110,3 +110,4 @@ export default function ProviderSourcePanel({ dataMode, sources, warnings = [] }
     </div>
   )
 }
+

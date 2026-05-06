@@ -3,12 +3,12 @@
  * All rights reserved. Professional preview only.
  */
 
-/* DispatchLayer Design System â€” Enterprise Operations Console */
+/* DispatchLayer Design System  Enterprise Operations Console */
 
 *, *::before, *::after { box-sizing: border-box; }
 
 :root {
-  /* â”€â”€ Color Palette â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  /*  Color Palette  */
   --bg-0: #02070d;
   --bg-1: #06111d;
   --bg-2: #081a2a;
@@ -73,7 +73,7 @@ html, body {
   mask-image: radial-gradient(circle at center, black, transparent 78%);
 }
 
-/* â”€â”€ Enterprise Glass Utilities â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/*  Enterprise Glass Utilities  */
 .glass-panel {
   background:
     linear-gradient(
@@ -147,7 +147,7 @@ html, body {
   color: var(--text-1);
 }
 
-/* â”€â”€ Animations â€” Minimal, Technical â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/*  Animations  Minimal, Technical  */
 @keyframes eoc-pulse {
   0%   { opacity: 1; }
   50%  { opacity: 0.7; }
@@ -160,7 +160,7 @@ html, body {
   100% { box-shadow: 0 0 16px rgba(40, 191, 255, 0.2), inset 0 0 22px rgba(40, 191, 255, 0.05); }
 }
 
-/* â”€â”€ Main Layout â€” Enterprise Console â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/*  Main Layout  Enterprise Console  */
 .gp-shell {
   display: flex;
   height: 100vh;
@@ -242,7 +242,7 @@ html, body {
   background: var(--bg-0);
 }
 
-/* â”€â”€ Enterprise Glass Panel - Layered Material â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/*  Enterprise Glass Panel - Layered Material  */
 .gp-panel {
   position: relative;
   overflow: hidden;
@@ -343,7 +343,7 @@ html, body {
       rgba(0, 0, 0, 0.14) 100%);
 }
 
-/* â”€â”€ Page Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/*  Page Header  */
 .gp-page-header__title {
   font-size: 28px;
   font-weight: 600;
@@ -802,7 +802,7 @@ html, body {
   }
 }
 
-/* â”€â”€ Navigation Rail â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/*  Navigation Rail  */
 .gp-nav-rail {
   display: flex;
   flex-direction: column;
@@ -869,7 +869,7 @@ html, body {
     inset 0 0 22px rgba(50, 190, 255, 0.10);
 }
 
-/* â”€â”€ Page Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/*  Page Header  */
 .gp-page-header {
   margin-bottom: 2rem;
 }
@@ -882,7 +882,7 @@ html, body {
   letter-spacing: -0.3px;
 }
 
-/* â”€â”€ Glass Panel (Primary Container) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/*  Glass Panel (Primary Container)  */
 .gp-panel {
   background: rgba(36, 36, 36, 0.4);
   backdrop-filter: blur(var(--gp-glass-blur));
@@ -903,7 +903,7 @@ html, body {
   padding: 1rem;
 }
 
-/* â”€â”€ Glass Grid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/*  Glass Grid  */
 .gp-grid {
   display: grid;
   gap: var(--gp-gap);
@@ -927,7 +927,7 @@ html, body {
   .gp-nav-rail__item { padding: 0.75rem; text-indent: -9999px; width: 2.5rem; }
 }
 
-/* â”€â”€ Stat Value â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/*  Stat Value  */
 .gp-stat {
   background: rgba(45, 45, 45, 0.3);
   backdrop-filter: blur(var(--gp-glass-blur));
@@ -961,7 +961,7 @@ html, body {
   font-family: 'Menlo', 'Monaco', monospace;
 }
 
-/* â”€â”€ Badge â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/*  Badge  */
 .gp-badge {
   display: inline-flex;
   align-items: center;
@@ -995,7 +995,7 @@ html, body {
   border-color: rgba(239, 83, 80, 0.2);
 }
 
-/* â”€â”€ Form Elements â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/*  Form Elements  */
 .gp-input {
   background: rgba(45, 45, 45, 0.4);
   border: 1px solid var(--gp-border);
@@ -1014,7 +1014,7 @@ html, body {
   box-shadow: 0 0 0 3px rgba(100, 181, 246, 0.15);
 }
 
-/* â”€â”€ Tabs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/*  Tabs  */
 .gp-tabs {
   display: flex;
   gap: 8px;
@@ -1083,7 +1083,7 @@ html, body {
   background: linear-gradient(180deg, rgba(100, 181, 246, 0.4), rgba(100, 181, 246, 0.24));
 }
 
-/* â”€â”€ Analytics Cockpit â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/*  Analytics Cockpit  */
 .gp-cockpit-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 340px;
@@ -1194,7 +1194,7 @@ html, body {
   }
 }
 
-/* â”€â”€ Empty State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/*  Empty State  */
 .gp-empty {
   display: flex;
   flex-direction: column;
@@ -1374,13 +1374,13 @@ html, body {
 .gp-empty__icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
 .gp-empty__text { font-size: 0.9rem; }
 
-/* â”€â”€â”€ Button size variant â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/*  Button size variant  */
 .gp-btn--sm {
   padding: 0.3rem 0.75rem;
   font-size: 0.8rem;
 }
 
-/* â”€â”€â”€ Inline code â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/*  Inline code  */
 .gp-code-inline {
   background: var(--gp-slate-bg);
   padding: 1px 6px;
@@ -1389,7 +1389,7 @@ html, body {
   font-size: 0.82em;
 }
 
-/* â”€â”€â”€ Provider Source Panel (risklab-ui DataSource pattern) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/*  Provider Source Panel (risklab-ui DataSource pattern)  */
 .gp-source-panel {
   border: 1px solid var(--gp-border);
   border-radius: var(--gp-radius-sm);
@@ -1456,7 +1456,7 @@ html, body {
 }
 .gp-source-panel__warning-row:last-child { margin-bottom: 0; }
 
-/* â”€â”€â”€ AuditTimeline (risklab-ui Timeline pattern) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/*  AuditTimeline (risklab-ui Timeline pattern)  */
 .gp-audit-timeline { }
 
 .gp-audit-timeline__header {
@@ -1556,7 +1556,7 @@ html, body {
   color: var(--gp-text-primary);
 }
 
-/* â”€â”€â”€ SCADA signal grid (TelemetryDashboard) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/*  SCADA signal grid (TelemetryDashboard)  */
 .gp-signal-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
@@ -1588,7 +1588,7 @@ html, body {
   font-family: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
-/* â”€â”€â”€ Metric Card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/*  Metric Card  */
 .metric-card {
   border-left: 4px solid var(--gp-primary);
   background:
@@ -1650,7 +1650,7 @@ html, body {
   margin-top: 2px;
 }
 
-/* â”€â”€â”€ Source Record Panel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/*  Source Record Panel  */
 .source-record-panel {
   background:
     linear-gradient(180deg, rgba(8, 22, 42, 0.68), rgba(6, 15, 29, 0.8)),
@@ -1757,7 +1757,7 @@ html, body {
   font-family: 'Menlo', 'Monaco', monospace;
 }
 
-/* â”€â”€â”€ Heatmap Chart â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/*  Heatmap Chart  */
 .heatmap-chart {
   display: flex;
   flex-direction: column;
@@ -1841,7 +1841,7 @@ html, body {
   color: var(--gp-text-secondary);
 }
 
-/* â”€â”€â”€ Custom Card Components with Glass Material â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/*  Custom Card Components with Glass Material  */
 .gp-card {
   position: relative;
   overflow: hidden;
@@ -2013,4 +2013,5 @@ html, body {
   font-size: 0.75rem;
   color: var(--text-1);
 }
+
 

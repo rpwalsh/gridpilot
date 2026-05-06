@@ -3,7 +3,7 @@
  * All rights reserved. Professional preview only.
  */
 
-// Blind holdout proof: 2000â€“2024 training â†’ 2025 forecast â†’ post-hoc validation
+// Blind holdout proof: 20002024 training  2025 forecast  post-hoc validation
 // No 2025 data is used in any fitting step.
 
 export interface HistoricalAnnual {
@@ -61,7 +61,7 @@ export interface ProofResult {
   audit: ProofAudit
 }
 
-// Deterministic LCG â€” no Math.random(), no external seed dependency.
+// Deterministic LCG  no Math.random(), no external seed dependency.
 function mkRng(seed: number): () => number {
   let s = (seed >>> 0) | 1
   return (): number => {
@@ -105,7 +105,7 @@ export function generateProofResult(): ProofResult {
     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
   ]
 
-  // â”€â”€ 1. Training series: 2000â€“2024, 300 monthly points â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  //  1. Training series: 20002024, 300 monthly points 
   interface TrainPt { year: number; month: number; value: number }
   const training: TrainPt[] = []
 
@@ -123,12 +123,12 @@ export function generateProofResult(): ProofResult {
     }
   }
 
-  // â”€â”€ 2. Fit: calendar-month means (blind to 2025) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  //  2. Fit: calendar-month means (blind to 2025) 
   const monthSums = new Array<number>(12).fill(0)
   for (const pt of training) monthSums[pt.month - 1] += pt.value
   const monthMeans = monthSums.map(s => s / 25)
 
-  // â”€â”€ 3. Fit: OLS linear trend on annual means â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  //  3. Fit: OLS linear trend on annual means 
   const annualMeans: number[] = []
   for (let year = 2000; year <= 2024; year++) {
     const pts = training.filter(p => p.year === year)
@@ -142,7 +142,7 @@ export function generateProofResult(): ProofResult {
     annualMeans.reduce((s, y, i) => s + (i - xMean) * (y - yMean), 0) /
     annualMeans.reduce((s, _, i) => s + (i - xMean) ** 2, 0)
 
-  // â”€â”€ 4. Training residual std â†’ prediction band width â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  //  4. Training residual std  prediction band width 
   const trainingResiduals = training.map(pt => {
     const predicted = monthMeans[pt.month - 1] + slope * (pt.year - 2000 - xMean)
     return pt.value - predicted
@@ -152,7 +152,7 @@ export function generateProofResult(): ProofResult {
   )
   const halfBand = 1.64 * residStd
 
-  // â”€â”€ 5. 2025 forecast â€” generated blind, no 2025 data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  //  5. 2025 forecast  generated blind, no 2025 data 
   const trendDev2025 = slope * (25 - xMean)
 
   // 2025 actuals revealed post-hoc for validation.
@@ -174,13 +174,13 @@ export function generateProofResult(): ProofResult {
     }
   })
 
-  // â”€â”€ 6. Annual history â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  //  6. Annual history 
   const annual_history: HistoricalAnnual[] = annualMeans.map((mean, i) => ({
     year: 2000 + i,
     mean_mwh: Math.round(mean),
   }))
 
-  // â”€â”€ 7. Metrics â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  //  7. Metrics 
   const residuals = monthly_2025.map(m => m.residual)
   const actuals   = monthly_2025.map(m => m.actual)
 
@@ -191,7 +191,7 @@ export function generateProofResult(): ProofResult {
   const coverage_rate = monthly_2025.filter(m => m.in_band).length / 12
   const max_abs_error = Math.round(Math.max(...residuals.map(Math.abs)))
 
-  // â”€â”€ 8. Spectral â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  //  8. Spectral 
   const forecastVals = monthly_2025.map(m => m.p50)
   const actualVals   = monthly_2025.map(m => m.actual)
 
@@ -208,17 +208,17 @@ export function generateProofResult(): ProofResult {
     actual:     Math.round(harmonicAmplitude(actualVals,   period_months)),
   }))
 
-  // â”€â”€ 9. Audit metadata â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  //  9. Audit metadata 
   const audit: ProofAudit = {
     fixture_id:      'north_ridge_solar_holdout_v1',
-    training_period: '2000-01-01 â€” 2024-12-31',
-    holdout_period:  '2025-01-01 â€” 2025-12-31',
+    training_period: '2000-01-01  2024-12-31',
+    holdout_period:  '2025-01-01  2025-12-31',
     method:          'Monthly mean + OLS linear trend',
-    band_method:     'P50 Â± 1.64 Ã— Ïƒ_training',
-    spectral_method: 'Harmonic amplitude â€” T âˆˆ {12, 6, 4, 3} months',
+    band_method:     'P50  1.64  _training',
+    spectral_method: 'Harmonic amplitude  T  {12, 6, 4, 3} months',
     n_training:      300,
     n_holdout:       12,
-    leakage:         'none â€” 2025 actuals excluded from all fitting steps',
+    leakage:         'none  2025 actuals excluded from all fitting steps',
     generated_utc:   '2025-06-01T00:00:00.000Z',
   }
 
@@ -231,3 +231,4 @@ export function generateProofResult(): ProofResult {
     audit,
   }
 }
+

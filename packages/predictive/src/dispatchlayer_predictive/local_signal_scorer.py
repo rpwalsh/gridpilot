@@ -2,21 +2,21 @@
 # All rights reserved. Professional preview only.
 
 """
-L Layer â€” Local Signal Scorer
+L Layer  Local Signal Scorer
 
 Implements the typed temporal scoring operator for renewable-energy interactions.
 
 The core primitive scores an interaction between two typed entities weighted by
 how recently it occurred and a type-pair-specific decay rate:
 
-    score(e, Ï„, Ï„', Î”t) = W_{Ï„,Ï„'} Â· h Â· exp(-Î»_{Ï„,Ï„'} Â· Î”t)
+    score(e, , ', t) = W_{,'}  h  exp(-_{,'}  t)
 
 where:
-  - Ï„, Ï„' are the ordered entity type pair (e.g. weather_cell â†’ asset)
-  - W_{Ï„,Ï„'} is the type-pair-specific weight matrix (simplified to scalar here)
+  - , ' are the ordered entity type pair (e.g. weather_cell  asset)
+  - W_{,'} is the type-pair-specific weight matrix (simplified to scalar here)
   - h is the local feature vector of the interaction
-  - Î»_{Ï„,Ï„'} is the type-pair-specific decay rate (faster decay = shorter memory)
-  - Î”t is elapsed time in hours since the interaction was observed
+  - _{,'} is the type-pair-specific decay rate (faster decay = shorter memory)
+  - t is elapsed time in hours since the interaction was observed
 
 Typed entity classes in the renewable domain:
   weather_cell, asset, grid_region, market_node, sensor, forecast_model, site
@@ -28,7 +28,7 @@ Typed interaction edges:
   market_price_affects_dispatch, sensor_reports_asset_state
 
 Removing type-pair indexing collapses to uniform decay and loses the ability to
-distinguish, say, a stale market signal from a stale weather observation â€” they
+distinguish, say, a stale market signal from a stale weather observation  they
 decay on very different timescales in operations.
 """
 from __future__ import annotations
@@ -64,8 +64,8 @@ class InteractionType(str, Enum):
     SENSOR_REPORTS_ASSET = "sensor_reports_asset_state"
 
 
-# Type-pair-specific decay rates (Î» in hoursâ»Â¹).
-# Higher Î» = faster decay = shorter operational memory for this interaction type.
+# Type-pair-specific decay rates ( in hours).
+# Higher  = faster decay = shorter operational memory for this interaction type.
 # Weather signals over assets decay quickly (hours matter).
 # Maintenance history decays slowly (weeks of relevance).
 _DECAY_RATES: dict[InteractionType, float] = {
@@ -73,14 +73,14 @@ _DECAY_RATES: dict[InteractionType, float] = {
     InteractionType.WEATHER_AFFECTS_SITE: 0.20,        # ~5h half-life
     InteractionType.ASSET_FEEDS_GRID_REGION: 0.15,     # ~7h half-life
     InteractionType.SITE_EXPOSED_TO_WEATHER: 0.20,     # ~5h half-life
-    InteractionType.BATTERY_OFFSETS_PEAK: 0.30,        # ~3.3h â€” market windows are short
-    InteractionType.MAINTENANCE_CHANGES_ASSET: 0.005,  # ~140h â€” maintenance context persists
-    InteractionType.FORECAST_DISAGREES_OBSERVATION: 0.25,  # ~4h â€” reconcile fresh
-    InteractionType.MARKET_AFFECTS_DISPATCH: 0.35,     # ~2.8h â€” market signals are ephemeral
+    InteractionType.BATTERY_OFFSETS_PEAK: 0.30,        # ~3.3h  market windows are short
+    InteractionType.MAINTENANCE_CHANGES_ASSET: 0.005,  # ~140h  maintenance context persists
+    InteractionType.FORECAST_DISAGREES_OBSERVATION: 0.25,  # ~4h  reconcile fresh
+    InteractionType.MARKET_AFFECTS_DISPATCH: 0.35,     # ~2.8h  market signals are ephemeral
     InteractionType.SENSOR_REPORTS_ASSET: 0.12,        # ~8h half-life
 }
 
-# Type-pair-specific base weights (W_{Ï„,Ï„'}).
+# Type-pair-specific base weights (W_{,'}).
 # Reflects operational importance of each interaction class.
 _BASE_WEIGHTS: dict[InteractionType, float] = {
     InteractionType.WEATHER_AFFECTS_ASSET: 0.85,
@@ -104,9 +104,9 @@ class ScoredInteraction:
     target_entity_id: str
     raw_value: float          # The scalar measure of the interaction (e.g. wind speed, price)
     observed_at_utc: datetime
-    score: float              # W_{Ï„,Ï„'} Â· raw_value Â· exp(-Î»_{Ï„,Ï„'} Â· Î”t)
-    temporal_weight: float    # exp(-Î»_{Ï„,Ï„'} Â· Î”t) alone, for diagnostics
-    data_quality: float       # 0â€“1, source completeness/freshness indicator
+    score: float              # W_{,'}  raw_value  exp(-_{,'}  t)
+    temporal_weight: float    # exp(-_{,'}  t) alone, for diagnostics
+    data_quality: float       # 01, source completeness/freshness indicator
 
 
 @dataclass
@@ -248,3 +248,4 @@ class LocalSignalScorer:
             ))
 
         return scored
+

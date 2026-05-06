@@ -28,7 +28,7 @@ export default function AuditTrail() {
     <div className="gp-grid">
       <div className="gp-page-header">
         <h1 className="gp-page-title">Audit Trail</h1>
-        <p className="gp-page-subtitle">Replay any decision trace by ID â€” every evaluation is fully auditable</p>
+        <p className="gp-page-subtitle">Replay any decision trace by ID  every evaluation is fully auditable</p>
       </div>
 
       <DashboardCard title="Decision Trace Lookup">
@@ -80,4 +80,5 @@ export default function AuditTrail() {
     </div>
   )
 }
+
 
