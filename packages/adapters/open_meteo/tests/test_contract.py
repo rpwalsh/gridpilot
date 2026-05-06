@@ -1,9 +1,7 @@
 """Contract test for Open-Meteo adapter using local fixture."""
 import json
 import pathlib
-import pytest
 from datetime import datetime, timezone
-from unittest.mock import AsyncMock, patch
 
 from dispatchlayer_domain.models import GeoPoint, ForecastWindow
 from dispatchlayer_adapter_open_meteo.client import OpenMeteoClient
@@ -12,8 +10,7 @@ from dispatchlayer_adapter_open_meteo.client import OpenMeteoClient
 FIXTURE = pathlib.Path(__file__).parent / "fixtures" / "sample_response.json"
 
 
-@pytest.mark.asyncio
-async def test_open_meteo_contract():
+def test_open_meteo_contract():
     data = json.loads(FIXTURE.read_text())
     location = GeoPoint(latitude=44.98, longitude=-93.27)
     window = ForecastWindow(

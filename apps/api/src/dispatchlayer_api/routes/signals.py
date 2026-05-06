@@ -1,25 +1,25 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
 from datetime import datetime, timezone
+from typing import Optional
 import logging
 
 from dispatchlayer_domain.models import AssetTelemetry, WeatherSample, AssetType
 from dispatchlayer_anomaly.detector import detect_anomaly
-from dispatchlayer_recommendations.engine import generate_recommendations, RecommendationType
-from dispatchlayer_recommendations.ranking import rank_recommendations
+from dispatchlayer_signals.evaluator import evaluate_signal_events, rank_signal_events
+from dispatchlayer_signals.signal_event import ThresholdState
 
 logger = logging.getLogger(__name__)
-router = APIRouter(tags=["recommendations"])
+router = APIRouter(tags=["signals"])
 
 
-class RecommendationRequest(BaseModel):
+class SignalEvaluateRequest(BaseModel):
     assets: list[dict]
-    price_per_mwh: float = 50.0
 
 
-@router.post("/recommendations/generate")
-async def generate(req: RecommendationRequest) -> dict:
-    findings = []
+@router.post("/signals/evaluate")
+async def evaluate(req: SignalEvaluateRequest) -> dict:
+    deviation_events = []
     ts = datetime.now(timezone.utc)
 
     for asset in req.assets:
@@ -51,34 +51,34 @@ async def generate(req: RecommendationRequest) -> dict:
             diffuse_radiation_wm2=None,
             source="api_request",
         )
-        finding = detect_anomaly(telemetry, weather)
-        if finding:
-            findings.append(finding)
+        event = detect_anomaly(telemetry, weather)
+        if event:
+            deviation_events.append(event)
 
-    recs = generate_recommendations(findings, price_per_mwh=req.price_per_mwh)
-    ranked = rank_recommendations(recs)
+    signal_events = evaluate_signal_events(deviation_events)
+    ranked = rank_signal_events(signal_events)
 
     return {
-        "recommendation_count": len(ranked),
-        "recommendations": [
+        "event_count": len(ranked),
+        "events": [
             {
-                "recommendation_id": r.recommendation_id,
-                "type": r.rec_type.value,
-                "asset_id": r.asset_id,
-                "site_id": r.site_id,
-                "title": r.title,
-                "description": r.description,
-                "urgency": r.urgency,
-                "confidence": r.confidence,
-                "estimated_value_usd": r.estimated_value_usd,
-                "action_steps": r.action_steps,
-                "decision_trace": r.decision_trace.to_dict(),
+                "signal_id":      e.signal_id,
+                "timestamp_utc":  e.timestamp_utc,
+                "source":         e.source,
+                "channel":        e.channel,
+                "metric":         e.metric,
+                "observed_value": e.observed_value,
+                "expected_value": e.expected_value,
+                "delta":          e.delta,
+                "unit":           e.unit,
+                "state":          e.state.value,
+                "audit_hash":     e.audit_hash,
             }
-            for r in ranked
+            for e in ranked
         ],
     }
 
 
-@router.get("/recommendations/types")
-async def list_types() -> dict:
-    return {"types": [t.value for t in RecommendationType]}
+@router.get("/signals/states")
+async def list_states() -> dict:
+    return {"states": [s.value for s in ThresholdState]}

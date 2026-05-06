@@ -1,0 +1,18 @@
+{
+  "state": "RUNNING",
+  "endpoint": "http://localhost:4317",
+  "service_name": "dispatchlayer-api",
+  "spans_received": 14832,
+  "spans_dropped": 0,
+  "metrics_received": 9241,
+  "export_queue_depth": 0,
+  "metrics": [
+    { "name": "api.request.latency.p50_ms",  "value": 12.4,  "unit": "ms",  "description": "API request latency p50" },
+    { "name": "api.request.latency.p95_ms",  "value": 48.1,  "unit": "ms",  "description": "API request latency p95" },
+    { "name": "api.request.latency.p99_ms",  "value": 112.3, "unit": "ms",  "description": "API request latency p99" },
+    { "name": "ingest.latency.p95_ms",        "value": 210.5, "unit": "ms",  "description": "Provider ingest latency p95" },
+    { "name": "forecast.runtime_ms",          "value": 340.2, "unit": "ms",  "description": "Forecast computation time" },
+    { "name": "data.freshness_s",             "value": 45.0,  "unit": "s",   "description": "Data freshness age" },
+    { "name": "error.rate_pct",               "value": 0.02,  "unit": "%",   "description": "API error rate" }
+  ]
+}

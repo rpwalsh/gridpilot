@@ -100,7 +100,7 @@ See `packages/domain/src/dispatchlayer_domain/telemetry.py` for the canonical mo
 
 ---
 
-## Architecture summary
+## Architecture Overview
 
 ```
 Weather / grid / market APIs       Hardware telemetry
@@ -114,7 +114,7 @@ Weather / grid / market APIs       Hardware telemetry
                          ↓
              Root-cause ranking
                          ↓
-             Recommendations + audit trace
+             Signal events + audit trace
 ```
 
 The demo can run offline with fixtures, but the runtime architecture is built around

@@ -1,0 +1,32 @@
+{
+  "messages": [
+    {
+      "topic": "dispatchlayer/telemetry/WTG001/active_power",
+      "payload": { "asset_id": "WTG001", "value": 1843.5, "unit": "kW", "quality": "GOOD" },
+      "qos": 1,
+      "retained": false,
+      "timestamp": "2025-05-21T14:36:12+00:00"
+    },
+    {
+      "topic": "dispatchlayer/telemetry/INV001/ac_power",
+      "payload": { "asset_id": "INV001", "value": 3421.7, "unit": "kW", "quality": "GOOD" },
+      "qos": 1,
+      "retained": false,
+      "timestamp": "2025-05-21T14:36:12+00:00"
+    },
+    {
+      "topic": "dispatchlayer/telemetry/BESS001/soc",
+      "payload": { "asset_id": "BESS001", "value": 72.1, "unit": "%", "quality": "GOOD" },
+      "qos": 1,
+      "retained": false,
+      "timestamp": "2025-05-21T14:36:12+00:00"
+    },
+    {
+      "topic": "dispatchlayer/telemetry/WTG002/active_power",
+      "payload": { "asset_id": "WTG002", "value": null, "unit": "kW", "quality": "MISSING" },
+      "qos": 1,
+      "retained": false,
+      "timestamp": "2025-05-21T14:35:47+00:00"
+    }
+  ]
+}

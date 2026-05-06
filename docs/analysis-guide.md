@@ -55,7 +55,7 @@ Each signal type decays at its own rate:
 
 A signal observed 4 hours ago contributes less confidence to the analysis than one observed 10 minutes ago. This prevents stale inputs from being treated with the same weight as fresh ones.
 
-**What this means for engineers:** If input telemetry is stale, the confidence scores going into the structural state will be lower. The audit trace shows which signals were fresh and which were aged.
+Stale telemetry reduces confidence scores. The audit trace records freshness per signal.
 
 ---
 
@@ -69,11 +69,11 @@ Structural state compresses signal scores into three site-level quantities:
 | `data_quality` | 0–1 measure of signal completeness and freshness |
 | `derating_risk` | 0–1 estimate of the probability that the site is running below expected capacity |
 
-**What this means for engineers:**
+Instrumentation reference:
 
 - A `data_quality` of 0.95 means signals are fresh and mostly complete.
 - A `data_quality` of 0.50 means significant signals are stale, missing, or in disagreement — the forecast context should be treated as degraded.
-- A `derating_risk` of 0.60 with a negative residual suggests the site may be operating below expected output for the current conditions.
+- A `derating_risk` of 0.60 with a negative residual indicates output below model expectation for current conditions.
 
 ---
 

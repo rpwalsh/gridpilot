@@ -1,11 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routes import providers, ingest, forecasts, anomalies, recommendations, dispatch, audit, predictive, sites, telemetry
+from .routes import providers, ingest, forecasts, anomalies, signals, connectors, dispatch, audit, predictive, sites, telemetry
 
 app = FastAPI(
     title="DispatchLayer API",
-    description="DispatchLayer: Renewable Operations Intelligence Platform",
+    description="DispatchLayer: utility-grade instrumentation console for SCADA telemetry, forecast envelopes, residual fields, spectral transforms, temporal playback, source integrity, and audit metadata.",
     version="0.1.0",
     docs_url="/docs",
     redoc_url="/redoc",
@@ -27,7 +27,8 @@ app.include_router(sites.router, prefix=_prefix)
 app.include_router(telemetry.router, prefix=_prefix)
 app.include_router(forecasts.router, prefix=_prefix)
 app.include_router(anomalies.router, prefix=_prefix)
-app.include_router(recommendations.router, prefix=_prefix)
+app.include_router(signals.router, prefix=_prefix)
+app.include_router(connectors.router, prefix=_prefix)
 app.include_router(dispatch.router, prefix=_prefix)
 app.include_router(audit.router, prefix=_prefix)
 app.include_router(predictive.router, prefix=_prefix)

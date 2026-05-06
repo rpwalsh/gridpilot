@@ -3,6 +3,7 @@ Canonical telemetry models for hardware asset signals.
 
 TelemetryPoint  – a single timestamped signal/value pair (raw ingestion).
 AssetTelemetrySnapshot – normalised per-asset operational summary.
+TelemetrySample – unified connector output type (timestamp-quality-value).
 
 These are the 'operational truth' half of the product: real provider APIs
 supply the external-signal side; hardware telemetry supplies what the asset
@@ -10,14 +11,66 @@ actually did.  In a deployed system these are ingested from SCADA historians,
 edge gateways, MQTT streams, OPC UA servers, or CSV/Parquet exports.  In the
 public repo the snapshot is populated from recorded fixtures to keep the demo
 honest about what is live vs. recorded.
+
+All connectors are read-only.  No operational command path is implemented.
 """
 
 from __future__ import annotations
 
+import hashlib
+import json
 from datetime import datetime
+from enum import Enum
 from typing import Literal, Optional, Union
 
 from pydantic import BaseModel, Field
+
+
+class Quality(str, Enum):
+    """OPC UA / IEC quality codes mapped to a canonical five-state enum."""
+    GOOD      = "GOOD"
+    UNCERTAIN = "UNCERTAIN"
+    BAD       = "BAD"
+    MISSING   = "MISSING"
+    STALE     = "STALE"
+
+
+class TelemetrySample(BaseModel):
+    """
+    Unified connector output: timestamp-quality-value (TQV) plus source identity
+    and audit hash.
+
+    This is the normalised form that all connector adapters must produce.
+    No prose or interpretations — measured state only.
+    """
+
+    source_id:            str
+    channel_id:           str
+    asset_id:             Optional[str] = None
+    timestamp_utc:        datetime
+    value:                Union[float, str, bool, None]
+    unit:                 Optional[str] = None
+    quality:              Quality = Quality.GOOD
+    source_timestamp_utc: Optional[datetime] = None
+    ingest_timestamp_utc: datetime
+    tags:                 dict[str, str] = Field(default_factory=dict)
+    audit_hash:           str = ""
+
+    def model_post_init(self, __context: object) -> None:
+        if not self.audit_hash:
+            payload = json.dumps(
+                {
+                    "source_id":     self.source_id,
+                    "channel_id":    self.channel_id,
+                    "timestamp_utc": self.timestamp_utc.isoformat(),
+                    "value":         str(self.value),
+                },
+                sort_keys=True,
+            ).encode()
+            object.__setattr__(
+                self, "audit_hash",
+                hashlib.sha256(payload).hexdigest()[:16],
+            )
 
 
 class TelemetryPoint(BaseModel):
@@ -41,7 +94,7 @@ class AssetTelemetrySnapshot(BaseModel):
     Normalised per-asset operational snapshot.
 
     Combines generation, health, and asset-type-specific signals into a single
-    structure for anomaly detection and recommendation ranking.  Fields are
+    structure for anomaly detection and threshold state ranking.  Fields are
     Optional so a snapshot can be partially populated (e.g. wind turbine omits
     dc_voltage_v).
     """

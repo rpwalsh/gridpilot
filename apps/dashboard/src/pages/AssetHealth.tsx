@@ -67,42 +67,38 @@ export default function AssetHealth() {
   const utilization = (asset: typeof DEMO_ASSETS[0]) =>
     Math.round((asset.output_kw / asset.capacity_kw) * 100)
 
-  const anomalyCount = Object.values(results).filter((r: any) => r?.is_anomaly).length
+  const deviationCount = Object.values(results).filter((r: any) => r?.deviation_detected).length
 
   return (
     <div className="gp-grid">
       <div className="gp-page-header">
         <h1 className="gp-page-title">Asset State</h1>
         <p className="gp-page-subtitle">
-          Telemetry deviation analysis — actual vs. expected output comparison across the fleet.
-          Asset values sourced from offline SCADA fixture (West Texas wind + Mojave solar, 2025-06-05T20:00Z).
-          See <code>apps/api/tests/fixtures/scada_fleet_snapshot.json → _provenance</code>.
+          Actual vs. expected output — physics-model residual per asset.
+          Source: offline SCADA fixture (West Texas wind + Mojave solar, 2025-06-05T20:00Z).
         </p>
       </div>
 
       {/* Fixture provenance notice */}
       <div className="gp-callout gp-callout--info" style={{ fontSize: '0.82rem' }}>
-        <strong>Fixture notice:</strong> Asset signal values are from a recorded SCADA capture,
-        not fabricated inputs. WTG-MCW-002 demonstrates a real deviation pattern:
-        pitch controller deviation (blade_pitch_deg=12.4°, fault code PITCH_CTRL_DEVIATION),
-        confirmed by the expected-vs-actual residual of −40.4%.
-        Expected outputs computed from IEC 61400-1 power curve physics.
+        <strong>Fixture:</strong> WTG-MCW-002 residual = −40.4%.
+        blade_pitch_deg = 12.4°, fault code PITCH_CTRL_DEVIATION.
+        Expected output from IEC 61400-1 power curve.
+        See <code>apps/api/tests/fixtures/scada_fleet_snapshot.json → _provenance</code>.
       </div>
 
       {Object.keys(results).length > 0 && (
         <div className="gp-stat-grid">
-          <StatCard label="Assets Analyzed" value={DEMO_ASSETS.length} />
-          <StatCard label="Deviations" value={anomalyCount} accent={anomalyCount > 0 ? 'var(--gp-red)' : 'var(--gp-green)'} />
-          <StatCard label="Within Envelope" value={DEMO_ASSETS.length - anomalyCount} accent="var(--gp-green)" />
-          <StatCard label="Within-Envelope Rate" value={`${Math.round((1 - anomalyCount / DEMO_ASSETS.length) * 100)}%`} accent="var(--gp-teal)" sub="Fraction within expected range" />
+          <StatCard label="Assets" value={DEMO_ASSETS.length} />
+          <StatCard label="Deviations" value={deviationCount} accent={deviationCount > 0 ? 'var(--gp-red)' : 'var(--gp-green)'} />
+          <StatCard label="Within Envelope" value={DEMO_ASSETS.length - deviationCount} accent="var(--gp-green)" />
+          <StatCard label="Envelope Rate" value={`${Math.round((1 - deviationCount / DEMO_ASSETS.length) * 100)}%`} accent="var(--gp-teal)" sub="Fraction within expected range" />
         </div>
       )}
 
-      <DashboardCard title="Fleet Telemetry Deviation Analysis">
+      <DashboardCard title="Fleet Deviation Analysis">
         <p style={{ color: 'var(--gp-text-secondary)', margin: '0 0 1rem', fontSize: '0.875rem' }}>
-          Z-score deviation analysis on {DEMO_ASSETS.length} SCADA-sourced assets comparing
-          actual output vs. expected from the physics model. WTG-MCW-002 shows a deviation
-          (underproduction due to pitch controller deviation).
+          Z-score residual analysis — {DEMO_ASSETS.length} assets, actual vs. physics-model expected.
         </p>
         <button onClick={runAll} disabled={loading} className="gp-btn gp-btn--warning">
           {loading ? <><span className="gp-spinner" style={{ width: 14, height: 14, borderWidth: 2 }} /> Analyzing…</> : 'Analyze All Assets'}
@@ -124,7 +120,7 @@ export default function AssetHealth() {
                   <div style={{ fontSize: '0.78rem', color: 'var(--gp-text-muted)' }}>of {asset.capacity_kw.toLocaleString()} kW capacity</div>
                 </div>
                 {result && !result.error && (
-                  <StatusBadge label={result.is_anomaly ? 'anomaly' : 'healthy'} color={result.is_anomaly ? 'red' : 'green'} />
+                  <StatusBadge label={result.deviation_detected ? 'deviation' : 'nominal'} color={result.deviation_detected ? 'red' : 'green'} />
                 )}
               </div>
 
@@ -143,9 +139,9 @@ export default function AssetHealth() {
 
               {result && !result.error && (
                 <div style={{ fontSize: '0.8rem', color: 'var(--gp-text-secondary)' }}>
-                  <div>Z-score: <strong style={{ color: result.is_anomaly ? 'var(--gp-red)' : 'var(--gp-green)' }}>{result.z_score?.toFixed(2)}</strong></div>
-                  {result.expected_kw != null && (
-                    <div>Expected: {result.expected_kw?.toFixed(0)} kW · Δ {(asset.output_kw - result.expected_kw).toFixed(0)} kW</div>
+                  <div>Z-score: <strong style={{ color: result.deviation_detected ? 'var(--gp-red)' : 'var(--gp-green)' }}>{result.z_score?.toFixed(2)}</strong></div>
+                  {result.expected_output_kw != null && (
+                    <div>Expected: {result.expected_output_kw?.toFixed(0)} kW · Δ {(asset.output_kw - result.expected_output_kw).toFixed(0)} kW</div>
                   )}
                 </div>
               )}
@@ -165,11 +161,11 @@ export default function AssetHealth() {
               <RadarChart data={DEMO_ASSETS.map(a => ({
                 subject: a.asset_id.split('-').slice(-2).join('-'),
                 utilization: utilization(a),
-                health: results[a.asset_id]?.is_anomaly ? 0 : 100,
+                health: results[a.asset_id]?.deviation_detected ? 0 : 100,
               }))}>
                 <PolarGrid stroke="var(--gp-border)" />
-                <PolarAngleAxis dataKey="subject" tick={{ fontSize: 11, fill: '#64748b' }} />
-                <PolarRadiusAxis domain={[0, 100]} tick={{ fontSize: 10, fill: '#94a3b8' }} />
+                <PolarAngleAxis dataKey="subject" tick={{ fontSize: 11, fill: '#7ab87a' }} />
+                <PolarRadiusAxis domain={[0, 100]} tick={{ fontSize: 10, fill: '#4a7a4a' }} />
                 <Tooltip contentStyle={{ borderRadius: 8, fontSize: 12 }} />
                 <Radar name="Utilization" dataKey="utilization" stroke="var(--gp-blue)" fill="var(--gp-blue)" fillOpacity={0.2} />
                 <Radar name="Health" dataKey="health" stroke="var(--gp-green)" fill="var(--gp-green)" fillOpacity={0.15} />
