@@ -8,6 +8,7 @@ import BatteryDispatch from './pages/BatteryDispatch'
 import AuditTrail from './pages/AuditTrail'
 import TelemetryDashboard from './pages/TelemetryDashboard'
 import ProviderStatus from './pages/ProviderStatus'
+import Proofs from './pages/Proofs'
 
 export default function App() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
             <Route path="/audit" element={<AuditTrail />} />
             <Route path="/telemetry" element={<TelemetryDashboard />} />
             <Route path="/providers" element={<ProviderStatus />} />
+            <Route path="/proofs"    element={<Proofs />} />
           </Routes>
         </main>
       </div>

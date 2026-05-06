@@ -240,11 +240,6 @@ export default function SiteEvaluation() {
               />
               <div>
                 <div style={{ fontSize: '0.9rem', color: 'var(--gp-text-primary)', marginBottom: 4 }}>{result.structural_drift?.reason}</div>
-                {result.structural_drift?.recommended_action && (
-                  <div style={{ fontSize: '0.85rem', color: 'var(--gp-text-secondary)' }}>
-                    Recommended: {result.structural_drift.recommended_action}
-                  </div>
-                )}
               </div>
             </div>
           </DashboardCard>

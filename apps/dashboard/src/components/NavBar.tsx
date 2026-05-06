@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { path: '/dispatch',   label: 'Dispatch Analysis' },
   { path: '/audit',      label: 'Audit Trace' },
   { path: '/providers',  label: 'Provider Status' },
+  { path: '/proofs',     label: 'Proofs' },
 ]
 
 export default function NavBar() {

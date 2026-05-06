@@ -209,16 +209,16 @@ export default function ProviderStatus() {
             <ul style={{ margin: 0, paddingLeft: '1.25rem', fontSize: '0.875rem', color: 'var(--gp-text-secondary)', lineHeight: 2 }}>
               <li>Recorded provider responses (mathematically verified)</li>
               <li>Deterministic CI tests</li>
-              <li>Offline demo mode</li>
+              <li>Offline fixture mode</li>
               <li>Fault-injection simulation</li>
               <li>Provider schema regression tests</li>
             </ul>
           </div>
         </div>
         <div style={{ marginTop: '1rem', fontSize: '0.82rem', color: 'var(--gp-text-muted)', borderTop: '1px solid var(--gp-border)', paddingTop: '0.75rem' }}>
-          The demo can run offline with fixtures, but the runtime architecture is built around
-          real public provider adapters. The important part is not the sample data; it is the
-          adapter boundary, normalization, source attribution, and auditable decision path.
+          The runtime can operate offline with fixtures, but the architecture is built around
+          real public provider adapters. The adapter boundary, normalization, source attribution,
+          and auditable analysis path are the same in both modes.
         </div>
       </DashboardCard>
     </div>
