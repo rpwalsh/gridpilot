@@ -178,6 +178,7 @@ Before production rollout, ensure:
 2. Read `ARCHITECTURE.md` to understand system boundaries
 3. Read `API.md` for endpoint responsibilities
 4. Read `docs/analysis-guide.md` for manager-facing workflow
+5. Read `PYTHON_DEEPDIVE.md` for backend package and route implementation details
 
 ## Documentation Principles Used in This Repo
 
