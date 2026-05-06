@@ -192,5 +192,5 @@ export const PROOF_METRICS = {
   mae:         412,
   wape:        6.21,
   rmse:        578,
-  r2:          0.412,
+  r_squared:   0.412,
 }

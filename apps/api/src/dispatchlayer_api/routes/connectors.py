@@ -4,6 +4,7 @@ Connector state endpoint.
 Returns the current state of all configured platform connectors.
 Read-only.  No command or control paths.
 """
+import logging
 from fastapi import APIRouter
 from datetime import datetime, timezone
 
@@ -19,6 +20,7 @@ from dispatchlayer_connector_parquet.client import ParquetConnectorClient
 from dispatchlayer_connector_parquet.config import ParquetConfig
 
 router = APIRouter(tags=["connectors"])
+logger = logging.getLogger(__name__)
 
 
 @router.get("/connectors/state")
@@ -45,7 +47,8 @@ async def connector_state() -> dict:
             "error":           None,
         })
     except Exception as e:
-        connectors.append({"connector": "OTEL_COLLECTOR", "protocol": "OTLP", "state": "ERROR", "error": str(e)})
+        logger.warning("connector error: %s", type(e).__name__)
+        connectors.append({"connector": "OTEL_COLLECTOR", "protocol": "OTLP", "state": "ERROR", "error": type(e).__name__})
 
     # OPC UA
     try:
@@ -60,7 +63,8 @@ async def connector_state() -> dict:
             "error":        None,
         })
     except Exception as e:
-        connectors.append({"connector": "OPCUA_SCADA", "protocol": "OPC UA", "state": "ERROR", "error": str(e)})
+        logger.warning("connector error: %s", type(e).__name__)
+        connectors.append({"connector": "OPCUA_SCADA", "protocol": "OPC UA", "state": "ERROR", "error": type(e).__name__})
 
     # MQTT
     try:
@@ -77,7 +81,8 @@ async def connector_state() -> dict:
             "error":         None,
         })
     except Exception as e:
-        connectors.append({"connector": "MQTT_GATEWAY", "protocol": "MQTT", "state": "ERROR", "error": str(e)})
+        logger.warning("connector error: %s", type(e).__name__)
+        connectors.append({"connector": "MQTT_GATEWAY", "protocol": "MQTT", "state": "ERROR", "error": type(e).__name__})
 
     # SiteWise
     try:
@@ -91,11 +96,11 @@ async def connector_state() -> dict:
             "error":        None,
         })
     except Exception as e:
-        connectors.append({"connector": "SITEWISE_PROD", "protocol": "AWS SiteWise", "state": "ERROR", "error": str(e)})
+        logger.warning("connector error: %s", type(e).__name__)
+        connectors.append({"connector": "SITEWISE_PROD", "protocol": "AWS SiteWise", "state": "ERROR", "error": type(e).__name__})
 
     # Parquet Archive
     try:
-        from datetime import datetime
         parquet = ParquetConnectorClient(ParquetConfig(fixture_mode=True))
         start = datetime(2025, 1, 1, 0, 0, tzinfo=timezone.utc)
         end   = datetime(2025, 1, 1, 23, 59, tzinfo=timezone.utc)
@@ -108,7 +113,8 @@ async def connector_state() -> dict:
             "error":        None,
         })
     except Exception as e:
-        connectors.append({"connector": "S3_PARQUET_ARCHIVE", "protocol": "S3/Parquet", "state": "ERROR", "error": str(e)})
+        logger.warning("connector error: %s", type(e).__name__)
+        connectors.append({"connector": "S3_PARQUET_ARCHIVE", "protocol": "S3/Parquet", "state": "ERROR", "error": type(e).__name__})
 
     return {
         "timestamp_utc": ts,

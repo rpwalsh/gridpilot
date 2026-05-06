@@ -185,6 +185,7 @@ function LiveClock() {
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 export default function PortfolioOverview() {
+  // generateForecastSeries is deterministic (seeded LCG) — caching once per mount is intentional.
   const forecast = useMemo(() => generateForecastSeries(), [])
 
   return (
@@ -397,7 +398,7 @@ export default function PortfolioOverview() {
                   { label: 'MAE',         val: `${PROOF_METRICS.mae} MW`,      note: '' },
                   { label: 'WAPE',        val: `${PROOF_METRICS.wape}%`,       note: '' },
                   { label: 'RMSE',        val: `${PROOF_METRICS.rmse} MW`,     note: '' },
-                  { label: 'R²',          val: `${PROOF_METRICS.r2}`,          note: '' },
+                  { label: 'R²',          val: `${PROOF_METRICS.r_squared}`,     note: '' },
                 ].map(m => (
                   <div key={m.label} style={{ background: '#0d1a0e', borderRadius: 4, padding: '4px 6px' }}>
                     <div style={{ fontSize: '0.6rem', color: '#4a7a4a', textTransform: 'uppercase' }}>{m.label}</div>
