@@ -7,6 +7,8 @@ import AssetHealth from './pages/AssetHealth'
 import BatteryDispatch from './pages/BatteryDispatch'
 import Recommendations from './pages/Recommendations'
 import AuditTrail from './pages/AuditTrail'
+import TelemetryDashboard from './pages/TelemetryDashboard'
+import ProviderStatus from './pages/ProviderStatus'
 
 export default function App() {
   return (
@@ -23,6 +25,8 @@ export default function App() {
             <Route path="/dispatch" element={<BatteryDispatch />} />
             <Route path="/recommendations" element={<Recommendations />} />
             <Route path="/audit" element={<AuditTrail />} />
+            <Route path="/telemetry" element={<TelemetryDashboard />} />
+            <Route path="/providers" element={<ProviderStatus />} />
           </Routes>
         </main>
       </div>

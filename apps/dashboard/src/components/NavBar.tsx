@@ -1,13 +1,15 @@
 import { Link, useLocation } from 'react-router-dom'
 
 const NAV_ITEMS = [
-  { path: '/portfolio', label: 'Portfolio' },
-  { path: '/evaluate', label: 'Site Eval' },
-  { path: '/forecast', label: 'Forecast' },
-  { path: '/health', label: 'Asset Health' },
-  { path: '/dispatch', label: 'Dispatch' },
+  { path: '/portfolio',    label: 'Portfolio' },
+  { path: '/evaluate',     label: 'Site Eval' },
+  { path: '/forecast',     label: 'Forecast' },
+  { path: '/health',       label: 'Asset Health' },
+  { path: '/telemetry',    label: 'Telemetry' },
+  { path: '/dispatch',     label: 'Dispatch' },
   { path: '/recommendations', label: 'Recs' },
-  { path: '/audit', label: 'Audit Trail' },
+  { path: '/audit',        label: 'Audit Trail' },
+  { path: '/providers',    label: 'Providers' },
 ]
 
 export default function NavBar() {
@@ -15,8 +17,8 @@ export default function NavBar() {
   return (
     <nav className="gp-nav">
       <span className="gp-nav__brand">
-        <span className="gp-nav__brand-icon">DL</span>
-        DispatchLayer
+        <span className="gp-nav__brand-icon">GP</span>
+        GridPilot
       </span>
       <div className="gp-nav__links">
         {NAV_ITEMS.map(item => (

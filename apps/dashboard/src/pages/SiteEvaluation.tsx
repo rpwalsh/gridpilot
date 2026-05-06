@@ -2,6 +2,8 @@ import { useState } from 'react'
 import DashboardCard from '../components/DashboardCard'
 import StatCard from '../components/StatCard'
 import StatusBadge from '../components/StatusBadge'
+import ProviderSourcePanel from '../components/ProviderSourcePanel'
+import AuditTimeline from '../components/AuditTimeline'
 import axios from 'axios'
 
 const TRUST_COLORS: Record<string, string> = {
@@ -9,18 +11,27 @@ const TRUST_COLORS: Record<string, string> = {
 }
 
 const DEFAULT_SITE = {
-  name: 'st_paul_solar_demo',
+  name: 'st_paul_solar_bess',
   latitude: 44.9537,
   longitude: -93.09,
   asset_type: 'solar',
   capacity_mw: 50,
   window_hours: 24,
-  ghi_wm2: 650,
-  temperature_c: 22,
+  data_mode: 'hybrid',
+  // optional signal overrides — leave blank to let live provider fill these
+  ghi_wm2: '',
+  temperature_c: '',
+  wind_speed_mps: '',
   grid_demand_mw: 28000,
   forecast_residual_pct: -8.5,
   current_soc_pct: 72,
   price_per_mwh: 55,
+}
+
+const DATA_MODE_DESCS: Record<string, string> = {
+  live:    'Calls real public providers (Open-Meteo, NASA POWER)',
+  fixture: 'Recorded payloads — tests/offline demo only',
+  hybrid:  'Live where reachable; fixture fallback for missing providers',
 }
 
 export default function SiteEvaluation() {
@@ -35,7 +46,13 @@ export default function SiteEvaluation() {
     setLoading(true)
     setError(null)
     try {
-      const r = await axios.post('/api/v1/sites/evaluate', form)
+      // Strip empty optional numeric fields so they become null on the backend
+      const payload: Record<string, any> = { ...form }
+      for (const k of ['ghi_wm2', 'temperature_c', 'wind_speed_mps']) {
+        if (payload[k] === '' || payload[k] === null) delete payload[k]
+        else payload[k] = Number(payload[k])
+      }
+      const r = await axios.post('/api/v1/sites/evaluate', payload)
       setResult(r.data)
     } catch (e: any) {
       setError(e.response?.data?.detail || 'Evaluation failed — ensure the API is running')
@@ -43,15 +60,29 @@ export default function SiteEvaluation() {
     setLoading(false)
   }
 
-  const inp = (label: string, key: string, type = 'number') => (
+  const numInp = (label: string, key: string, placeholder?: string) => (
     <label className="gp-label" key={key}>
       {label}
       <input
-        type={type}
+        type="number"
         value={(form as any)[key]}
-        onChange={e => set(key, type === 'number' ? Number(e.target.value) : e.target.value)}
+        placeholder={placeholder ?? ''}
+        onChange={e => set(key, e.target.value)}
         className="gp-input"
-        style={{ width: type === 'text' ? 160 : 110 }}
+        style={{ width: 110 }}
+      />
+    </label>
+  )
+
+  const txtInp = (label: string, key: string) => (
+    <label className="gp-label" key={key}>
+      {label}
+      <input
+        type="text"
+        value={(form as any)[key]}
+        onChange={e => set(key, e.target.value)}
+        className="gp-input"
+        style={{ width: 160 }}
       />
     </label>
   )
@@ -61,44 +92,88 @@ export default function SiteEvaluation() {
       <div className="gp-page-header">
         <h1 className="gp-page-title">Site Evaluation</h1>
         <p className="gp-page-subtitle">
-          Full L-G-P-D pipeline: local signals, structural summary, predictive evolution, trust scoring,
-          drift detection, ranked recommendations, audit trace.
+          Full L→G→P→D pipeline: local signals → structural summary → predictive evolution →
+          trust scoring → drift detection → ranked recommendations → audit trace.
+          Live mode calls Open-Meteo for real weather signals at the given lat/lon.
         </p>
       </div>
 
       <DashboardCard title="Site Configuration">
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
-          {inp('Site name', 'name', 'text')}
-          {inp('Latitude', 'latitude')}
-          {inp('Longitude', 'longitude')}
+          {txtInp('Site name', 'name')}
+          {numInp('Latitude', 'latitude')}
+          {numInp('Longitude', 'longitude')}
           <label className="gp-label">
             Asset type
             <select className="gp-select" value={form.asset_type} onChange={e => set('asset_type', e.target.value)}>
               <option value="solar">Solar</option>
               <option value="wind">Wind</option>
               <option value="wind_solar">Wind + Solar</option>
+              <option value="solar_bess">Solar + BESS</option>
               <option value="bess">BESS</option>
             </select>
           </label>
-          {inp('Capacity (MW)', 'capacity_mw')}
-          {inp('Window (hours)', 'window_hours')}
+          {numInp('Capacity (MW)', 'capacity_mw')}
+          {numInp('Window (hours)', 'window_hours')}
         </div>
+
+        {/* data_mode selector */}
+        <div style={{ marginBottom: '1rem', padding: '0.75rem', background: 'var(--gp-slate-bg)', borderRadius: 'var(--gp-radius-sm)', border: '1px solid var(--gp-border)' }}>
+          <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--gp-text-secondary)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.4px' }}>
+            Data Mode
+          </div>
+          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+            {(['live', 'fixture', 'hybrid'] as const).map(m => (
+              <label key={m} style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', cursor: 'pointer', fontSize: '0.875rem' }}>
+                <input
+                  type="radio"
+                  name="data_mode"
+                  value={m}
+                  checked={form.data_mode === m}
+                  onChange={() => set('data_mode', m)}
+                />
+                <span className={`gp-badge gp-badge--${m === 'live' ? 'green' : m === 'fixture' ? 'blue' : 'purple'}`}
+                  style={{ cursor: 'pointer' }}>{m.toUpperCase()}</span>
+                <span style={{ color: 'var(--gp-text-muted)', fontSize: '0.78rem' }}>{DATA_MODE_DESCS[m]}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
-          {inp('GHI (W/m2)', 'ghi_wm2')}
-          {inp('Temperature (C)', 'temperature_c')}
-          {inp('Grid demand (MW)', 'grid_demand_mw')}
-          {inp('Forecast residual (%)', 'forecast_residual_pct')}
-          {inp('Battery SoC (%)', 'current_soc_pct')}
-          {inp('Price ($/MWh)', 'price_per_mwh')}
+          {numInp('GHI (W/m²)', 'ghi_wm2', form.data_mode !== 'fixture' ? 'from provider' : '')}
+          {numInp('Temperature (°C)', 'temperature_c', form.data_mode !== 'fixture' ? 'from provider' : '')}
+          {numInp('Wind (m/s)', 'wind_speed_mps', form.data_mode !== 'fixture' ? 'from provider' : '')}
+          {numInp('Grid demand (MW)', 'grid_demand_mw')}
+          {numInp('Forecast residual (%)', 'forecast_residual_pct')}
+          {numInp('Battery SoC (%)', 'current_soc_pct')}
+          {numInp('Price ($/MWh)', 'price_per_mwh')}
         </div>
+        {form.data_mode !== 'fixture' && (
+          <div style={{ fontSize: '0.78rem', color: 'var(--gp-text-muted)', marginBottom: '0.75rem' }}>
+            💡 GHI, Temperature, Wind speed will be fetched from Open-Meteo for ({form.latitude}, {form.longitude}).
+            Enter values to override provider signals.
+          </div>
+        )}
         <button onClick={run} disabled={loading} className="gp-btn gp-btn--primary">
-          {loading ? <><span className="gp-spinner" style={{ width: 14, height: 14, borderWidth: 2 }} /> Evaluating</> : 'Run Evaluation'}
+          {loading ? <><span className="gp-spinner" style={{ width: 14, height: 14, borderWidth: 2 }} /> Evaluating…</> : 'Run Evaluation'}
         </button>
         {error && <div className="gp-callout gp-callout--danger" style={{ marginTop: '0.75rem' }}>{error}</div>}
       </DashboardCard>
 
       {result && (
         <>
+          {/* Provider source attribution panel */}
+          {result.sources && (
+            <DashboardCard title="Provider Sources &amp; Data Attribution">
+              <ProviderSourcePanel
+                dataMode={result.data_mode ?? form.data_mode}
+                sources={result.sources}
+                warnings={result.warnings}
+              />
+            </DashboardCard>
+          )}
+
           <div className="gp-stat-grid">
             <StatCard label="P10 Pessimistic" value={`${result.p10_mwh} MWh`} accent="var(--gp-red)" />
             <StatCard label="P50 Expected"   value={`${result.p50_mwh} MWh`} accent="var(--gp-blue)" />
@@ -198,10 +273,10 @@ export default function SiteEvaluation() {
                       <td style={{ color: 'var(--gp-text-secondary)', fontSize: '0.8rem' }}>{rec.type?.replace(/_/g, ' ')}</td>
                       <td style={{ textAlign: 'right', fontWeight: 700 }}>{Math.round(rec.confidence * 100)}%</td>
                       <td style={{ textAlign: 'right', color: rec.estimated_value_usd > 0 ? 'var(--gp-green-text)' : 'var(--gp-text-muted)', fontWeight: 600 }}>
-                        {rec.estimated_value_usd > 0 ? `$${rec.estimated_value_usd.toLocaleString()}` : '-'}
+                        {rec.estimated_value_usd > 0 ? `$${rec.estimated_value_usd.toLocaleString()}` : '—'}
                       </td>
                       <td style={{ textAlign: 'right', color: 'var(--gp-text-muted)', fontSize: '0.8rem' }}>
-                        {rec.urgency_hours != null ? `${rec.urgency_hours}h` : '-'}
+                        {rec.urgency_hours != null ? `${rec.urgency_hours}h` : '—'}
                       </td>
                     </tr>
                   ))}
@@ -210,24 +285,16 @@ export default function SiteEvaluation() {
             </DashboardCard>
           )}
 
-          <DashboardCard title="Audit Trace">
-            <div style={{ fontSize: '0.8rem', color: 'var(--gp-text-secondary)', marginBottom: '0.75rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-              <span>Trace ID: <code style={{ background: 'var(--gp-slate-bg)', padding: '1px 5px', borderRadius: 3 }}>{result.audit_trace?.trace_id}</code></span>
-              <span>Pipeline: <strong>{result.audit_trace?.model_versions?.pipeline}</strong></span>
-              <span>Core: v{result.audit_trace?.model_versions?.predictive_core}</span>
-            </div>
-            <div>
-              {result.audit_trace?.steps?.map((step: any, i: number) => (
-                <div key={i} className="gp-step">
-                  <div className="gp-step__name">{step.step}</div>
-                  <div className="gp-step__reason">{step.reasoning}</div>
-                </div>
-              ))}
-            </div>
+          {/* Audit Trace — risklab-ui Timeline pattern */}
+          <DashboardCard title="Audit Trace — L→G→P→D Pipeline">
+            <AuditTimeline
+              steps={result.audit_trace?.steps ?? []}
+              traceId={result.audit_trace?.trace_id}
+              modelVersions={result.audit_trace?.model_versions}
+            />
           </DashboardCard>
         </>
       )}
     </div>
   )
 }
-
