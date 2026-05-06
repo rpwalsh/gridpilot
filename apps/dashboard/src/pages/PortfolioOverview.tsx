@@ -1,15 +1,14 @@
 /**
- * Overview — full instrumentation dashboard.
+ * Overview — demo fixture display.
  *
- * Three-column layout: Source State | Forecast Envelope | Asset State + Deviation Log
- * All data is deterministic fixture data.  No generated prose.
+ * Two-column layout: Source State | Asset State + Deviation Log
+ *
+ * DATA STATUS: All values are static demo fixtures representing what a
+ * connected 137-asset renewable portfolio would surface. No live SCADA,
+ * no live API. The fixture data is sourced from overview.ts and is
+ * clearly labeled below.
  */
-import { useMemo, useEffect, useState } from 'react'
-import {
-  ComposedChart, Area, Line,
-  XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, ReferenceLine, Legend,
-} from 'recharts'
+import { useEffect, useState } from 'react'
 import StatusBadge from '../components/StatusBadge'
 import {
   SYSTEM_METRICS,
@@ -20,25 +19,13 @@ import {
   ASSET_STATE_ROWS,
   DEVIATION_LOG,
   AUDIT_METADATA,
-  PROOF_METRICS,
-  generateForecastSeries,
 } from '../lib/overview'
 
 // ── Chart colors ──────────────────────────────────────────────────────────────
-const C_GOLD       = '#d97706'
-const C_GOLD_BAND  = 'rgba(217,119,6,0.13)'
-const C_GOLD_LINE  = 'rgba(217,119,6,0.35)'
 const C_GREEN      = '#4ade80'
 const C_SLATE      = '#7ab87a'
 const C_BORDER     = 'rgba(34,197,94,0.11)'
 const C_SURFACE    = '#0b140b'
-const TOOLTIP_STYLE = {
-  background: '#0b140b',
-  border: '1px solid rgba(34,197,94,0.18)',
-  borderRadius: 8,
-  fontSize: 11,
-  color: '#d4f0d4',
-}
 
 // ── Tiny status dot ───────────────────────────────────────────────────────────
 function Dot({ color }: { color: 'green' | 'amber' | 'red' | 'none' }) {
@@ -155,24 +142,6 @@ function DonutRing({ pct }: { pct: number }) {
   )
 }
 
-// ── Forecast tooltip ──────────────────────────────────────────────────────────
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function FcTooltip({ active, payload, label }: any) {
-  if (!active || !payload?.length) return null
-  const rows = (payload as { dataKey: string; name: string; value: number; color: string }[])
-    .filter(p => p.dataKey !== 'band_low' && p.dataKey !== 'band_width' && p.value != null)
-  return (
-    <div style={{ ...TOOLTIP_STYLE, padding: '0.5rem 0.7rem', minWidth: 160 }}>
-      <div style={{ fontWeight: 700, marginBottom: 4, color: '#d4f0d4' }}>{label}</div>
-      {rows.map(r => (
-        <div key={r.dataKey} style={{ color: r.color, marginBottom: 1, fontSize: 11 }}>
-          {r.name}: {Math.round(r.value).toLocaleString()} MW
-        </div>
-      ))}
-    </div>
-  )
-}
-
 // ── Clock ─────────────────────────────────────────────────────────────────────
 function LiveClock() {
   const [t, setT] = useState(() => new Date())
@@ -185,17 +154,33 @@ function LiveClock() {
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 export default function PortfolioOverview() {
-  // generateForecastSeries is deterministic (seeded LCG) — caching once per mount is intentional.
-  const forecast = useMemo(() => generateForecastSeries(), [])
-
   return (
-    <div style={{
-      display: 'grid',
-      gridTemplateColumns: '270px 1fr 290px',
-      gap: '0.65rem',
-      alignItems: 'start',
-      minHeight: 'calc(100vh - 120px)',
-    }}>
+    <>
+      {/* ── Demo fixture banner ───────────────────────────────────────────── */}
+      <div style={{
+        background: '#1a1a0a',
+        border: '1px solid rgba(251,191,36,0.3)',
+        borderRadius: 6,
+        padding: '0.4rem 0.9rem',
+        marginBottom: '0.6rem',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.6rem',
+        fontSize: '0.72rem',
+      }}>
+        <span style={{ color: '#fbbf24', fontWeight: 700 }}>DEMO FIXTURE</span>
+        <span style={{ color: '#78716c' }}>|</span>
+        <span style={{ color: '#a8a29e' }}>
+          Static data representing a disconnected 137-asset portfolio. No live SCADA or API connection.
+        </span>
+      </div>
+
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: '270px 1fr',
+        gap: '0.65rem',
+        alignItems: 'start',
+      }}>
 
       {/* ════════════════════════════════════════════════════════════════════
           LEFT COLUMN
@@ -315,170 +300,6 @@ export default function PortfolioOverview() {
             </tbody>
           </table>
         </Panel>
-
-      </div>
-
-      {/* ════════════════════════════════════════════════════════════════════
-          CENTER COLUMN
-      ════════════════════════════════════════════════════════════════════ */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-
-        {/* Forecast Envelope hero */}
-        <Panel style={{ padding: '0.75rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-            <div>
-              <div style={{ fontSize: '0.78rem', fontWeight: 700, color: '#7ab87a', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                Forecast Envelope — Total Generation (MW)
-              </div>
-              <div style={{ fontSize: '0.68rem', color: '#4a7a4a', marginTop: 1 }}>
-                P10 / P50 / P90 + Observed · 14-day window · ERCOT
-              </div>
-            </div>
-            <div style={{ display: 'flex', gap: '0.4rem' }}>
-              <span style={{ padding: '2px 8px', borderRadius: 4, border: `1px solid ${C_BORDER}`, fontSize: '0.72rem', color: '#7ab87a' }}>7D</span>
-              <span style={{ padding: '2px 8px', borderRadius: 4, border: `1px solid ${C_BORDER}`, fontSize: '0.72rem', color: '#7ab87a' }}>1D</span>
-            </div>
-          </div>
-          <ResponsiveContainer width="100%" height={280}>
-            <ComposedChart data={forecast} margin={{ top: 4, right: 8, bottom: 0, left: -8 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(34,197,94,0.08)" vertical={false} />
-              <XAxis dataKey="label" tick={{ fontSize: 10, fill: C_SLATE }} />
-              <YAxis tickFormatter={v => `${(v / 1000).toFixed(1)}k`} tick={{ fontSize: 10, fill: C_SLATE }} />
-              <Tooltip content={<FcTooltip />} />
-              <ReferenceLine x="May 21" stroke="#fbbf24" strokeDasharray="4 2" strokeWidth={1.5}
-                label={{ value: 'NOW', position: 'top', fontSize: 9, fill: '#fbbf24' }} />
-              {/* Band */}
-              <Area dataKey="band_low"  stackId="b" fillOpacity={0} stroke="none" legendType="none" />
-              <Area dataKey="band_width" stackId="b"
-                fill={C_GOLD_BAND} stroke={C_GOLD_LINE} strokeWidth={1} strokeDasharray="5 3"
-                legendType="square" name="P10–P90 Band"
-              />
-              <Line dataKey="p50"    stroke={C_GOLD}  strokeWidth={1.8} dot={false} name="P50" />
-              <Line dataKey="actual" stroke={C_GREEN} strokeWidth={2.5}
-                dot={{ r: 3, fill: C_GREEN, strokeWidth: 0 }}
-                connectNulls={false} name="Observed"
-              />
-              <Legend iconSize={10} wrapperStyle={{ fontSize: 10, color: C_SLATE }} />
-            </ComposedChart>
-          </ResponsiveContainer>
-        </Panel>
-
-        {/* Proofs & Validation mini-strip */}
-        <Panel>
-          <SectionHeader title="Proofs &amp; Validation" />
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
-            {/* Training window bar */}
-            <div>
-              <div style={{ fontSize: '0.68rem', color: '#4a7a4a', marginBottom: '0.3rem' }}>Training Data</div>
-              <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#d4f0d4' }}>2000–2024</div>
-              <div style={{ fontSize: '0.68rem', color: '#7ab87a' }}>25 Years</div>
-              {/* Mini timeline bar */}
-              <div style={{ marginTop: '0.4rem', position: 'relative', height: 12, background: 'rgba(34,197,94,0.08)', borderRadius: 2 }}>
-                <div style={{
-                  position: 'absolute', left: 0, width: '96%', height: '100%',
-                  background: 'rgba(74,222,128,0.3)', borderRadius: '2px 0 0 2px',
-                }} />
-                <div style={{
-                  position: 'absolute', right: 0, width: '4%', height: '100%',
-                  background: 'rgba(167,139,250,0.6)',
-                }} />
-                <span style={{ position: 'absolute', right: 0, top: 14, fontSize: '0.62rem', color: '#a78bfa' }}>2025</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.58rem', color: '#4a7a4a', marginTop: 16 }}>
-                <span>2000</span><span>2010</span><span>2020</span><span>2024</span>
-              </div>
-            </div>
-            {/* Holdout performance */}
-            <div>
-              <div style={{ fontSize: '0.68rem', color: '#4a7a4a', marginBottom: '0.3rem' }}>Holdout Performance (2025 YTD)</div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.3rem' }}>
-                {[
-                  { label: 'Coverage',    val: `${PROOF_METRICS.coverage}%`,  note: 'p10–p90' },
-                  { label: 'Calibration', val: `${PROOF_METRICS.calibration}%`, note: 'p50 bias' },
-                  { label: 'MAE',         val: `${PROOF_METRICS.mae} MW`,      note: '' },
-                  { label: 'WAPE',        val: `${PROOF_METRICS.wape}%`,       note: '' },
-                  { label: 'RMSE',        val: `${PROOF_METRICS.rmse} MW`,     note: '' },
-                  { label: 'R²',          val: `${PROOF_METRICS.r_squared}`,     note: '' },
-                ].map(m => (
-                  <div key={m.label} style={{ background: '#0d1a0e', borderRadius: 4, padding: '4px 6px' }}>
-                    <div style={{ fontSize: '0.6rem', color: '#4a7a4a', textTransform: 'uppercase' }}>{m.label}</div>
-                    <div style={{ fontSize: '0.88rem', fontWeight: 700, color: '#d4f0d4' }}>{m.val}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </Panel>
-
-        {/* Spectral + Helix placeholder row */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
-          <Panel>
-            <SectionHeader title="Spectral Agreement" />
-            <div style={{
-              height: 130,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              flexDirection: 'column', gap: 8,
-            }}>
-              {/* Mini spectral bars */}
-              {[
-                { f: 'Annual',      h: 85, fc: 88, ac: 84 },
-                { f: 'Semi-annual', h: 52, fc: 49, ac: 53 },
-                { f: 'Quarterly',   h: 28, fc: 31, ac: 26 },
-                { f: 'Tri-monthly', h: 18, fc: 16, ac: 19 },
-              ].map((b, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 4, width: '100%' }}>
-                  <span style={{ fontSize: '0.62rem', color: '#4a7a4a', width: 70, flexShrink: 0 }}>{b.f}</span>
-                  <div style={{ flex: 1, display: 'flex', gap: 2, height: 10 }}>
-                    <div style={{ width: `${b.h}%`, background: 'rgba(122,184,122,0.5)', borderRadius: 1 }} />
-                    <div style={{ width: `${b.fc}%`, background: 'rgba(217,119,6,0.6)', borderRadius: 1 }} />
-                    <div style={{ width: `${b.ac}%`, background: 'rgba(74,222,128,0.7)', borderRadius: 1 }} />
-                  </div>
-                </div>
-              ))}
-              <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
-                {[['Hist', 'rgba(122,184,122,0.5)'], ['Fcst', 'rgba(217,119,6,0.6)'], ['Obs', 'rgba(74,222,128,0.7)']].map(([l, c]) => (
-                  <div key={l} style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-                    <div style={{ width: 10, height: 6, background: c, borderRadius: 1 }} />
-                    <span style={{ fontSize: '0.6rem', color: '#4a7a4a' }}>{l}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </Panel>
-          <Panel>
-            <SectionHeader title="Temporal Playback" />
-            <div style={{
-              height: 130,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: '#4a7a4a', fontSize: '0.72rem', flexDirection: 'column', gap: 4,
-            }}>
-              <div style={{ fontSize: '0.65rem', color: '#4a7a4a', marginBottom: 4 }}>
-                365d × 24h deviation field
-              </div>
-              {/* Mini helix preview — color strip */}
-              {Array.from({ length: 8 }).map((_, ri) => (
-                <div key={ri} style={{ display: 'flex', gap: 1 }}>
-                  {Array.from({ length: 24 }).map((_, ci) => {
-                    const t = (ci / 23 + ri / 8) / 2
-                    const r = Math.round(14 + t * (251 - 14))
-                    const g = Math.round(116 + t * (191 - 116))
-                    const b = Math.round(144 - t * (144 - 36))
-                    return (
-                      <div key={ci} style={{
-                        width: 5, height: 5, borderRadius: 1,
-                        background: `rgb(${r},${g},${b})`,
-                        opacity: 0.6 + 0.4 * Math.sin(Math.PI * ci / 23),
-                      }} />
-                    )
-                  })}
-                </div>
-              ))}
-              <div style={{ fontSize: '0.6rem', color: '#4a7a4a', marginTop: 4 }}>
-                → Full helix on Proofs page
-              </div>
-            </div>
-          </Panel>
-        </div>
 
       </div>
 
@@ -615,5 +436,6 @@ export default function PortfolioOverview() {
 
       </div>
     </div>
+    </>
   )
 }

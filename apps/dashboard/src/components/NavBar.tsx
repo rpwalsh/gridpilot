@@ -2,16 +2,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 
 const NAV_ITEMS = [
-  { path: '/portfolio',  label: 'Overview'          },
-  { path: '/health',     label: 'Asset State'        },
-  { path: '/telemetry',  label: 'Live Data'          },
-  { path: '/forecast',   label: 'Forecast Band'      },
-  { path: '/proofs',     label: 'Back-Test'          },
-  { path: '/evaluate',   label: 'Site Analysis'      },
-  { path: '/dispatch',   label: 'Storage State'      },
-  { path: '/pipeline',   label: 'Source Status'      },
-  { path: '/providers',  label: 'Sources'            },
-  { path: '/audit',      label: 'Source Record'      },
+  { path: '/portfolio', label: 'Overview' },
 ]
 
 function LiveTime() {
@@ -51,7 +42,7 @@ export default function NavBar() {
           <StatusPill label="Interval" val="15m" />
         </div>
 
-        {/* Alerts + user */}
+        {/* Alerts */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0 }}>
           <AlertChip label="ALM" count={2} color="#f87171" />
           <AlertChip label="WRN" count={5} color="#fbbf24" />
@@ -102,3 +93,5 @@ function AlertChip({ label, count, color }: { label: string; count: number; colo
     </div>
   )
 }
+
+

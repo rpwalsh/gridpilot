@@ -1,15 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import NavBar from './components/NavBar'
 import PortfolioOverview from './pages/PortfolioOverview'
-import SiteEvaluation from './pages/SiteEvaluation'
-import GenerationForecast from './pages/GenerationForecast'
-import AssetHealth from './pages/AssetHealth'
-import BatteryDispatch from './pages/BatteryDispatch'
-import AuditTrail from './pages/AuditTrail'
-import TelemetryDashboard from './pages/TelemetryDashboard'
-import ProviderStatus from './pages/ProviderStatus'
-import Proofs from './pages/Proofs'
-import PipelineState from './pages/PipelineState'
+import NotConnected from './pages/NotConnected'
 
 export default function App() {
   return (
@@ -20,15 +12,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Navigate to="/portfolio" replace />} />
             <Route path="/portfolio" element={<PortfolioOverview />} />
-            <Route path="/evaluate" element={<SiteEvaluation />} />
-            <Route path="/forecast" element={<GenerationForecast />} />
-            <Route path="/health" element={<AssetHealth />} />
-            <Route path="/dispatch" element={<BatteryDispatch />} />
-            <Route path="/audit" element={<AuditTrail />} />
-            <Route path="/telemetry" element={<TelemetryDashboard />} />
-            <Route path="/providers" element={<ProviderStatus />} />
-            <Route path="/proofs"    element={<Proofs />} />
-            <Route path="/pipeline"  element={<PipelineState />} />
+            <Route path="*" element={<NotConnected />} />
           </Routes>
         </main>
       </div>
