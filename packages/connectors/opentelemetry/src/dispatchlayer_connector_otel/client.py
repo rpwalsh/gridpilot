@@ -17,7 +17,7 @@ from dispatchlayer_domain.telemetry import TelemetrySample, Quality
 
 from .config import OtelConfig, CollectorStatus, CollectorState, PlatformMetric
 
-FIXTURE_PATH = pathlib.Path(__file__).parent.parent.parent.parent / "tests" / "fixtures" / "collector_state.json"
+FIXTURE_PATH = pathlib.Path(__file__).parent.parent.parent / "tests" / "fixtures" / "collector_state.json"
 
 
 class OtelConnectorClient:

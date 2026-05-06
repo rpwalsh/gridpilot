@@ -20,7 +20,7 @@ from dispatchlayer_domain.telemetry import TelemetrySample, Quality
 
 from .config import ParquetConfig
 
-FIXTURE_PATH = pathlib.Path(__file__).parent.parent.parent.parent / "tests" / "fixtures" / "archive_series.json"
+FIXTURE_PATH = pathlib.Path(__file__).parent.parent.parent / "tests" / "fixtures" / "archive_series.json"
 
 
 @dataclass

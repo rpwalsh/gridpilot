@@ -19,7 +19,7 @@ from dispatchlayer_domain.telemetry import TelemetrySample, Quality
 
 from .config import SiteWiseConfig
 
-FIXTURE_PATH = pathlib.Path(__file__).parent.parent.parent.parent / "tests" / "fixtures" / "asset_properties.json"
+FIXTURE_PATH = pathlib.Path(__file__).parent.parent.parent / "tests" / "fixtures" / "asset_properties.json"
 
 
 @dataclass

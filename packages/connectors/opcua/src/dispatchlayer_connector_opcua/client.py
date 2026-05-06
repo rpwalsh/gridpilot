@@ -19,7 +19,7 @@ from dispatchlayer_domain.telemetry import TelemetrySample, Quality
 
 from .config import OpcUaConfig, NodeQuality
 
-FIXTURE_PATH = pathlib.Path(__file__).parent.parent.parent.parent / "tests" / "fixtures" / "node_snapshot.json"
+FIXTURE_PATH = pathlib.Path(__file__).parent.parent.parent / "tests" / "fixtures" / "node_snapshot.json"
 
 
 @dataclass

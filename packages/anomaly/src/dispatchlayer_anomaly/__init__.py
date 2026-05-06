@@ -1,4 +1,4 @@
-from .detector import detect_anomaly, DeviationEvent, AnomalyFinding
+from .detector import detect_anomaly, DeviationEvent
 from .conditions import AnomalyCondition
 
-__all__ = ["detect_anomaly", "DeviationEvent", "AnomalyFinding", "AnomalyCondition"]
+__all__ = ["detect_anomaly", "DeviationEvent", "AnomalyCondition"]

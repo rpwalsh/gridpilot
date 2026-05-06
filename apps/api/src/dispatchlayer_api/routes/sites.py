@@ -441,7 +441,7 @@ async def evaluate_site(req: SiteEvaluationRequest) -> SiteEvaluationResponse:
         structural_drift={
             "risk": drift_warning.risk.value,
             "reason": drift_warning.reason,
-            "recommended_action": drift_warning.recommended_action,
+            "threshold_state_label": drift_warning.threshold_state_label,
         },
         audit_trace=trace.to_dict(),
     )

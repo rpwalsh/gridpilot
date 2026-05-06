@@ -25,7 +25,7 @@ D — DecisionRanker            ranked recommendations with evidence and audit t
 ## Design principles
 
 1. Deterministic: same inputs produce same outputs
-2. Evidence-backed: every recommendation cites named signals
+2. Evidence-backed: every signal event cites named inputs
 3. Explicit uncertainty: three-term decomposition, not a single opaque number
 4. Auditable: full decision trace for every output
 

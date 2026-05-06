@@ -7,16 +7,25 @@ import {
 import DashboardCard from '../components/DashboardCard'
 import StatCard from '../components/StatCard'
 import StatusBadge from '../components/StatusBadge'
+import HelixDisplay from '../components/HelixDisplay'
 import { generateProofResult } from '../lib/proofs'
 
-// ── Color tokens ──────────────────────────────────────────────────────────────
-const BLUE       = 'var(--gp-blue)'
-const GREEN      = '#22c55e'
-const SLATE      = '#64748b'
-const BAND_FILL  = 'rgba(14,165,233,0.10)'
-const BAND_LINE  = 'rgba(14,165,233,0.30)'
+// ── Color tokens — dark green + gold theme ────────────────────────────────
+const BLUE      = 'var(--gp-blue)'         // gold via CSS var
+const GREEN     = '#4ade80'                 // bright green for dark mode
+const SLATE     = '#7ab87a'                 // medium green for tick labels
+const BAND_FILL = 'rgba(217,119,6,0.10)'   // gold-tinted band fill
+const BAND_LINE = 'rgba(217,119,6,0.32)'   // gold band border
 
-// ── Custom tooltip: strips band internals ─────────────────────────────────────
+const TOOLTIP_STYLE = {
+  background: '#0b140b',
+  border: '1px solid rgba(34,197,94,0.18)',
+  borderRadius: 8,
+  fontSize: 11,
+  color: '#d4f0d4',
+}
+
+// ── Custom tooltip: strips band internals ─────────────────────────────────
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function ForecastTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null
@@ -24,11 +33,8 @@ function ForecastTooltip({ active, payload, label }: any) {
     .filter(p => p.dataKey !== 'band_low' && p.dataKey !== 'band_width')
   if (!visible.length) return null
   return (
-    <div style={{
-      background: 'var(--gp-card-bg)', border: '1px solid var(--gp-border)',
-      borderRadius: 8, padding: '0.5rem 0.75rem', fontSize: 12,
-    }}>
-      <div style={{ fontWeight: 700, marginBottom: 4, color: 'var(--gp-text-primary)' }}>{label}</div>
+    <div style={{ ...TOOLTIP_STYLE, padding: '0.5rem 0.75rem' }}>
+      <div style={{ fontWeight: 700, marginBottom: 4, color: '#d4f0d4' }}>{label}</div>
       {visible.map(item => (
         <div key={item.dataKey} style={{ color: item.color, marginBottom: 2 }}>
           {item.name}: {Math.round(item.value).toLocaleString()} MWh
@@ -150,7 +156,7 @@ export default function Proofs() {
               dataKey="band_width" stackId="band"
               fill={BAND_FILL}    stroke={BAND_LINE}
               strokeWidth={1}     strokeDasharray="4 2"
-              legendType="square" name="Prediction Band (P10–P90)"
+              legendType="square" name="Forecast Band (P10–P90)"
             />
             <Line
               dataKey="p50"    stroke={BLUE}  strokeWidth={2}   dot={false}
@@ -161,7 +167,7 @@ export default function Proofs() {
               dot={{ r: 4, fill: GREEN, strokeWidth: 0 }}
               name="Observed Series"
             />
-            <Legend iconSize={10} wrapperStyle={{ fontSize: 11 }} />
+            <Legend iconSize={10} wrapperStyle={{ fontSize: 11, color: SLATE }} />
           </ComposedChart>
         </ResponsiveContainer>
       </DashboardCard>
@@ -182,9 +188,7 @@ export default function Proofs() {
                 tick={{ fontSize: 10, fill: SLATE }}
               />
               <Tooltip
-                contentStyle={{
-                  borderRadius: 8, fontSize: 11, border: '1px solid var(--gp-border)',
-                }}
+                contentStyle={TOOLTIP_STYLE}
                 formatter={(v: number) => [`${Math.round(v).toLocaleString()} MWh`, 'Annual mean']}
               />
               <Line dataKey="mean_mwh" stroke={BLUE} strokeWidth={1.5} dot={false} name="Annual Mean" />
@@ -206,9 +210,7 @@ export default function Proofs() {
               <XAxis dataKey="month" tick={{ fontSize: 10, fill: SLATE }} />
               <YAxis tick={{ fontSize: 10, fill: SLATE }} />
               <Tooltip
-                contentStyle={{
-                  borderRadius: 8, fontSize: 11, border: '1px solid var(--gp-border)',
-                }}
+                contentStyle={TOOLTIP_STYLE}
                 formatter={(v: number) => [
                   `${v > 0 ? '+' : ''}${Math.round(v).toLocaleString()} MWh`, 'Residual',
                 ]}
@@ -216,7 +218,7 @@ export default function Proofs() {
               <ReferenceLine y={0} stroke="var(--gp-border)" strokeWidth={1.5} />
               <Bar dataKey="residual" radius={[3, 3, 0, 0]} name="Residual">
                 {residualData.map((d, i) => (
-                  <Cell key={i} fill={d.residual >= 0 ? GREEN : '#ef4444'} />
+                  <Cell key={i} fill={d.residual >= 0 ? GREEN : '#f87171'} />
                 ))}
               </Bar>
             </ComposedChart>
@@ -235,15 +237,21 @@ export default function Proofs() {
             <CartesianGrid strokeDasharray="3 3" stroke="var(--gp-border)" vertical={false} />
             <XAxis dataKey="label" tick={{ fontSize: 11, fill: SLATE }} />
             <YAxis tick={{ fontSize: 11, fill: SLATE }} unit=" MWh" />
-            <Tooltip
-              contentStyle={{ borderRadius: 8, fontSize: 11, border: '1px solid var(--gp-border)' }}
-            />
-            <Legend iconSize={10} wrapperStyle={{ fontSize: 11 }} />
-            <Bar dataKey="Historical" fill={SLATE} radius={[3, 3, 0, 0]} opacity={0.7} />
-            <Bar dataKey="Forecast"   fill={BLUE}  radius={[3, 3, 0, 0]} opacity={0.85} />
-            <Bar dataKey="Actual"     fill={GREEN} radius={[3, 3, 0, 0]} opacity={0.9} />
+            <Tooltip contentStyle={TOOLTIP_STYLE} />
+            <Legend iconSize={10} wrapperStyle={{ fontSize: 11, color: SLATE }} />
+            <Bar dataKey="Historical" fill={SLATE}       radius={[3, 3, 0, 0]} opacity={0.7} />
+            <Bar dataKey="Forecast"   fill={BLUE}        radius={[3, 3, 0, 0]} opacity={0.85} />
+            <Bar dataKey="Actual"     fill={GREEN}       radius={[3, 3, 0, 0]} opacity={0.9} />
           </BarChart>
         </ResponsiveContainer>
+      </DashboardCard>
+
+      {/* ── Temporal Playback — Signature Helix ──────────────────────────── */}
+      <DashboardCard
+        title="Temporal Playback — Signature Helix"
+        subtitle="365-day × 24-hour deviation field · color: −3σ teal → 0 green → +3σ gold"
+      >
+        <HelixDisplay />
       </DashboardCard>
 
       {/* ── Calibration Table ─────────────────────────────────────────────── */}
@@ -281,7 +289,7 @@ export default function Proofs() {
                   </td>
                   <td style={{
                     textAlign: 'right', fontWeight: 600,
-                    color: m.residual >= 0 ? GREEN : '#ef4444',
+                    color: m.residual >= 0 ? GREEN : '#f87171',
                   }}>
                     {m.residual > 0 ? '+' : ''}{m.residual.toLocaleString()}
                   </td>

@@ -45,7 +45,7 @@ class DriftWarning:
     risk: DriftRisk
     reason: str
     likely_effects: list[str] = field(default_factory=list)
-    recommended_action: str = ""
+    threshold_state_label: str = ""
     drift_magnitude: float = 0.0   # standardised drift score 0–1
 
 
@@ -125,7 +125,7 @@ def detect_residual_drift(
         risk=risk,
         reason=reason,
         likely_effects=effects,
-        recommended_action=action,
+        threshold_state_label=action,
         drift_magnitude=round(drift_magnitude, 3),
     )
 
@@ -171,7 +171,7 @@ def detect_portfolio_drift(
         risk=max_risk,
         reason=reason,
         likely_effects=effects,
-        recommended_action=action,
+        threshold_state_label=action,
         drift_magnitude=round(
             sum(w.drift_magnitude for w in site_drift_warnings) / total, 3
         ),

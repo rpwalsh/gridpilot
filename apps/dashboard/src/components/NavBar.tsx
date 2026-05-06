@@ -5,11 +5,12 @@ const NAV_ITEMS = [
   { path: '/evaluate',   label: 'Snapshot Analysis' },
   { path: '/telemetry',  label: 'Telemetry' },
   { path: '/health',     label: 'Asset State' },
-  { path: '/forecast',   label: 'Forecast Context' },
+  { path: '/forecast',   label: 'Forecast Envelope' },
   { path: '/dispatch',   label: 'Dispatch Analysis' },
   { path: '/audit',      label: 'Audit Trace' },
-  { path: '/providers',  label: 'Provider Status' },
+  { path: '/providers',  label: 'Source State' },
   { path: '/proofs',     label: 'Proofs' },
+  { path: '/pipeline',   label: 'Pipeline State' },
 ]
 
 export default function NavBar() {

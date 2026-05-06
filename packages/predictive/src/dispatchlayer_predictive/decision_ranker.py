@@ -6,7 +6,7 @@ by their expected value to the operator.
 
 Ranking formula:
 
-    recommendation_score =
+    signal_score =
         evidence_strength
         × confidence
         × operational_urgency
@@ -62,7 +62,7 @@ class RankedRecommendation:
     urgency_hours: Optional[float]          # Act within this many hours; None = flexible
     estimated_value_usd: Optional[float]
     risk_if_ignored: Optional[str]
-    recommendation_score: float             # composite ranking score
+    signal_score: float             # composite ranking score
     audit_trace_id: str
 
 
@@ -150,7 +150,7 @@ class DecisionRanker:
                 urgency_hours=2.0,
                 estimated_value_usd=None,
                 risk_if_ignored="Dispatch decisions based on untrusted forecast may miss peak window.",
-                recommendation_score=round(score, 4),
+                signal_score=round(score, 4),
                 audit_trace_id=trace_id,
             ))
 
@@ -175,7 +175,7 @@ class DecisionRanker:
                 urgency_hours=4.0,
                 estimated_value_usd=None,
                 risk_if_ignored="Stale or missing data will degrade all downstream forecasts.",
-                recommendation_score=round(score, 4),
+                signal_score=round(score, 4),
                 audit_trace_id=trace_id,
             ))
 
@@ -206,16 +206,16 @@ class DecisionRanker:
                 estimated_value_usd=abs(forecast_residual_pct / 100)
                     * prediction.expected_generation_mwh * self._price_per_mwh,
                 risk_if_ignored="Unresolved underperformance compounds over operating window.",
-                recommendation_score=round(score, 4),
+                signal_score=round(score, 4),
                 audit_trace_id=trace_id,
             ))
 
         # Sort by score descending
-        recs.sort(key=lambda r: r.recommendation_score, reverse=True)
+        recs.sort(key=lambda r: r.signal_score, reverse=True)
         return DecisionSet(
             portfolio_id="",
             site_id=prediction.site_id,
-            recommendations=recs,
+            signal_events=recs,
         )
 
     def _add_battery_recommendations(
@@ -248,7 +248,7 @@ class DecisionRanker:
                 urgency_hours=None,
                 estimated_value_usd=prediction.expected_generation_mwh * self._price_per_mwh * 0.15,
                 risk_if_ignored="Premature discharge may miss higher-value evening window.",
-                recommendation_score=round(score, 4),
+                signal_score=round(score, 4),
                 audit_trace_id=trace_id,
             ))
 
@@ -274,7 +274,7 @@ class DecisionRanker:
                 urgency_hours=4.0,
                 estimated_value_usd=prediction.expected_generation_mwh * self._price_per_mwh * 0.10,
                 risk_if_ignored="Insufficient charge state before peak demand window.",
-                recommendation_score=round(score, 4),
+                signal_score=round(score, 4),
                 audit_trace_id=trace_id,
             ))
 
@@ -309,7 +309,7 @@ class DecisionRanker:
                 urgency_hours=2.0,
                 estimated_value_usd=None,
                 risk_if_ignored="Low-confidence portfolio forecast drives unreliable dispatch decisions.",
-                recommendation_score=round(score, 4),
+                signal_score=round(score, 4),
                 audit_trace_id=trace_id,
             ))
 
@@ -327,13 +327,13 @@ class DecisionRanker:
                 urgency_hours=None,
                 estimated_value_usd=None,
                 risk_if_ignored=None,
-                recommendation_score=round(score, 4),
+                signal_score=round(score, 4),
                 audit_trace_id=trace_id,
             ))
 
-        recs.sort(key=lambda r: r.recommendation_score, reverse=True)
+        recs.sort(key=lambda r: r.signal_score, reverse=True)
         return DecisionSet(
             portfolio_id=portfolio_prediction.portfolio_id,
             site_id=None,
-            recommendations=recs,
+            signal_events=recs,
         )

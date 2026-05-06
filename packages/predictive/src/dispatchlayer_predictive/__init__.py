@@ -13,9 +13,7 @@ from .local_signal_scorer import (
 )
 from .portfolio_state_builder import SiteState, PortfolioState, PortfolioStateBuilder
 from .predictive_evolution import SitePrediction, PortfolioPrediction, PredictiveEvolutionEngine
-from .decision_ranker import (
-    RecommendationType, Priority, RankedRecommendation, DecisionSet, DecisionRanker,
-)
+from .decision_ranker import Priority, DecisionSet, DecisionRanker
 from .forecast_trust import ErrorTermExplanation, ForecastTrustScore, compute_trust_score
 from .structural_drift import DriftRisk, DriftWarning, detect_residual_drift, detect_portfolio_drift
 
@@ -35,8 +33,8 @@ __all__ = [
     "SiteState", "PortfolioState", "PortfolioStateBuilder",
     # P layer
     "SitePrediction", "PortfolioPrediction", "PredictiveEvolutionEngine",
-    # D layer
-    "RecommendationType", "Priority", "RankedRecommendation", "DecisionSet", "DecisionRanker",
+    # D layer — internal signal state evaluator
+    "Priority", "DecisionSet", "DecisionRanker",
     # Trust & drift
     "ErrorTermExplanation", "ForecastTrustScore", "compute_trust_score",
     "DriftRisk", "DriftWarning", "detect_residual_drift", "detect_portfolio_drift",

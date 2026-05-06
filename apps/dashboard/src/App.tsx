@@ -9,6 +9,7 @@ import AuditTrail from './pages/AuditTrail'
 import TelemetryDashboard from './pages/TelemetryDashboard'
 import ProviderStatus from './pages/ProviderStatus'
 import Proofs from './pages/Proofs'
+import PipelineState from './pages/PipelineState'
 
 export default function App() {
   return (
@@ -27,6 +28,7 @@ export default function App() {
             <Route path="/telemetry" element={<TelemetryDashboard />} />
             <Route path="/providers" element={<ProviderStatus />} />
             <Route path="/proofs"    element={<Proofs />} />
+            <Route path="/pipeline"  element={<PipelineState />} />
           </Routes>
         </main>
       </div>

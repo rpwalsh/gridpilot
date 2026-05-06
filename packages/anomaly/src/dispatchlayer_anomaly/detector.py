@@ -35,7 +35,6 @@ class DeviationEvent:
 
 
 # Backward-compat alias — prefer DeviationEvent in new code
-AnomalyFinding = DeviationEvent
 
 
 def detect_anomaly(

@@ -19,7 +19,7 @@ from dispatchlayer_domain.telemetry import TelemetrySample, Quality
 
 from .config import MqttConfig, QoS
 
-FIXTURE_PATH = pathlib.Path(__file__).parent.parent.parent.parent / "tests" / "fixtures" / "message_batch.json"
+FIXTURE_PATH = pathlib.Path(__file__).parent.parent.parent / "tests" / "fixtures" / "message_batch.json"
 
 
 @dataclass

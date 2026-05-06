@@ -28,7 +28,7 @@ def attribute_wind_turbine_underproduction(
 
     if wind_speed is not None and 6.0 <= wind_speed <= 18.0 and residual_pct < -15.0 and not is_curtailed:
         g = EvidenceGraph("yaw_misalignment")
-        g.add_evidence("wind_speed_mps", 0.7, "Wind in rated zone suggests yaw error could cause underproduction")
+        g.add_evidence("wind_speed_mps", 0.7, "Wind in rated zone indicates possible yaw error contributing to underproduction")
         g.add_evidence("output_kw", 0.6, f"Output {residual_pct:.1f}% below expected at rated wind speed")
         hypotheses.append(CausalHypothesis(
             cause="yaw_misalignment",
