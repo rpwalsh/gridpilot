@@ -1,6 +1,6 @@
-# gridforge-predictive
+# dispatchlayer-predictive
 
-Predictive Operations Core for GridForge: deterministic evidence-weighted reasoning for renewable operations intelligence.
+Predictive Operations Core for DispatchLayer: deterministic evidence-weighted reasoning for renewable operations intelligence.
 
 ## Four-layer architecture
 
@@ -33,7 +33,7 @@ D — DecisionRanker            ranked recommendations with evidence and audit t
 
 ```python
 from datetime import datetime, timezone
-from gridforge_predictive import (
+from dispatchlayer_predictive import (
     LocalSignalScorer, PortfolioStateBuilder,
     PredictiveEvolutionEngine, DecisionRanker,
     compute_trust_score, detect_residual_drift,

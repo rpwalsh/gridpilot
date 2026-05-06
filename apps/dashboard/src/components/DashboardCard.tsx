@@ -2,17 +2,22 @@ import React from 'react'
 
 interface DashboardCardProps {
   title: string
+  subtitle?: string
   children: React.ReactNode
   accent?: string
+  action?: React.ReactNode
 }
 
-export default function DashboardCard({ title, children, accent = '#38bdf8' }: DashboardCardProps) {
+export default function DashboardCard({ title, subtitle, children, action }: DashboardCardProps) {
   return (
-    <div style={{
-      background: '#fff', borderRadius: 8, boxShadow: '0 1px 4px rgba(0,0,0,0.1)',
-      padding: '1.25rem', borderTop: `3px solid ${accent}`
-    }}>
-      <h3 style={{ margin: '0 0 0.75rem', color: '#1e293b', fontSize: '1rem' }}>{title}</h3>
+    <div className="gp-card gp-card--accent-top">
+      <div className="gp-card__header">
+        <div>
+          <div className="gp-card__title">{title}</div>
+          {subtitle && <div style={{ fontSize: '0.75rem', color: 'var(--gp-text-muted)', marginTop: 2 }}>{subtitle}</div>}
+        </div>
+        {action && <div>{action}</div>}
+      </div>
       {children}
     </div>
   )

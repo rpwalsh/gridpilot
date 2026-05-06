@@ -3,8 +3,8 @@ import pathlib
 import asyncio
 from datetime import datetime, timezone
 
-from gridforge_domain.models import ForecastWindow
-from gridforge_adapter_entsoe.client import EntsoeClient
+from dispatchlayer_domain.models import ForecastWindow
+from dispatchlayer_adapter_entsoe.client import EntsoeClient
 
 FIXTURE = pathlib.Path(__file__).parent / "fixtures" / "sample_response.xml"
 
@@ -25,7 +25,7 @@ def test_entsoe_contract():
 
 
 def test_entsoe_no_key_returns_empty():
-    from gridforge_adapter_entsoe.config import EntsoeConfig
+    from dispatchlayer_adapter_entsoe.config import EntsoeConfig
     config = EntsoeConfig(api_key=None)
     client = EntsoeClient(config=config)
     window = ForecastWindow(

@@ -3,9 +3,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "gridforge"
+name = "dispatchlayer"
 version = "0.1.0"
-description = "GridForge renewable-energy operations intelligence platform"
+description = "DispatchLayer renewable-energy operations intelligence platform"
 requires-python = ">=3.11"
 readme = "README.md"
 

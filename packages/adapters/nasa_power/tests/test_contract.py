@@ -3,8 +3,8 @@ import json
 import pathlib
 from datetime import datetime, timezone
 
-from gridforge_domain.models import GeoPoint, ForecastWindow
-from gridforge_adapter_nasa_power.client import NasaPowerClient
+from dispatchlayer_domain.models import GeoPoint, ForecastWindow
+from dispatchlayer_adapter_nasa_power.client import NasaPowerClient
 
 FIXTURE = pathlib.Path(__file__).parent / "fixtures" / "sample_response.json"
 
