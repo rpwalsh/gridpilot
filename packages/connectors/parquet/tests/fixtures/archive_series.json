@@ -1,0 +1,12 @@
+{
+  "series": [
+    { "asset_id": "SOLAR_PLANT_01", "channel": "active_power_kw", "timestamp_utc": "2025-01-01T00:00:00+00:00", "value": 0.0,    "unit": "kW", "quality": "GOOD", "partition": "2025/01/SOLAR_PLANT_01" },
+    { "asset_id": "SOLAR_PLANT_01", "channel": "active_power_kw", "timestamp_utc": "2025-01-01T06:00:00+00:00", "value": 412.3,  "unit": "kW", "quality": "GOOD", "partition": "2025/01/SOLAR_PLANT_01" },
+    { "asset_id": "SOLAR_PLANT_01", "channel": "active_power_kw", "timestamp_utc": "2025-01-01T12:00:00+00:00", "value": 3180.5, "unit": "kW", "quality": "GOOD", "partition": "2025/01/SOLAR_PLANT_01" },
+    { "asset_id": "SOLAR_PLANT_01", "channel": "active_power_kw", "timestamp_utc": "2025-01-01T18:00:00+00:00", "value": 890.1,  "unit": "kW", "quality": "GOOD", "partition": "2025/01/SOLAR_PLANT_01" },
+    { "asset_id": "SOLAR_PLANT_01", "channel": "active_power_kw", "timestamp_utc": "2025-01-01T23:00:00+00:00", "value": 0.0,    "unit": "kW", "quality": "GOOD", "partition": "2025/01/SOLAR_PLANT_01" },
+    { "asset_id": "WIND_FARM_01",   "channel": "active_power_kw", "timestamp_utc": "2025-01-01T00:00:00+00:00", "value": 1200.0, "unit": "kW", "quality": "GOOD", "partition": "2025/01/WIND_FARM_01" },
+    { "asset_id": "WIND_FARM_01",   "channel": "active_power_kw", "timestamp_utc": "2025-01-01T06:00:00+00:00", "value": null,   "unit": "kW", "quality": "MISSING", "partition": "2025/01/WIND_FARM_01" },
+    { "asset_id": "WIND_FARM_01",   "channel": "active_power_kw", "timestamp_utc": "2025-01-01T12:00:00+00:00", "value": 980.4,  "unit": "kW", "quality": "GOOD", "partition": "2025/01/WIND_FARM_01" }
+  ]
+}

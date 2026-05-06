@@ -19,8 +19,10 @@ from datetime import timezone
 
 
 @dataclass
-class AnomalyFinding:
-    finding_id: str
+class DeviationEvent:
+    """A threshold crossing or deviation detected in asset telemetry."""
+
+    event_id: str
     asset_id: str
     site_id: str
     condition: AnomalyCondition
@@ -32,12 +34,16 @@ class AnomalyFinding:
     decision_trace: DecisionTrace
 
 
+# Backward-compat alias — prefer DeviationEvent in new code
+AnomalyFinding = DeviationEvent
+
+
 def detect_anomaly(
     telemetry: AssetTelemetry,
     weather: WeatherSample,
     threshold_pct: float = 10.0,
-) -> Optional[AnomalyFinding]:
-    """Detect anomaly in asset telemetry and return a finding with causal hypotheses."""
+) -> Optional[DeviationEvent]:
+    """Detect deviation in asset telemetry against physics-model expectation."""
     trace = DecisionTrace(model_versions={"anomaly": "0.1.0", "predictive_core": "0.1.0"})
     now_utc = telemetry.timestamp_utc
 
@@ -117,8 +123,8 @@ def detect_anomaly(
 
     confidence = hypotheses[0].confidence if hypotheses else 0.5
 
-    return AnomalyFinding(
-        finding_id=f"finding_{uuid.uuid4().hex[:10]}",
+    return DeviationEvent(
+        event_id=f"dev_{uuid.uuid4().hex[:10]}",
         asset_id=telemetry.asset_id,
         site_id=telemetry.site_id,
         condition=condition,

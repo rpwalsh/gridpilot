@@ -57,25 +57,25 @@ async def detect_asset_anomaly(req: AnomalyDetectRequest) -> dict:
         source="api_request",
     )
 
-    finding = detect_anomaly(telemetry, weather, req.threshold_pct)
-    if finding is None:
-        return {"anomaly_detected": False, "asset_id": req.asset_id}
+    event = detect_anomaly(telemetry, weather, req.threshold_pct)
+    if event is None:
+        return {"deviation_detected": False, "asset_id": req.asset_id}
 
     return {
-        "anomaly_detected": True,
-        "finding_id": finding.finding_id,
-        "asset_id": finding.asset_id,
-        "site_id": finding.site_id,
-        "condition": finding.condition.value,
-        "residual_pct": finding.residual_pct,
-        "expected_output_kw": finding.expected_output_kw,
-        "actual_output_kw": finding.actual_output_kw,
-        "confidence": finding.confidence,
+        "deviation_detected": True,
+        "event_id":           event.event_id,
+        "asset_id":           event.asset_id,
+        "site_id":            event.site_id,
+        "condition":          event.condition.value,
+        "residual_pct":       event.residual_pct,
+        "expected_output_kw": event.expected_output_kw,
+        "actual_output_kw":   event.actual_output_kw,
+        "confidence":         event.confidence,
         "hypotheses": [
             {"cause": h.cause, "confidence": h.confidence, "evidence": h.evidence}
-            for h in finding.hypotheses
+            for h in event.hypotheses
         ],
-        "decision_trace": finding.decision_trace.to_dict(),
+        "decision_trace": event.decision_trace.to_dict(),
     }
 
 

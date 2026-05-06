@@ -1,0 +1,13 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "dispatchlayer-connector-otel"
+version = "0.1.0"
+description = "DispatchLayer OpenTelemetry/OTLP platform observability connector (read-only)"
+requires-python = ">=3.11"
+dependencies = ["dispatchlayer-domain>=0.1.0"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/dispatchlayer_connector_otel"]
