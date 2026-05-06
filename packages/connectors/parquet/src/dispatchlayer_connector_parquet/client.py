@@ -1,3 +1,6 @@
+﻿# Proprietary (c) Ryan Walsh / Walsh Tech Group
+# All rights reserved. Professional preview only.
+
 """
 S3/Parquet archive replay connector client.
 
@@ -53,7 +56,7 @@ class ParquetConnectorClient:
         if self._config.fixture_mode:
             return self._load_fixture(asset_id, channel, start, end)
         raise NotImplementedError(
-            "Live Parquet archive requires pyarrow + s3fs — set fixture_mode=True for offline use"
+            "Live Parquet archive requires pyarrow + s3fs â€” set fixture_mode=True for offline use"
         )
 
     def get_samples(

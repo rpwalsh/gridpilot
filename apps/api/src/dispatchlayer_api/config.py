@@ -1,3 +1,6 @@
+﻿# Proprietary (c) Ryan Walsh / Walsh Tech Group
+# All rights reserved. Professional preview only.
+
 from typing import Optional
 from functools import lru_cache
 from pydantic_settings import BaseSettings, SettingsConfigDict

@@ -1,10 +1,15 @@
+﻿/*
+ * Proprietary (c) Ryan Walsh / Walsh Tech Group
+ * All rights reserved. Professional preview only.
+ */
+
 /**
- * Overview dashboard fixture data — deterministic, physics-informed.
+ * Overview dashboard fixture data â€” deterministic, physics-informed.
  * All values are grid-scale fixture data for a 137-asset renewable portfolio.
  * Deterministic: no Math.random(). LCG seeded from fixed values.
  */
 
-// ── Deterministic LCG ────────────────────────────────────────────────────────
+// â”€â”€ Deterministic LCG â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function mkRng(seed: number) {
   let s = (seed >>> 0) | 1
   return () => {
@@ -13,7 +18,7 @@ function mkRng(seed: number) {
   }
 }
 
-// ── System-level metrics ─────────────────────────────────────────────────────
+// â”€â”€ System-level metrics â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export interface SystemMetrics {
   output_mw: number
   capacity_pct: number
@@ -36,9 +41,9 @@ export const SYSTEM_METRICS: SystemMetrics = {
   confidence_delta_pp:     2.1,
 }
 
-// ── Telemetry integrity breakdown ────────────────────────────────────────────
+// â”€â”€ Telemetry integrity breakdown â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export interface TelemetryIntegrity {
-  freshness_pct:  number   // samples ≤ 2m
+  freshness_pct:  number   // samples â‰¤ 2m
   missing_pct:    number
   bad_quality_pct: number
   conflict_pct:   number
@@ -51,7 +56,7 @@ export const TELEMETRY_INTEGRITY: TelemetryIntegrity = {
   conflict_pct:     0.15,
 }
 
-// ── Source health rows ────────────────────────────────────────────────────────
+// â”€â”€ Source health rows â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export interface SourceRow {
   source:     string
   type:       string
@@ -67,10 +72,10 @@ export const SOURCE_HEALTH: SourceRow[] = [
   { source: 'MET_STATION_NET',  type: 'MET',   freshness: '47s',    integrity: '98.83%', status: 'GOOD'     },
   { source: 'MARKET_FEED',      type: 'MKT',   freshness: '1m 12s', integrity: '98.11%', status: 'DEGRADED' },
   { source: 'THIRD_PARTY_API',  type: 'API',   freshness: '2m 08s', integrity: null,     status: 'DEGRADED' },
-  { source: 'LEGACY_RTUs',      type: 'RTU',   freshness: '—',      integrity: '0.00%',  status: 'BAD'      },
+  { source: 'LEGACY_RTUs',      type: 'RTU',   freshness: 'â€”',      integrity: '0.00%',  status: 'BAD'      },
 ]
 
-// ── Provider status rows ─────────────────────────────────────────────────────
+// â”€â”€ Provider status rows â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export interface ProviderRow {
   provider:  string
   type:      string
@@ -89,7 +94,7 @@ export const PROVIDER_STATUS: ProviderRow[] = [
   { provider: 'GRID_TOPOLOGY',    type: 'Topology', status: 'DEGRADED', latency: '5m 22s', quality: '99.2%' },
 ]
 
-// ── Asset state ───────────────────────────────────────────────────────────────
+// â”€â”€ Asset state â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export interface AssetStateRow {
   asset_type: string
   icon:       string
@@ -101,15 +106,15 @@ export interface AssetStateRow {
 export const ASSET_COUNTS = { online: 128, derated: 6, offline: 3, total: 137 }
 
 export const ASSET_STATE_ROWS: AssetStateRow[] = [
-  { asset_type: 'SOLAR_PLANT',  icon: '☀',  status_dot: 'green', output_mw: '3,421.7',  capacity: '80.1%' },
-  { asset_type: 'WIND_FARM',    icon: '💨', status_dot: 'green', output_mw: '2,118.9',  capacity: '76.3%' },
-  { asset_type: 'BESS',         icon: '🔋', status_dot: 'green', output_mw: '856.3',    capacity: '82.4%' },
-  { asset_type: 'SUBSTATION',   icon: '⚡', status_dot: 'amber', output_mw: null,       capacity: null    },
-  { asset_type: 'INTERCONNECT', icon: '🔗', status_dot: 'amber', output_mw: '2,910.5',  capacity: null    },
-  { asset_type: 'MET_STATION',  icon: '🌡', status_dot: 'green', output_mw: null,       capacity: null    },
+  { asset_type: 'SOLAR_PLANT',  icon: 'â˜€',  status_dot: 'green', output_mw: '3,421.7',  capacity: '80.1%' },
+  { asset_type: 'WIND_FARM',    icon: 'ðŸ’¨', status_dot: 'green', output_mw: '2,118.9',  capacity: '76.3%' },
+  { asset_type: 'BESS',         icon: 'ðŸ”‹', status_dot: 'green', output_mw: '856.3',    capacity: '82.4%' },
+  { asset_type: 'SUBSTATION',   icon: 'âš¡', status_dot: 'amber', output_mw: null,       capacity: null    },
+  { asset_type: 'INTERCONNECT', icon: 'ðŸ”—', status_dot: 'amber', output_mw: '2,910.5',  capacity: null    },
+  { asset_type: 'MET_STATION',  icon: 'ðŸŒ¡', status_dot: 'green', output_mw: null,       capacity: null    },
 ]
 
-// ── Deviation log rows ────────────────────────────────────────────────────────
+// â”€â”€ Deviation log rows â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export interface DeviationRow {
   time_utc:  string
   asset:     string
@@ -119,15 +124,15 @@ export interface DeviationRow {
 }
 
 export const DEVIATION_LOG: DeviationRow[] = [
-  { time_utc: '14:36:12', asset: 'SOLAR_PLANT_12',   metric: 'Power',      deviation: '−256.4 MW', severity: 'HIGH'     },
+  { time_utc: '14:36:12', asset: 'SOLAR_PLANT_12',   metric: 'Power',      deviation: 'âˆ’256.4 MW', severity: 'HIGH'     },
   { time_utc: '14:35:47', asset: 'WIND_FARM_03_T07', metric: 'Power',      deviation: '+178.9 MW', severity: 'HIGH'     },
-  { time_utc: '14:34:55', asset: 'BESS_UNIT_07',     metric: 'SOC',        deviation: '−15.2 %',   severity: 'MED'      },
+  { time_utc: '14:34:55', asset: 'BESS_UNIT_07',     metric: 'SOC',        deviation: 'âˆ’15.2 %',   severity: 'MED'      },
   { time_utc: '14:33:21', asset: 'SUB_34KV_02',      metric: 'Voltage',    deviation: '+6.3 kV',   severity: 'MED'      },
   { time_utc: '14:33:01', asset: 'INTERCONNECT_HOU', metric: 'Flow',       deviation: '+312.7 MW', severity: 'MED'      },
-  { time_utc: '14:32:19', asset: 'SOLAR_PLANT_05',   metric: 'Irradiance', deviation: '−22.1 %',   severity: 'LOW'      },
+  { time_utc: '14:32:19', asset: 'SOLAR_PLANT_05',   metric: 'Irradiance', deviation: 'âˆ’22.1 %',   severity: 'LOW'      },
 ]
 
-// ── Audit metadata ────────────────────────────────────────────────────────────
+// â”€â”€ Audit metadata â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const AUDIT_METADATA: Record<string, string> = {
   'Run ID':              'd1sp-20250521-143000-6f2a',
   'Model Version':       'v5.3.1',
@@ -143,7 +148,7 @@ export const AUDIT_METADATA: Record<string, string> = {
   'Audit Signature':     '7b2d4f9c3e8a1d0',
 }
 
-// ── Forecast envelope chart data (14 days × 4 pts/day = 56 points) ───────────
+// â”€â”€ Forecast envelope chart data (14 days Ã— 4 pts/day = 56 points) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export interface ForecastPoint {
   label:      string
   band_low:   number
@@ -185,7 +190,7 @@ export function generateForecastSeries(): ForecastPoint[] {
   return pts
 }
 
-// ── Proofs mini-strip ─────────────────────────────────────────────────────────
+// â”€â”€ Proofs mini-strip â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export const PROOF_METRICS = {
   coverage:    91.3,
   calibration: -1.8,

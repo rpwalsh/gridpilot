@@ -1,3 +1,6 @@
+﻿# Proprietary (c) Ryan Walsh / Walsh Tech Group
+# All rights reserved. Professional preview only.
+
 """
 Forecast Trust Score
 
@@ -7,15 +10,15 @@ Instead of a single opaque probability, the trust score decomposes uncertainty
 into three actionable terms that tell an operator *where* the uncertainty comes
 from and what to do about it:
 
-  structural_error   — How well does the current site/portfolio state represent
+  structural_error   â€” How well does the current site/portfolio state represent
                        reality?  Degrades when data is stale, providers disagree,
                        or structural mapping is sparse.
 
-  predictive_error   — How reliably does the model extrapolate over this horizon?
+  predictive_error   â€” How reliably does the model extrapolate over this horizon?
                        Degrades with longer horizons, volatile weather regimes,
                        and sparse historical calibration.
 
-  observational_noise — The irreducible measurement uncertainty in source data.
+  observational_noise â€” The irreducible measurement uncertainty in source data.
                         This is the floor: no model can beat it.
 
 The Conditional Two-Percent Corollary: if all three terms are small (high
@@ -30,7 +33,7 @@ from dataclasses import dataclass, field
 
 @dataclass
 class ErrorTermExplanation:
-    score: float          # 0–1, higher = more error from this source
+    score: float          # 0â€“1, higher = more error from this source
     meaning: str          # what does this score mean operationally?
     action: str           # what can the operator do to reduce it?
 
@@ -42,7 +45,7 @@ class ForecastTrustScore:
     This is the output operators see when they ask "how much should I trust this?"
     """
 
-    trust_score: float           # 0–1, higher = more trustworthy
+    trust_score: float           # 0â€“1, higher = more trustworthy
     structural_error: ErrorTermExplanation
     predictive_error: ErrorTermExplanation
     observational_noise: ErrorTermExplanation
@@ -72,8 +75,8 @@ def compute_trust_score(
     """
     Compute a ForecastTrustScore from the three error terms.
 
-    Each term is 0–1 (0 = no error, 1 = complete uncertainty from this source).
-    The trust score is 1 – clipped sum of terms.
+    Each term is 0â€“1 (0 = no error, 1 = complete uncertainty from this source).
+    The trust score is 1 â€“ clipped sum of terms.
     """
     total_error = min(structural_error + predictive_error + observational_noise, 0.80)
     trust = max(0.10, min(0.97, 1.0 - total_error))

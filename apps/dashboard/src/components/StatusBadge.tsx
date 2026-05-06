@@ -1,3 +1,8 @@
+﻿/*
+ * Proprietary (c) Ryan Walsh / Walsh Tech Group
+ * All rights reserved. Professional preview only.
+ */
+
 type BadgeColor = 'green' | 'amber' | 'red' | 'blue' | 'purple' | 'slate' | 'orange'
 
 interface StatusBadgeProps {

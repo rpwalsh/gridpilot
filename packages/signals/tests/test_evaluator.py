@@ -1,3 +1,6 @@
+﻿# Proprietary (c) Ryan Walsh / Walsh Tech Group
+# All rights reserved. Professional preview only.
+
 """Tests for the signal state evaluator."""
 from datetime import datetime, timezone
 

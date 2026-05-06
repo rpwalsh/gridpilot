@@ -1,3 +1,6 @@
+﻿# Proprietary (c) Ryan Walsh / Walsh Tech Group
+# All rights reserved. Professional preview only.
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 

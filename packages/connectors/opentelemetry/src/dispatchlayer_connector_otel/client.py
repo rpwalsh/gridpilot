@@ -1,3 +1,6 @@
+﻿# Proprietary (c) Ryan Walsh / Walsh Tech Group
+# All rights reserved. Professional preview only.
+
 """
 OpenTelemetry/OTLP platform observability client.
 
@@ -31,7 +34,7 @@ class OtelConnectorClient:
         if self._config.fixture_mode:
             return self._load_fixture()
         raise NotImplementedError(
-            "Live OTLP query requires opentelemetry-api/sdk — set fixture_mode=True for offline use"
+            "Live OTLP query requires opentelemetry-api/sdk â€” set fixture_mode=True for offline use"
         )
 
     def get_platform_samples(self) -> list[TelemetrySample]:

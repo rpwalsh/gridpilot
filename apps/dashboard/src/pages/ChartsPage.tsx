@@ -1,3 +1,8 @@
+﻿/*
+ * Proprietary (c) Ryan Walsh / Walsh Tech Group
+ * All rights reserved. Professional preview only.
+ */
+
 import { useState, useMemo } from 'react'
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ComposedChart, Scatter, ScatterChart } from 'recharts'
 import AppShell from '../shell/AppShell'

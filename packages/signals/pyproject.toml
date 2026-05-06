@@ -1,3 +1,6 @@
+﻿# Proprietary (c) Ryan Walsh / Walsh Tech Group
+# All rights reserved. Professional preview only.
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
@@ -5,7 +8,7 @@ build-backend = "hatchling.build"
 [project]
 name = "dispatchlayer-signals"
 version = "0.1.0"
-description = "DispatchLayer threshold state evaluator — deviation events to signal states"
+description = "DispatchLayer threshold state evaluator â€” deviation events to signal states"
 requires-python = ">=3.11"
 dependencies = ["dispatchlayer-domain>=0.1.0", "dispatchlayer-predictive>=0.1.0", "dispatchlayer-anomaly>=0.1.0"]
 

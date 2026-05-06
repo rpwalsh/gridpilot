@@ -1,9 +1,12 @@
+﻿# Proprietary (c) Ryan Walsh / Walsh Tech Group
+# All rights reserved. Professional preview only.
+
 """
 Canonical telemetry models for hardware asset signals.
 
-TelemetryPoint  – a single timestamped signal/value pair (raw ingestion).
-AssetTelemetrySnapshot – normalised per-asset operational summary.
-TelemetrySample – unified connector output type (timestamp-quality-value).
+TelemetryPoint  â€“ a single timestamped signal/value pair (raw ingestion).
+AssetTelemetrySnapshot â€“ normalised per-asset operational summary.
+TelemetrySample â€“ unified connector output type (timestamp-quality-value).
 
 These are the 'operational truth' half of the product: real provider APIs
 supply the external-signal side; hardware telemetry supplies what the asset
@@ -41,7 +44,7 @@ class TelemetrySample(BaseModel):
     and audit hash.
 
     This is the normalised form that all connector adapters must produce.
-    No prose or interpretations — measured state only.
+    No prose or interpretations â€” measured state only.
     """
 
     source_id:            str
@@ -105,12 +108,12 @@ class AssetTelemetrySnapshot(BaseModel):
     asset_type: str
     capacity_kw: float
 
-    # ── Generation ─────────────────────────────────────────────────────────────
+    # â”€â”€ Generation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     power_kw: Optional[float] = None
     expected_power_kw: Optional[float] = None
     availability_pct: Optional[float] = None
 
-    # ── Solar inverter signals ─────────────────────────────────────────────────
+    # â”€â”€ Solar inverter signals â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     dc_voltage_v: Optional[float] = None
     dc_current_a: Optional[float] = None
     ac_power_kw: Optional[float] = None
@@ -118,7 +121,7 @@ class AssetTelemetrySnapshot(BaseModel):
     frequency_hz: Optional[float] = None
     string_current_a: Optional[float] = None
 
-    # ── Wind turbine signals ───────────────────────────────────────────────────
+    # â”€â”€ Wind turbine signals â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     rotor_rpm: Optional[float] = None
     wind_speed_mps: Optional[float] = None
     wind_direction_deg: Optional[float] = None
@@ -129,7 +132,7 @@ class AssetTelemetrySnapshot(BaseModel):
     generator_temperature_c: Optional[float] = None
     vibration_mm_s: Optional[float] = None
 
-    # ── BESS signals ───────────────────────────────────────────────────────────
+    # â”€â”€ BESS signals â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     state_of_charge_pct: Optional[float] = None
     state_of_health_pct: Optional[float] = None
     charge_power_kw: Optional[float] = None
@@ -141,14 +144,14 @@ class AssetTelemetrySnapshot(BaseModel):
     thermal_derate_flag: Optional[bool] = None
     inverter_status: Optional[str] = None
 
-    # ── Meter / grid coupling signals ──────────────────────────────────────────
+    # â”€â”€ Meter / grid coupling signals â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     reactive_power_kvar: Optional[float] = None
     voltage_v: Optional[float] = None
     power_factor: Optional[float] = None
     export_limit_kw: Optional[float] = None
     curtailment_signal: Optional[bool] = None
 
-    # ── Common ─────────────────────────────────────────────────────────────────
+    # â”€â”€ Common â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     temperature_c: Optional[float] = None
     fault_code: Optional[str] = None
     curtailment_flag: Optional[bool] = Field(default=None)

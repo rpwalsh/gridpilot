@@ -1,5 +1,8 @@
+﻿# Proprietary (c) Ryan Walsh / Walsh Tech Group
+# All rights reserved. Professional preview only.
+
 """
-Signal state evaluator — converts deviation events to signal events.
+Signal state evaluator â€” converts deviation events to signal events.
 
 Maps measured deviation conditions to ThresholdState codes.
 Does not produce prose or operator instructions.

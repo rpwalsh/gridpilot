@@ -1,5 +1,8 @@
+﻿# Proprietary (c) Ryan Walsh / Walsh Tech Group
+# All rights reserved. Professional preview only.
+
 """
-Signal event model — output of the threshold state evaluator.
+Signal event model â€” output of the threshold state evaluator.
 
 A SignalEvent is a structured, auditable record of a threshold crossing or
 deviation state.  It contains measured values, expected values, delta, unit,

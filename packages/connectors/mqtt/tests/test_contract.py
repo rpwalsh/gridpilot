@@ -1,3 +1,6 @@
+﻿# Proprietary (c) Ryan Walsh / Walsh Tech Group
+# All rights reserved. Professional preview only.
+
 """Contract test for MQTT connector using local fixture."""
 from dispatchlayer_connector_mqtt.client import MqttConnectorClient
 from dispatchlayer_connector_mqtt.config import MqttConfig

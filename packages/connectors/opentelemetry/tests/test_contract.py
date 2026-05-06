@@ -1,3 +1,6 @@
+﻿# Proprietary (c) Ryan Walsh / Walsh Tech Group
+# All rights reserved. Professional preview only.
+
 """Contract test for OpenTelemetry connector using local fixture."""
 from dispatchlayer_connector_otel.client import OtelConnectorClient
 from dispatchlayer_connector_otel.config import OtelConfig, CollectorState

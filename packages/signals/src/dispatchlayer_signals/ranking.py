@@ -1,4 +1,7 @@
-"""Signal event ranking — sort by threshold state severity (CRITICAL first)."""
+﻿# Proprietary (c) Ryan Walsh / Walsh Tech Group
+# All rights reserved. Professional preview only.
+
+"""Signal event ranking â€” sort by threshold state severity (CRITICAL first)."""
 from __future__ import annotations
 
 from .signal_event import SignalEvent, state_severity

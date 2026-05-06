@@ -1,3 +1,6 @@
+﻿# Proprietary (c) Ryan Walsh / Walsh Tech Group
+# All rights reserved. Professional preview only.
+
 """
 Connector state endpoint.
 
@@ -27,14 +30,14 @@ logger = logging.getLogger(__name__)
 async def connector_state() -> dict:
     """
     Return the current state of all platform connectors.
-    All connectors run in fixture_mode for offline/CI operation.
+    Connector probes use runtime configuration (no forced fixture mode).
     """
     ts = datetime.now(timezone.utc).isoformat()
     connectors = []
 
     # OpenTelemetry
     try:
-        otel = OtelConnectorClient(OtelConfig(fixture_mode=True))
+        otel = OtelConnectorClient(OtelConfig(fixture_mode=False))
         status = otel.get_collector_status()
         samples = otel.get_platform_samples()
         connectors.append({
@@ -52,7 +55,7 @@ async def connector_state() -> dict:
 
     # OPC UA
     try:
-        opcua = OpcUaConnectorClient(OpcUaConfig(fixture_mode=True))
+        opcua = OpcUaConnectorClient(OpcUaConfig(fixture_mode=False))
         nodes = opcua.read_nodes()
         connectors.append({
             "connector":    "OPCUA_SCADA",
@@ -68,7 +71,7 @@ async def connector_state() -> dict:
 
     # MQTT
     try:
-        mqtt = MqttConnectorClient(MqttConfig(fixture_mode=True))
+        mqtt = MqttConnectorClient(MqttConfig(fixture_mode=False))
         messages = mqtt.get_messages()
         samples = mqtt.get_samples()
         missing = sum(1 for s in samples if s.quality.value == "MISSING")
@@ -86,7 +89,7 @@ async def connector_state() -> dict:
 
     # SiteWise
     try:
-        sw = SiteWiseConnectorClient(SiteWiseConfig(fixture_mode=True))
+        sw = SiteWiseConnectorClient(SiteWiseConfig(fixture_mode=False))
         props = sw.get_property_values()
         connectors.append({
             "connector":    "SITEWISE_PROD",
@@ -101,7 +104,7 @@ async def connector_state() -> dict:
 
     # Parquet Archive
     try:
-        parquet = ParquetConnectorClient(ParquetConfig(fixture_mode=True))
+        parquet = ParquetConnectorClient(ParquetConfig(fixture_mode=False))
         start = datetime(2025, 1, 1, 0, 0, tzinfo=timezone.utc)
         end   = datetime(2025, 1, 1, 23, 59, tzinfo=timezone.utc)
         rows = parquet.query_series("SOLAR_PLANT_01", "active_power_kw", start, end)

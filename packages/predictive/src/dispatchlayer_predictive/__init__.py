@@ -1,3 +1,6 @@
+﻿# Proprietary (c) Ryan Walsh / Walsh Tech Group
+# All rights reserved. Professional preview only.
+
 from .signal_state import Signal, SignalState
 from .evidence_graph import EvidenceNode, EvidenceGraph
 from .confidence import compute_confidence
@@ -7,7 +10,7 @@ from .causal_attribution import CausalHypothesis, attribute_wind_turbine_underpr
 from .forecast_bounds import ForecastBounds, compute_forecast_bounds
 from .decision_trace import TraceStep, DecisionTrace
 
-# Four-layer L→G→P→D pipeline
+# Four-layer Lâ†’Gâ†’Pâ†’D pipeline
 from .local_signal_scorer import (
     EntityType, InteractionType, ScoredInteraction, LocalScoreSet, LocalSignalScorer,
 )
@@ -33,7 +36,7 @@ __all__ = [
     "SiteState", "PortfolioState", "PortfolioStateBuilder",
     # P layer
     "SitePrediction", "PortfolioPrediction", "PredictiveEvolutionEngine",
-    # D layer — internal signal state evaluator
+    # D layer â€” internal signal state evaluator
     "Priority", "DecisionSet", "DecisionRanker",
     # Trust & drift
     "ErrorTermExplanation", "ForecastTrustScore", "compute_trust_score",

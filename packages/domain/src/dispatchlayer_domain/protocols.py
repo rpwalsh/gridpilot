@@ -1,3 +1,6 @@
+﻿# Proprietary (c) Ryan Walsh / Walsh Tech Group
+# All rights reserved. Professional preview only.
+
 from __future__ import annotations
 from typing import Protocol, runtime_checkable
 from .models import GeoPoint, ForecastWindow, WeatherForecast, SolarResource, GridDemand, MarketSignal

@@ -1,3 +1,6 @@
+﻿# Proprietary (c) Ryan Walsh / Walsh Tech Group
+# All rights reserved. Professional preview only.
+
 """
 AWS IoT SiteWise read-only connector client.
 
@@ -46,7 +49,7 @@ class SiteWiseConnectorClient:
         if self._config.fixture_mode:
             return self._load_fixture()
         raise NotImplementedError(
-            "Live SiteWise requires boto3 + AWS credentials — set fixture_mode=True for offline use"
+            "Live SiteWise requires boto3 + AWS credentials â€” set fixture_mode=True for offline use"
         )
 
     def get_samples(self) -> list[TelemetrySample]:

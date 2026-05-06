@@ -1,15 +1,35 @@
+﻿/*
+ * Proprietary (c) Ryan Walsh / Walsh Tech Group
+ * All rights reserved. Professional preview only.
+ */
+
 import { useState } from 'react'
-import {
-  ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, ReferenceLine, Area,
-} from 'recharts'
-import DashboardCard from '../components/DashboardCard'
-import StatCard from '../components/StatCard'
 import axios from 'axios'
+import {
+  Alert,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+} from '@mui/material'
+import { BarChart } from '@mui/x-charts/BarChart'
+
+type ForecastResult = {
+  p10_kw: number
+  p50_kw: number
+  p90_kw: number
+}
 
 export default function GenerationForecast() {
-  const [result, setResult] = useState<any>(null)
+  const [result, setResult] = useState<ForecastResult | null>(null)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [windSpeed, setWindSpeed] = useState('8')
   const [capacity, setCapacity] = useState('2000')
   const [assetType, setAssetType] = useState('wind_turbine')
@@ -17,115 +37,90 @@ export default function GenerationForecast() {
 
   const runForecast = async () => {
     setLoading(true)
+    setError(null)
     try {
-      const payload: any = {
+      const payload: Record<string, number | string> = {
         site_id: 'demo_site',
         asset_type: assetType,
         capacity_kw: Number(capacity),
       }
       if (assetType === 'wind_turbine') payload.wind_speed_mps = Number(windSpeed)
-      if (assetType === 'solar_inverter') { payload.ghi_wm2 = Number(ghi); payload.temperature_c = 25 }
+      if (assetType === 'solar_inverter') {
+        payload.ghi_wm2 = Number(ghi)
+        payload.temperature_c = 25
+      }
       const r = await axios.post('/api/v1/forecasts/site', payload)
       setResult(r.data)
-    } catch { setResult({ error: 'Forecast failed — ensure the API is running' }) }
+    } catch {
+      setResult(null)
+      setError('Forecast unavailable')
+    }
     setLoading(false)
   }
 
-  const chartData = result && !result.error ? [
-    { scenario: 'P10 (pessimistic)', kw: result.p10_kw, fill: '#f87171' },
-    { scenario: 'P50 (expected)',    kw: result.p50_kw, fill: '#d97706' },
-    { scenario: 'P90 (optimistic)',  kw: result.p90_kw, fill: '#4ade80' },
-  ] : []
-
-  const spread = result && !result.error ? result.p90_kw - result.p10_kw : null
+  const chartData = result ? [result.p10_kw, result.p50_kw, result.p90_kw] : []
+  const spread = result ? result.p90_kw - result.p10_kw : 0
 
   return (
-    <div className="gp-grid">
-      <div className="gp-page-header">
-        <h1 className="gp-page-title">Forecast Context</h1>
-        <p className="gp-page-subtitle">P10/P50/P90 production envelope — expected generation range given current asset type, capacity, and weather inputs</p>
-      </div>
+    <Box className="gp-grid">
+      <Typography variant="h5" sx={{ fontWeight: 800 }}>Forecast</Typography>
 
-      {result && !result.error && (
-        <div className="gp-stat-grid">
-          <StatCard label="P10 Pessimistic" value={`${result.p10_kw?.toFixed(0)} kW`} accent="var(--gp-red)" />
-          <StatCard label="P50 Expected"   value={`${result.p50_kw?.toFixed(0)} kW`} accent="var(--gp-blue)" />
-          <StatCard label="P90 Optimistic"  value={`${result.p90_kw?.toFixed(0)} kW`} accent="var(--gp-green)" />
-          <StatCard label="Uncertainty Band" value={`${spread?.toFixed(0)} kW`} accent="var(--gp-purple)" sub="P90 − P10 spread" />
-        </div>
-      )}
+      <Card variant="outlined">
+        <CardContent>
+          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(5, minmax(0, 1fr))' }, gap: 1.5, alignItems: 'end' }}>
+            <FormControl size="small">
+              <InputLabel>asset_type</InputLabel>
+              <Select
+                label="asset_type"
+                value={assetType}
+                onChange={(e) => setAssetType(e.target.value)}
+              >
+                <MenuItem value="wind_turbine">wind_turbine</MenuItem>
+                <MenuItem value="solar_inverter">solar_inverter</MenuItem>
+              </Select>
+            </FormControl>
 
-      <DashboardCard title="Forecast Parameters">
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'flex-end' }}>
-          <label className="gp-label">
-            Asset Type
-            <select
-              className="gp-select"
-              value={assetType}
-              onChange={e => setAssetType(e.target.value)}
-            >
-              <option value="wind_turbine">Wind Turbine</option>
-              <option value="solar_inverter">Solar Inverter</option>
-            </select>
-          </label>
-          <label className="gp-label">
-            Capacity (kW)
-            <input className="gp-input" type="number" value={capacity} onChange={e => setCapacity(e.target.value)} style={{ width: 100 }} />
-          </label>
-          {assetType === 'wind_turbine' && (
-            <label className="gp-label">
-              Wind Speed (m/s)
-              <input className="gp-input" type="number" value={windSpeed} onChange={e => setWindSpeed(e.target.value)} style={{ width: 90 }} />
-            </label>
-          )}
-          {assetType === 'solar_inverter' && (
-            <label className="gp-label">
-              GHI (W/m²)
-              <input className="gp-input" type="number" value={ghi} onChange={e => setGhi(e.target.value)} style={{ width: 90 }} />
-            </label>
-          )}
-          <button onClick={runForecast} disabled={loading} className="gp-btn gp-btn--primary">
-            {loading ? <><span className="gp-spinner" style={{ width: 14, height: 14, borderWidth: 2 }} /> Running…</> : ' Run Forecast'}
-          </button>
-        </div>
-      </DashboardCard>
+            <TextField size="small" label="capacity_kw" type="number" value={capacity} onChange={(e) => setCapacity(e.target.value)} />
 
-      {result?.error && (
-        <div className="gp-callout gp-callout--danger"> {result.error}</div>
-      )}
+            {assetType === 'wind_turbine' ? (
+              <TextField size="small" label="wind_speed_mps" type="number" value={windSpeed} onChange={(e) => setWindSpeed(e.target.value)} />
+            ) : (
+              <TextField size="small" label="ghi_wm2" type="number" value={ghi} onChange={(e) => setGhi(e.target.value)} />
+            )}
 
-      {result && !result.error && (
-        <DashboardCard title="P10 / P50 / P90 Output">
-          <ResponsiveContainer width="100%" height={260}>
-            <ComposedChart data={chartData} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--gp-border)" vertical={false} />
-              <XAxis dataKey="scenario" tick={{ fontSize: 11, fill: '#64748b' }} />
-              <YAxis unit=" kW" tick={{ fontSize: 11, fill: '#64748b' }} />
-              <Tooltip
-                formatter={(v: number) => [`${v.toFixed(0)} kW`, 'Generation']}
-                contentStyle={{ borderRadius: 8, fontSize: 12, border: '1px solid var(--gp-border)' }}
+            <Box sx={{ display: 'flex', justifyContent: { xs: 'stretch', md: 'flex-start' } }}>
+              <Button variant="contained" onClick={runForecast} disabled={loading} fullWidth>
+                {loading ? 'running' : 'run'}
+              </Button>
+            </Box>
+          </Box>
+        </CardContent>
+      </Card>
+
+      {error && <Alert severity="error">{error}</Alert>}
+
+      {result && (
+        <>
+          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'repeat(2, minmax(0, 1fr))', md: 'repeat(4, minmax(0, 1fr))' }, gap: 1.5 }}>
+            <Card variant="outlined"><CardContent><Typography variant="caption">p10_kw</Typography><Typography variant="h5">{Math.round(result.p10_kw)}</Typography></CardContent></Card>
+            <Card variant="outlined"><CardContent><Typography variant="caption">p50_kw</Typography><Typography variant="h5">{Math.round(result.p50_kw)}</Typography></CardContent></Card>
+            <Card variant="outlined"><CardContent><Typography variant="caption">p90_kw</Typography><Typography variant="h5">{Math.round(result.p90_kw)}</Typography></CardContent></Card>
+            <Card variant="outlined"><CardContent><Typography variant="caption">band_kw</Typography><Typography variant="h5">{Math.round(spread)}</Typography></CardContent></Card>
+          </Box>
+
+          <Card variant="outlined">
+            <CardContent>
+              <Typography variant="subtitle1" sx={{ fontWeight: 700, mb: 1 }}>forecast_distribution_kw</Typography>
+              <BarChart
+                height={280}
+                xAxis={[{ scaleType: 'band', data: ['p10', 'p50', 'p90'] }]}
+                series={[{ data: chartData, label: 'kw' }]}
+                margin={{ left: 45, right: 10, top: 20, bottom: 35 }}
               />
-              <ReferenceLine y={result.p50_kw} stroke="var(--gp-blue)" strokeDasharray="4 2" label={{ value: 'P50', fontSize: 11, fill: 'var(--gp-blue)' }} />
-              <Bar dataKey="kw" radius={[6, 6, 0, 0]}>
-                {chartData.map((entry, i) => (
-                  <Bar key={i} dataKey="kw" fill={entry.fill} />
-                ))}
-              </Bar>
-            </ComposedChart>
-          </ResponsiveContainer>
-
-          <div className="gp-divider" />
-
-          <div className="gp-metric-row" style={{ justifyContent: 'center', gap: '3rem' }}>
-            {chartData.map(d => (
-              <div key={d.scenario} className="gp-metric">
-                <div className="gp-metric__value" style={{ color: d.fill }}>{d.kw?.toFixed(0)}</div>
-                <div className="gp-metric__label">{d.scenario}</div>
-              </div>
-            ))}
-          </div>
-        </DashboardCard>
+            </CardContent>
+          </Card>
+        </>
       )}
-    </div>
+    </Box>
   )
 }

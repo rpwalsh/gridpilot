@@ -1,3 +1,8 @@
+﻿/*
+ * Proprietary (c) Ryan Walsh / Walsh Tech Group
+ * All rights reserved. Professional preview only.
+ */
+
 import { useState } from 'react'
 import DashboardCard from '../components/DashboardCard'
 import StatCard from '../components/StatCard'
@@ -17,8 +22,8 @@ const DEFAULT_SITE = {
   asset_type: 'solar',
   capacity_mw: 50,
   window_hours: 24,
-  data_mode: 'hybrid',
-  // optional signal overrides — leave blank to let live provider fill these
+  data_mode: 'live',
+  // optional signal overrides â€” leave blank to let live provider fill these
   ghi_wm2: '',
   temperature_c: '',
   wind_speed_mps: '',
@@ -30,8 +35,6 @@ const DEFAULT_SITE = {
 
 const DATA_MODE_DESCS: Record<string, string> = {
   live:    'Calls real public providers (Open-Meteo, NASA POWER)',
-  fixture: 'Offline SCADA fixture — reproducible local analysis',
-  hybrid:  'Live where reachable; offline fixture fallback for unavailable providers',
 }
 
 export default function SiteEvaluation() {
@@ -55,7 +58,7 @@ export default function SiteEvaluation() {
       const r = await axios.post('/api/v1/sites/evaluate', payload)
       setResult(r.data)
     } catch (e: any) {
-      setError(e.response?.data?.detail || 'Evaluation failed — ensure the API is running')
+      setError(e.response?.data?.detail || 'Evaluation failed â€” ensure the API is running')
     }
     setLoading(false)
   }
@@ -92,8 +95,8 @@ export default function SiteEvaluation() {
       <div className="gp-page-header">
         <h1 className="gp-page-title">Snapshot Analysis</h1>
         <p className="gp-page-subtitle">
-          Ingest a site snapshot and run the full analysis pipeline: signal scoring →
-          structural state → forecast context → data-quality confidence → drift detection → audit trace.
+          Ingest a site snapshot and run the full analysis pipeline: signal scoring â†’
+          structural state â†’ forecast context â†’ data-quality confidence â†’ drift detection â†’ audit trace.
           Live mode fetches real weather signals from Open-Meteo for the given coordinates.
         </p>
       </div>
@@ -117,46 +120,32 @@ export default function SiteEvaluation() {
           {numInp('Window (hours)', 'window_hours')}
         </div>
 
-        {/* data_mode selector */}
+        {/* data_mode fixed to live for production demo */}
         <div style={{ marginBottom: '1rem', padding: '0.75rem', background: 'var(--gp-slate-bg)', borderRadius: 'var(--gp-radius-sm)', border: '1px solid var(--gp-border)' }}>
           <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--gp-text-secondary)', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.4px' }}>
             Data Mode
           </div>
           <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
-            {(['live', 'fixture', 'hybrid'] as const).map(m => (
-              <label key={m} style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', cursor: 'pointer', fontSize: '0.875rem' }}>
-                <input
-                  type="radio"
-                  name="data_mode"
-                  value={m}
-                  checked={form.data_mode === m}
-                  onChange={() => set('data_mode', m)}
-                />
-                <span className={`gp-badge gp-badge--${m === 'live' ? 'green' : m === 'fixture' ? 'blue' : 'purple'}`}
-                  style={{ cursor: 'pointer' }}>{m.toUpperCase()}</span>
-                <span style={{ color: 'var(--gp-text-muted)', fontSize: '0.78rem' }}>{DATA_MODE_DESCS[m]}</span>
-              </label>
-            ))}
+            <span className="gp-badge gp-badge--green">LIVE</span>
+            <span style={{ color: 'var(--gp-text-muted)', fontSize: '0.78rem' }}>{DATA_MODE_DESCS.live}</span>
           </div>
         </div>
 
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
-          {numInp('GHI (W/m²)', 'ghi_wm2', form.data_mode !== 'fixture' ? 'from provider' : '')}
-          {numInp('Temperature (°C)', 'temperature_c', form.data_mode !== 'fixture' ? 'from provider' : '')}
-          {numInp('Wind (m/s)', 'wind_speed_mps', form.data_mode !== 'fixture' ? 'from provider' : '')}
+          {numInp('GHI (W/mÂ²)', 'ghi_wm2', 'from provider')}
+          {numInp('Temperature (Â°C)', 'temperature_c', 'from provider')}
+          {numInp('Wind (m/s)', 'wind_speed_mps', 'from provider')}
           {numInp('Grid demand (MW)', 'grid_demand_mw')}
           {numInp('Forecast residual (%)', 'forecast_residual_pct')}
           {numInp('Battery SoC (%)', 'current_soc_pct')}
           {numInp('Price ($/MWh)', 'price_per_mwh')}
         </div>
-        {form.data_mode !== 'fixture' && (
-          <div style={{ fontSize: '0.78rem', color: 'var(--gp-text-muted)', marginBottom: '0.75rem' }}>
-            GHI, Temperature, and Wind speed will be fetched from Open-Meteo for ({form.latitude}, {form.longitude}).
-            Enter values to override provider signals.
-          </div>
-        )}
+        <div style={{ fontSize: '0.78rem', color: 'var(--gp-text-muted)', marginBottom: '0.75rem' }}>
+          GHI, Temperature, and Wind speed will be fetched from Open-Meteo for ({form.latitude}, {form.longitude}).
+          Enter values to override provider signals.
+        </div>
         <button onClick={run} disabled={loading} className="gp-btn gp-btn--primary">
-          {loading ? <><span className="gp-spinner" style={{ width: 14, height: 14, borderWidth: 2 }} /> Analyzing…</> : 'Analyze Snapshot'}
+          {loading ? <><span className="gp-spinner" style={{ width: 14, height: 14, borderWidth: 2 }} /> Analyzingâ€¦</> : 'Analyze Snapshot'}
         </button>
         {error && <div className="gp-callout gp-callout--danger" style={{ marginTop: '0.75rem' }}>{error}</div>}
       </DashboardCard>
@@ -245,7 +234,7 @@ export default function SiteEvaluation() {
           </DashboardCard>
 
           {/* Audit Trace */}
-          <DashboardCard title="Audit Trace — Analysis Pipeline">
+          <DashboardCard title="Audit Trace â€” Analysis Pipeline">
             <AuditTimeline
               steps={result.audit_trace?.steps ?? []}
               traceId={result.audit_trace?.trace_id}

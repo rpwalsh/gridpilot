@@ -1,3 +1,6 @@
+﻿# Proprietary (c) Ryan Walsh / Walsh Tech Group
+# All rights reserved. Professional preview only.
+
 """Contract test for S3/Parquet archive connector using local fixture."""
 from datetime import datetime, timezone
 from dispatchlayer_connector_parquet.client import ParquetConnectorClient

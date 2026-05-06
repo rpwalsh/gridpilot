@@ -1,221 +1,189 @@
-# Dispatch Layer
+﻿<!-- Proprietary (c) Ryan Walsh / Walsh Tech Group -->
+<!-- All rights reserved. Professional preview only. -->
 
-> **Dispatch Layer is a utility-grade instrumentation console for SCADA telemetry,
-> forecast envelopes, residual fields, spectral transforms, temporal playback,
-> source integrity, and audit metadata.**
+# DispatchLayer
 
-Dispatch Layer renders measured and derived data surfaces.
-It does not generate recommendations, findings, insights, summaries, reports,
-instructions, action items, or natural-language interpretations.
+DispatchLayer is an operations analytics platform for renewable power portfolios.
 
----
+Audience:
+- Plant managers
+- Regional operations managers
+- Reliability and planning teams
+- Engineers supporting telemetry and forecasting workflows
 
-## Product Boundary
+This repository is designed to support practical operational decisions. It is not a marketing site and it is not a research paper archive.
 
-See [docs/product-boundary.md](docs/product-boundary.md).
+## Software Summary
 
-The hard constraint:
+DispatchLayer helps operations teams answer four recurring questions:
 
-> The hard part is not drawing a forecast chart.
-> The hard part is knowing whether the data behind the chart deserves to be trusted.
+1. Are our data sources healthy and trustworthy right now?
+2. Are site conditions changing in ways that increase operational risk?
+3. How much confidence should we place in forecast context for planning windows?
+4. What changed, and can we trace how the system reached a recommendation?
 
-Every text string in the UI behaves like an instrument label, table header, field
-name, unit, route title, status enum, or audit key.  No generated English prose.
+The software is intentionally read-oriented: it aggregates context, evaluates data quality, and exposes transparent diagnostics for operational decision support.
 
----
+## Core Capabilities
 
-## What It Renders
+- Source visibility: connected/auth-required/cached/error state surfaced in API and dashboard views
+- Telemetry normalization: route-level logic to ingest/normalize source telemetry into practical snapshot forms
+- Forecast context views: bands, residual behavior, chart analysis, and trend exploration
+- Confidence and drift signals: manager-friendly indicators that highlight changing reliability
+- Decision traceability: structured output intended for audit/debug review
+- Connector observability: protocol-level status visibility (MQTT, OPC UA, OTEL, SiteWise, Parquet)
 
-```
-values              — numeric measurements with units
-series              — time-ordered sequences
-bands               — p10 / p50 / p90 forecast envelopes
-deltas              — observed − expected
-states              — NOMINAL / WATCH / HIGH / CRITICAL / STALE / MISSING / CONFLICT
-timestamps          — source, server, ingest
-threshold crossings — band violations, z-score thresholds
-source status       — freshness, quality code, latency, integrity %
-residuals           — signed error field
-spectra             — harmonic amplitude by frequency
-coherence           — frequency-domain agreement
-coverage            — fraction of actuals inside forecast band
-calibration         — bias, MAE, RMSE, MAPE
-latency             — p50 / p95 / p99 ingest and API latency
-integrity           — freshness, missingness, duplicate, conflict rates
-audit hashes        — SHA-256 of data + config + model version
-playback frames     — replayable historical state snapshots
-```
+## What DispatchLayer Does Today
 
----
+- Aggregates source status across public and integration-facing providers
+- Exposes API endpoints for telemetry context, site evaluation, connectors, and forecasting views
+- Provides dashboard pages for source visibility, chart exploration, forecast bands, and replay/history views
+- Surfaces degraded mode explicitly (for example missing API credentials or provider outage)
 
-## System Architecture
+## What DispatchLayer Does Not Do Today
 
-```
-Provider adapters (Open-Meteo, NASA POWER, NOAA NWS, NREL, EIA, ENTSO-E)
-  → signal normalization
-  → site structural state
-  → forecast envelope (P10/P50/P90)
-  → data-quality confidence scoring
-  → structural drift detection
-  → audit trace
-  → FastAPI JSON response
-  → React dashboard (dark green + gold instrumentation theme)
+- It does not control plant equipment
+- It does not place market bids
+- It does not replace SCADA, EMS, or historian systems
+- It does not guarantee forecast outcomes
 
-Industrial connectors (read-only):
-  OPC UA / MQTT / AWS IoT SiteWise / S3-Parquet / OpenTelemetry-OTLP
-  → TelemetrySample (timestamp + quality + value + audit_hash)
-  → connector state matrix (PipelineState page)
-```
+## Current Realism Level (Truthful Status)
 
----
+- Some API routes are wired to real public provider clients (for example Open-Meteo workflows)
+- Some route behavior is backed by local snapshot files under `data/source_snapshots` and `data/raw/curl/production_demo`
+- Some dashboard chart views use generated demo series for interaction and layout validation
+- Connector status endpoints are read-oriented and intended for visibility, not command execution
 
-## Package Layout
+If you need full production-grade integration behavior, use this repo as a baseline and complete your site-specific connector and governance requirements.
 
-| Package                                | Role |
-|----------------------------------------|------|
-| `dispatchlayer_domain`                 | Typed domain models: sites, assets, telemetry, quality |
-| `dispatchlayer_predictive`             | Signal scoring, structural state, forecast, drift |
-| `dispatchlayer_forecasting`            | P10/P50/P90 envelope computation |
-| `dispatchlayer_anomaly`                | Z-score deviation detection → `DeviationEvent` |
-| `dispatchlayer_signals`                | `SignalEvent` + `ThresholdState` evaluator |
-| `dispatchlayer_dispatch`               | Battery dispatch window analysis |
-| `dispatchlayer_simulation`             | Physics simulation |
-| `dispatchlayer_connector_otel`         | OpenTelemetry/OTLP platform observability |
-| `dispatchlayer_connector_opcua`        | OPC UA read-only SCADA connector |
-| `dispatchlayer_connector_mqtt`         | MQTT edge telemetry stream |
-| `dispatchlayer_connector_sitewise`     | AWS IoT SiteWise asset properties |
-| `dispatchlayer_connector_parquet`      | S3/Parquet historical archive replay |
-| `dispatchlayer_adapter_*`              | One adapter per external weather/grid provider |
+## System Architecture (Plain English)
 
-See [docs/connector-strategy.md](docs/connector-strategy.md).
+DispatchLayer has two runtime applications and shared package layers:
 
----
+- Dashboard (`apps/dashboard`): presents operations-facing pages for source status, analytics, and forecast interpretation
+- API (`apps/api`): FastAPI service that composes route responses from package logic, adapters, connectors, and snapshots
+- Shared packages (`packages/*`): domain models plus forecasting/predictive/signal/anomaly/recommendation modules
+- Integration edges:
+	- Adapters (`packages/adapters/*`) for provider APIs
+	- Connectors (`packages/connectors/*`) for protocol/system edges
 
-## Read-Only Connector Boundary
+Normal request flow:
 
-All industrial connectors are read-only.  No operational command path is
-implemented.  Dispatch Layer subscribes, reads, queries, and replays.
-It does not write, command, or dispatch.
+1. User opens dashboard page
+2. Dashboard requests API route
+3. Route resolves data from providers/connectors/snapshots
+4. Route returns values + warnings + source attribution
+5. Dashboard renders context and quality state
 
----
+## Operational Workflow
 
-## Local Development
+Typical manager workflow using DispatchLayer:
 
-```bash
-cp .env.example .env
-docker compose up --build
-```
+1. Open source status and verify active vs degraded feeds
+2. Review site telemetry snapshots and health indicators
+3. Check bands/residual charts for instability or drift patterns
+4. Review confidence output before planning action
+5. Record decision with source and warning context
 
-Then open:
+Recommended escalation triggers:
 
-- Dashboard: http://localhost:3000
-- API docs:  http://localhost:8000/docs
-- Health:    http://localhost:8000/health
+- Sudden sustained confidence drop
+- Multi-source outage or stale data windows
+- Residual regime shift over consecutive intervals
+- Connector error state across critical feeds
 
-### Without Docker
+## API Surface (At a Glance)
 
-```bash
-make install
-make api         # terminal 1 — FastAPI on :8000
-make dashboard   # terminal 2 — Vite on :5173
-```
+Base path: `/api/v1`
 
----
+Key route families in code:
 
-## Verification
+- telemetry
+- sites
+- forecasts
+- providers
+- connectors
+- predictive
+- dispatch
+- signals
+- anomalies
+- audit
+- ingest
 
-```bash
-make verify   # pytest + lint-language (forbidden-term check) + frontend build
-```
+Important behavior rules:
 
-The `lint-language` step greps source files for forbidden instrumentation boundary
-terms (`recommendation`, `finding`, `insight`, `suggest`, `advice`, etc.).
-It fails the build if any are found outside the allowlisted docs.
+- Responses should include explicit warnings for degraded mode
+- Source attribution should remain visible
+- UTC timestamps are expected across route payloads
+- Missing fields should remain missing, not silently fabricated
 
----
+## Data Model and Quality Posture
 
-## API Surface
+Data classes in this repository:
 
-```
-GET  /health
-GET  /providers
-GET  /providers/health
-GET  /connectors/state          — connector matrix
-GET  /connectors/protocols
-POST /sites/evaluate
-GET  /telemetry/snapshot
-POST /telemetry/ingest
-POST /forecasts/site
-POST /anomalies/detect          — returns deviation_detected + DeviationEvent
-POST /signals/evaluate          — returns SignalEvent list with ThresholdState
-POST /dispatch/optimize
-GET  /audit/traces
-```
+- Raw captures: `data/raw/*`
+- Normalized snapshots: `data/source_snapshots/*`
+- Runtime response payloads from API routes
 
----
+Quality principles:
 
-## Dashboard Pages
+- Preserve provenance
+- Keep units explicit where practical
+- Separate observed values from derived/model values
+- Treat confidence as guidance, not certainty
 
-| Page             | Renders |
-|------------------|---------|
-| System Overview  | Provider availability, signal coverage, source state |
-| Snapshot Analysis| Signal scoring, forecast context, confidence, drift, audit trace |
-| Telemetry        | SCADA fleet — actual vs. expected, deviation events, fault codes |
-| Asset State      | Z-score deviation per asset vs. physics-model expected |
-| Forecast Envelope| P10/P50/P90 production envelope |
-| Dispatch Analysis| Battery dispatch window — net generation, demand, SoC context |
-| Audit Trace      | Full pipeline audit — step, input, output, data mode, provider |
-| Source State     | Provider health — latency, freshness, configuration |
-| Proofs           | Holdout validation — forecast bands, residual field, spectral agreement, temporal playback helix |
-| Pipeline State   | Connector matrix — OPC UA / MQTT / SiteWise / OTel / Parquet state |
+## Monorepo Layout
 
----
+- `apps/api`: FastAPI service and route layer
+- `apps/dashboard`: React dashboard
+- `packages/domain`: core domain models and contracts
+- `packages/predictive`: scoring, trust, drift, decision trace support
+- `packages/forecasting`, `packages/signals`, `packages/anomaly`, `packages/recommendations`, `packages/dispatch`, `packages/simulation`: domain capabilities
+- `packages/connectors/*`: protocol/system connectors (MQTT, OPC UA, OTEL, SiteWise, Parquet)
+- `packages/adapters/*`: provider adapters
+- `docs`: product and operations documentation
+- `scripts`: capture and demo prep scripts
+- `data`: raw captures and normalized snapshots
 
-## Proofs (Holdout Validation)
+## Local Run (Short Version)
 
-The Proofs page is a blind holdout validation surface:
+1. Install Python packages for API and shared modules
+2. Install dashboard dependencies
+3. Start API from repo root
+4. Start dashboard from `apps/dashboard`
+5. Open dashboard and API docs endpoints
 
-1. Train / calibrate on **2000–2024 data only**
-2. Generate P10/P50/P90 bands without seeing 2025 actuals
-3. Overlay actual 2025 series for post-hoc validation
-4. Report: coverage, RMSE, MAE, MAPE, bias, spectral agreement
-5. Render: temporal playback signature helix (365 × 24 h deviation field)
+Full commands are in `QUICKSTART.md`.
 
-The point is not to claim prediction.  It is to prove calibration.
+## Production Readiness Notes
 
----
+This repository is a professional preview baseline, not a turnkey production system.
 
-## Testing
+Before production rollout, ensure:
 
-```bash
-pytest --import-mode=importlib -q
-```
+- AuthN/AuthZ and role policy
+- Secret management and rotation
+- Network and egress controls
+- SLOs, monitoring, and alerting
+- Audit retention and incident procedures
+- Site-specific connector hardening and failover behavior
 
-All tests use recorded fixtures.  No external calls are made.
+## Start Here
 
----
+1. Read `QUICKSTART.md` and run API + dashboard locally
+2. Read `ARCHITECTURE.md` to understand system boundaries
+3. Read `API.md` for endpoint responsibilities
+4. Read `docs/analysis-guide.md` for manager-facing workflow
 
-## AWS Deployment Path
+## Documentation Principles Used in This Repo
 
-| Component              | AWS Service |
-|------------------------|-------------|
-| API                    | ECS Fargate + ALB |
-| Dashboard              | S3 + CloudFront |
-| Scheduled ingestion    | EventBridge → ECS task |
-| Time-series storage    | Timestream or Aurora/Postgres |
-| Raw provider snapshots | S3 |
-| Secrets                | AWS Secrets Manager |
-| Observability          | CloudWatch + OpenTelemetry/OTLP |
-| Async jobs             | SQS |
-| Industrial connectors  | OPC UA / MQTT / SiteWise Edge |
+- Write to operators first
+- Say what is implemented now, not what might exist later
+- Keep degraded mode visible
+- Prefer runbooks and checklists over abstract theory
 
----
+## Access and Usage Terms
 
-## Limitations
+This repository is proprietary internal code provided as a professional preview.
 
-- No production authentication or multi-tenant model
-- No persistent storage — each API call is stateless
-- No live SCADA integration — real feeds ingested via `POST /telemetry/ingest`
-- Forecasting uses a deterministic physics-based model; no ML training pipeline
-- Connector clients are fixture-mode only; live adapters are Phase 2/3
-
+No license is granted for use, redistribution, modification, or production deployment unless explicitly authorized in writing by the code owner.

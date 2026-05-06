@@ -1,13 +1,16 @@
+﻿/*
+ * Proprietary (c) Ryan Walsh / Walsh Tech Group
+ * All rights reserved. Professional preview only.
+ */
+
 /**
- * ProviderSourcePanel – source attribution panel.
+ * ProviderSourcePanel â€“ source attribution panel.
  *
  * Ported from risklab-ui Badge + Timeline patterns.
  * Shows each provider's status, freshness, cache, and degraded-mode warnings
  * exactly as returned by the /sites/evaluate `sources` block.
  *
- * Dispatch Layer does not depend on fabricated runtime data.  The production path
- * uses real public provider adapters.  Recorded fixtures are used only for
- * tests, CI, offline demos, and failure-mode simulation.
+ * Dispatch Layer uses real public provider adapters for runtime data.
  */
 import StatusBadge, { resolveColor } from './StatusBadge'
 
@@ -31,9 +34,8 @@ interface Props {
 }
 
 const DATA_MODE_LABEL: Record<string, { label: string; color: string; desc: string }> = {
-  live:    { label: 'LIVE',    color: 'green',  desc: 'Calling real public provider APIs' },
-  fixture: { label: 'FIXTURE', color: 'blue',   desc: 'Offline fixture — tests and reproducible local analysis' },
-  hybrid:  { label: 'HYBRID',  color: 'purple', desc: 'Live where reachable; offline fixture fallback' },
+  live:    { label: 'LIVE', color: 'green', desc: 'Calling real public provider APIs' },
+  source:  { label: 'SOURCE', color: 'blue', desc: 'Captured source snapshots (offline-ready real data)' },
 }
 
 export default function ProviderSourcePanel({ dataMode, sources, warnings = [] }: Props) {
@@ -79,13 +81,13 @@ export default function ProviderSourcePanel({ dataMode, sources, warnings = [] }
               <td style={{ fontSize: '0.78rem', color: 'var(--gp-text-muted)' }}>
                 {s.freshness_utc
                   ? new Date(s.freshness_utc).toLocaleString('en-US', { timeZone: 'UTC', timeZoneName: 'short', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })
-                  : '—'}
+                  : 'â€”'}
               </td>
               <td style={{ fontSize: '0.78rem', color: 'var(--gp-text-muted)' }}>
-                {s.cache ?? '—'}
+                {s.cache ?? 'â€”'}
               </td>
               <td style={{ fontSize: '0.78rem', color: 'var(--gp-text-muted)', textAlign: 'right' }}>
-                {s.latency_ms != null ? `${s.latency_ms} ms` : '—'}
+                {s.latency_ms != null ? `${s.latency_ms} ms` : 'â€”'}
               </td>
               <td style={{ fontSize: '0.76rem', color: 'var(--gp-text-muted)', maxWidth: 240 }}>
                 {s.degraded_mode ?? s.fallback ?? s.data_notice ?? s.error ?? ''}
@@ -100,7 +102,7 @@ export default function ProviderSourcePanel({ dataMode, sources, warnings = [] }
         <div className="gp-source-panel__warnings">
           {warnings.map((w, i) => (
             <div key={i} className="gp-source-panel__warning-row">
-              <span style={{ marginRight: 6 }}>⚠</span>{w}
+              <span style={{ marginRight: 6 }}>âš </span>{w}
             </div>
           ))}
         </div>

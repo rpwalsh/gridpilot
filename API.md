@@ -1,88 +1,182 @@
-# DispatchLayer API Reference
+﻿<!-- Proprietary (c) Ryan Walsh / Walsh Tech Group -->
+<!-- All rights reserved. Professional preview only. -->
 
-Base URL: `http://localhost:8000/api/v1`
+# API Guide
 
-Interactive docs: `http://localhost:8000/docs`
+Base path: `/api/v1`
 
-## Endpoints
+This guide describes API behavior in manager- and operations-friendly terms.
 
-### Sites (Primary Entry Point)
-- `POST /sites/evaluate` — **full L→G→P→D pipeline evaluation** for a single site
+## How to Read This Guide
 
-  Accepts site context signals (lat/lon, asset type, capacity, weather, grid demand, residuals) and returns:
-  - Generation forecast with p10/p50/p90 bounds
-  - Forecast trust score with three-term error decomposition (εG + εP + εobs)
-  - Structural drift warning (regime-shift detection against trailing residuals)
-  - Ranked operational recommendations with `why_now`, `risk_if_ignored`, and estimated value
-  - Step-by-step audit trace (`trace_id`, model versions, per-step reasoning)
+- This document explains endpoint purpose and operational behavior.
+- OpenAPI (`/docs`, `/openapi.json`) remains the exact contract source for field-level schema.
+- Where behavior can degrade due to unavailable providers or missing credentials, that is called out explicitly.
 
-  ```json
-  POST /api/v1/sites/evaluate
-  {
-    "name": "site_01",
-    "latitude": 44.95,
-    "longitude": -93.09,
-    "asset_type": "solar",
-    "capacity_mw": 50.0,
-    "window_hours": 24,
-    "ghi_wm2": 650.0,
-    "temperature_c": 22.0,
-    "grid_demand_mw": 28000.0,
-    "forecast_residual_pct": -8.5,
-    "trailing_residuals": [-2, -1, 3, 1, -3],
-    "current_soc_pct": 72.0,
-    "price_per_mwh": 55.0
-  }
-  ```
+## Design Intent
 
-### Providers
-- `GET /providers` — list configured providers and their status
-- `GET /providers/health` — health check for all providers
+- Read-oriented analytics and decision support
+- Explicit source attribution and degraded-mode reporting
+- Stable, typed JSON responses for dashboard clients
 
-### Ingest
-- `POST /ingest/weather` — fetch and normalize weather forecast from a provider
+## Runtime Expectations
 
-### Forecasts
-- `POST /forecasts/site` — generate site-level generation forecast
-- `POST /forecasts/portfolio` — generate portfolio-level forecast with p10/p50/p90
+- All timestamps should be treated as UTC.
+- Responses should include warnings when data quality or source state is degraded.
+- Route handlers should not hide source failures behind synthetic success responses.
+- Missing data should remain missing unless there is an explicitly documented fallback.
 
-### Anomalies
-- `POST /anomalies/detect` — detect anomalies in asset telemetry
-- `GET /anomalies/conditions` — list anomaly condition types
+## Route Families in Codebase
 
-### Recommendations
-- `POST /recommendations/generate` — generate ranked operational recommendations
-- `GET /recommendations/types` — list recommendation types
+Current route modules under `apps/api/src/dispatchlayer_api/routes`:
+- anomalies
+- audit
+- connectors
+- dispatch
+- forecasts
+- ingest
+- predictive
+- providers
+- signals
+- sites
+- telemetry
 
-### Dispatch
-- `POST /dispatch/optimize` — optimize battery dispatch action
+## Endpoint Highlights
 
-### Predictive Operations Core
-- `POST /predictive/signal-state` — normalize and validate signal state
-- `POST /predictive/residual` — compute production residual
-- `POST /predictive/forecast-bounds` — compute p10/p50/p90 bounds
-- `POST /predictive/reconcile` — reconcile forecast with historical errors
-- `POST /predictive/causal-attribution` — attribute underproduction cause
-- `POST /predictive/confidence` — compute evidence graph confidence
+The following highlights cover operationally important routes used by current dashboard workflows.
 
-### Audit
-- `GET /audit/trace/{trace_id}` — retrieve decision trace by ID
+## Connectors
 
-### Health
-- `GET /health` — service health check
-- `GET /api/v1/health` — versioned health check
+### `GET /connectors/state`
+Purpose:
+- Show current read-state of configured connectors
 
-## Response Format
+Typical operators use this route to answer:
+- Which protocol edges are healthy right now?
+- Are sample streams arriving or stale?
+- Which connectors are in error state and need escalation?
 
-All inference responses include:
-```json
-{
-  "result": { ... },
-  "decision_trace": {
-    "trace_id": "trace_abc123",
-    "created_utc": "2024-01-15T10:00:00+00:00",
-    "steps": [...],
-    "model_versions": {}
-  }
-}
-```
+Expected response shape includes:
+- timestamp
+- connector list
+- state per connector
+- sample counts (when available)
+- error markers (when failures occur)
+
+### `GET /connectors/protocols`
+Purpose:
+- List supported connector protocols and intended use
+
+Use this route for inventory/coverage checks and protocol visibility.
+
+## Sites
+
+### `POST /sites/evaluate`
+Purpose:
+- Evaluate site context for a selected window
+
+Primary operational use:
+- Assess expected site behavior for a near-term planning window
+- Review confidence/trust and drift warnings before acting
+- Capture source and warning context for shift handoff
+
+Inputs (typical):
+- site name and location
+- asset type and capacity
+- window hours
+- optional context overrides
+
+Outputs (typical):
+- expected generation context (for example p10/p50/p90 fields)
+- trust/confidence output
+- drift summary
+- source attribution list
+- warnings list
+- audit/decision trace block
+
+Operational note:
+- Live mode attempts provider calls; warnings should surface when providers are unavailable or unconfigured.
+
+Operational caveat:
+- In development/demo environments, some context can be backed by snapshots when live providers are unavailable.
+
+## Telemetry
+
+### `POST /telemetry/ingest`
+Purpose:
+- ingest one or more telemetry points
+
+Behavior note:
+- Intended for normalized point ingestion into internal telemetry workflows.
+
+### `POST /telemetry/normalize`
+Purpose:
+- normalize raw telemetry into snapshot form
+
+Behavior note:
+- Normalization should preserve source identity and timestamp semantics.
+
+### `GET /sites/{site_id}/telemetry/latest`
+Purpose:
+- latest telemetry snapshot(s) for one site
+
+Operational use:
+- Shift start checks and quick site-level state review.
+
+### `GET /assets/{asset_id}/health`
+Purpose:
+- health summary for one asset
+
+Operational use:
+- Targeted investigation of assets that appear degraded in portfolio views.
+
+## Additional Route Families (At a Glance)
+
+- `providers`: provider state and availability context
+- `forecasts`: forecast-oriented route surface
+- `signals`: signal-level and feature context
+- `predictive`: confidence/trust/drift related outputs
+- `dispatch`: planning-support outputs (read-oriented)
+- `anomalies`: anomaly-oriented diagnostics
+- `audit`: traceability and event review support
+- `ingest`: intake and import support routes
+
+Exact endpoint lists and schemas should be taken from OpenAPI for your running build.
+
+## Response Expectations
+
+Every manager-facing endpoint should strive to include:
+- usable values
+- source state
+- warnings when data quality or availability is degraded
+- timestamps in UTC
+
+## Source of Truth for Exact Schemas
+
+Use running OpenAPI docs for your environment:
+- `/docs`
+- `/openapi.json`
+
+This file explains behavior; OpenAPI defines exact contracts.
+
+## Error and Degraded Mode Handling
+
+Expected conditions:
+- provider timeout/unavailable
+- credential missing or invalid
+- partial source windows
+- connector-side protocol errors
+
+Preferred response behavior:
+- include warnings and source state in payload
+- avoid ambiguous generic failures when partial value can be returned safely
+- keep errors explicit enough for operator escalation
+
+## Change Management Guidance
+
+When adding or changing endpoints:
+
+1. Update route tests and schema validation
+2. Ensure degraded mode behavior is explicit
+3. Verify dashboard compatibility
+4. Document operational impact in this file and in OpenAPI descriptions

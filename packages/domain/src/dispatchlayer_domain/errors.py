@@ -1,3 +1,6 @@
+﻿# Proprietary (c) Ryan Walsh / Walsh Tech Group
+# All rights reserved. Professional preview only.
+
 class ProviderError(Exception):
     def __init__(self, provider: str, message: str):
         self.provider = provider

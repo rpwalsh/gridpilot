@@ -1,22 +1,17 @@
+﻿# Proprietary (c) Ryan Walsh / Walsh Tech Group
+# All rights reserved. Professional preview only.
+
 """
 POST /api/v1/sites/evaluate
 
 Full analysis pipeline evaluation for a configured renewable site.
 Accepts lat/lon, asset type, and capacity; returns forecast context, data-quality
-confidence, structural drift warning, and audit trace — all traceable to source inputs.
+confidence, structural drift warning, and audit trace â€” all traceable to source inputs.
 
-data_mode controls the external-signal layer:
-  live    — call real public provider adapters (Open-Meteo, NASA POWER)
-  fixture — use recorded provider payloads (tests, offline analysis, CI)
-  hybrid  — live where reachable; fixture fallback for missing/failed providers
-
-Every response includes a `sources` block that attributes each signal to its
-provider, reports freshness, cache status, and any degraded-mode warnings.
-
-Dispatch Layer does not depend on fabricated runtime data.  The production path uses
-provider adapters for real public weather, solar-resource, and grid data.
-Recorded fixtures are used only for tests, CI, offline analysis, and failure-mode
-simulation.
+This endpoint runs in live-provider mode and calls real public adapters
+(Open-Meteo and optional grid-context providers configured by environment).
+Every response includes a `sources` block with attribution, freshness, cache
+status, and degraded-mode warnings.
 """
 
 from fastapi import APIRouter
@@ -25,8 +20,6 @@ from datetime import datetime, timezone, timedelta
 from typing import Literal, Optional
 import logging
 import time
-import json
-import pathlib
 
 from dispatchlayer_adapter_open_meteo.client import OpenMeteoClient
 from dispatchlayer_domain.models import GeoPoint, ForecastWindow
@@ -44,19 +37,6 @@ from dispatchlayer_predictive.decision_trace import DecisionTrace
 logger = logging.getLogger(__name__)
 router = APIRouter(tags=["sites"])
 
-_OPEN_METEO_FIXTURE = (
-    pathlib.Path(__file__).parent.parent.parent.parent.parent.parent
-    / "packages" / "adapters" / "open_meteo" / "tests" / "fixtures"
-    / "west_texas_wind_2025_06_05.json"
-)
-
-
-def _load_open_meteo_fixture() -> dict:
-    try:
-        return json.loads(_OPEN_METEO_FIXTURE.read_text())
-    except FileNotFoundError:
-        return {}
-
 
 def _extract_current_sample_from_forecast(forecast, now: datetime) -> dict:
     """Extract the weather sample closest to `now` from a WeatherForecast."""
@@ -70,42 +50,9 @@ def _extract_current_sample_from_forecast(forecast, now: datetime) -> dict:
     }
 
 
-def _extract_sample_from_fixture(fixture_data: dict, now: datetime) -> dict:
-    """Extract the weather sample closest to `now` from an Open-Meteo fixture dict."""
-    hourly = fixture_data.get("hourly", {})
-    times = hourly.get("time", [])
-    wind_speeds = hourly.get("wind_speed_10m", [])
-    radiations = hourly.get("shortwave_radiation", [])
-    temperatures = hourly.get("temperature_2m", [])
-
-    if not times:
-        return {}
-
-    best_i = 0
-    best_diff = float("inf")
-    for i, t_str in enumerate(times):
-        try:
-            t = datetime.fromisoformat(t_str).replace(tzinfo=timezone.utc)
-            diff = abs((t - now).total_seconds())
-            if diff < best_diff:
-                best_diff = diff
-                best_i = i
-        except ValueError:
-            continue
-
-    def _safe(arr: list, i: int):
-        return arr[i] if arr and i < len(arr) else None
-
-    return {
-        "wind_speed_mps": _safe(wind_speeds, best_i),
-        "ghi_wm2": _safe(radiations, best_i),
-        "temperature_c": _safe(temperatures, best_i),
-    }
-
-
-# ─────────────────────────────────────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 # Models
-# ─────────────────────────────────────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 class SiteEvaluationRequest(BaseModel):
     name: str = "demo_site"
@@ -114,13 +61,9 @@ class SiteEvaluationRequest(BaseModel):
     asset_type: str = Field("solar", description="solar | wind | wind_solar | bess")
     capacity_mw: float = Field(..., gt=0)
     window_hours: int = Field(24, ge=1, le=168)
-    data_mode: Literal["live", "fixture", "hybrid"] = Field(
-        default="hybrid",
-        description=(
-            "live=call real providers | "
-            "fixture=recorded payloads for tests/offline demo | "
-            "hybrid=live where configured, fixture for unconfigured providers"
-        ),
+    data_mode: Literal["live"] = Field(
+        default="live",
+        description="live=call real providers",
     )
     # Optional live signal overrides (ignored when data_mode=live and provider succeeds)
     wind_speed_mps: Optional[float] = None
@@ -162,9 +105,9 @@ class SiteEvaluationResponse(BaseModel):
     audit_trace: dict
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 # Provider resolution
-# ─────────────────────────────────────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 async def _resolve_weather_signals(
     req: SiteEvaluationRequest,
@@ -183,41 +126,7 @@ async def _resolve_weather_signals(
     ghi_wm2 = req.ghi_wm2
     temperature_c = req.temperature_c
 
-    if req.data_mode == "fixture":
-        fixture = _load_open_meteo_fixture()
-        if fixture:
-            sample = _extract_sample_from_fixture(fixture, now)
-            if wind_speed_mps is None:
-                wind_speed_mps = sample.get("wind_speed_mps")
-            if ghi_wm2 is None:
-                ghi_wm2 = sample.get("ghi_wm2")
-            if temperature_c is None:
-                temperature_c = sample.get("temperature_c")
-            sources.append({
-                "provider": "open_meteo",
-                "status": "fixture",
-                "freshness_utc": fixture.get("hourly", {}).get("time", ["unknown"])[0],
-                "cache": "fixture",
-                "data_notice": (
-                    "Recorded fixture for tests and offline demo. "
-                    "File: packages/adapters/open_meteo/tests/fixtures/west_texas_wind_2025_06_05.json"
-                ),
-            })
-        else:
-            sources.append({"provider": "open_meteo", "status": "fixture_not_found", "cache": "fixture"})
-            warnings.append("Open-Meteo fixture file not found; falling back to request-supplied values.")
-
-        # EIA unconfigured in fixture mode (no key set by default)
-        sources.append({
-            "provider": "eia",
-            "status": "unconfigured",
-            "degraded_mode": "grid context omitted — set DISPATCHLAYER_EIA_API_KEY to enable",
-        })
-        warnings.append("EIA_API_KEY not configured; regional grid context omitted.")
-
-        return wind_speed_mps, ghi_wm2, temperature_c, sources, warnings
-
-    # live or hybrid
+    # live only
     t_probe = time.monotonic()
     location = GeoPoint(latitude=req.latitude, longitude=req.longitude)
     window = ForecastWindow(
@@ -255,36 +164,14 @@ async def _resolve_weather_signals(
         latency_ms = round((time.monotonic() - t_probe) * 1000, 1)
         logger.warning("Open-Meteo live fetch failed (%s), falling back", exc)
 
-        if req.data_mode == "hybrid":
-            fixture = _load_open_meteo_fixture()
-            sample = _extract_sample_from_fixture(fixture, now) if fixture else {}
-            if wind_speed_mps is None:
-                wind_speed_mps = sample.get("wind_speed_mps")
-            if ghi_wm2 is None:
-                ghi_wm2 = sample.get("ghi_wm2")
-            if temperature_c is None:
-                temperature_c = sample.get("temperature_c")
-
-            sources.append({
-                "provider": "open_meteo",
-                "status": "degraded",
-                "error": str(exc)[:120],
-                "latency_ms": latency_ms,
-                "fallback": "fixture",
-                "cache": "fixture",
-            })
-            warnings.append(
-                f"Open-Meteo live fetch failed ({exc!s:.80}); used fixture fallback."
-            )
-        else:
-            # live mode, propagate error
-            sources.append({
-                "provider": "open_meteo",
-                "status": "error",
-                "error": str(exc)[:120],
-                "latency_ms": latency_ms,
-            })
-            warnings.append(f"Open-Meteo unreachable in live mode; weather signals may be absent.")
+        # live mode, do not fallback to fixtures
+        sources.append({
+            "provider": "open_meteo",
+            "status": "error",
+            "error": str(exc)[:120],
+            "latency_ms": latency_ms,
+        })
+        warnings.append(f"Open-Meteo unreachable in live mode; weather signals may be absent.")
 
     # EIA / grid context
     from ..config import get_settings
@@ -302,16 +189,16 @@ async def _resolve_weather_signals(
     return wind_speed_mps, ghi_wm2, temperature_c, sources, warnings
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 # Endpoint
-# ─────────────────────────────────────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 @router.post("/sites/evaluate", response_model=SiteEvaluationResponse)
 async def evaluate_site(req: SiteEvaluationRequest) -> SiteEvaluationResponse:
     now = datetime.now(timezone.utc)
-    trace = DecisionTrace(model_versions={"predictive_core": "0.1.0", "pipeline": "L→G→P→D"})
+    trace = DecisionTrace(model_versions={"predictive_core": "0.1.0", "pipeline": "Lâ†’Gâ†’Pâ†’D"})
 
-    # ── Provider resolution ────────────────────────────────────────────────────
+    # â”€â”€ Provider resolution â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     wind_speed_mps, ghi_wm2, temperature_c, sources, warnings = (
         await _resolve_weather_signals(req, now)
     )

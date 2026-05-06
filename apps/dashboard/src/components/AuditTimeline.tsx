@@ -1,5 +1,10 @@
+﻿/*
+ * Proprietary (c) Ryan Walsh / Walsh Tech Group
+ * All rights reserved. Professional preview only.
+ */
+
 /**
- * AuditTimeline – renders the analysis pipeline audit trace as a vertical
+ * AuditTimeline â€“ renders the analysis pipeline audit trace as a vertical
  * timeline with step names, reasoning, and I/O metadata.
  *
  * Adapted from risklab-ui Timeline / TimelineItem patterns to use the
@@ -35,11 +40,11 @@ const STEP_ICONS: Record<string, string> = {
   G_structural_summarization: 'G',
   P_predictive_evolution:     'P',
   D_decision_ranking:         'D',
-  structural_drift_detection: '⚡',
+  structural_drift_detection: 'âš¡',
 }
 
 function renderValue(v: unknown): string {
-  if (v === null || v === undefined) return '—'
+  if (v === null || v === undefined) return 'â€”'
   if (typeof v === 'string') return v
   if (typeof v === 'number') return String(v)
   return JSON.stringify(v)

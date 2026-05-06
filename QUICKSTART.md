@@ -1,158 +1,160 @@
-# DispatchLayer — Quickstart
+﻿<!-- Proprietary (c) Ryan Walsh / Walsh Tech Group -->
+<!-- All rights reserved. Professional preview only. -->
 
-Three ways to run DispatchLayer: Docker Compose (recommended), local Python + Node, or API-only.
+# Quickstart
 
----
+This quickstart is for engineers and operations support staff who need a running local instance.
 
-## Option 1: Docker Compose (full stack)
+## Outcome
 
-**Prerequisites:** Docker 24+, Docker Compose v2
+After this guide, you should have:
+
+- API running locally
+- Dashboard running locally
+- A basic verification path for source/status and chart views
+- A troubleshooting path for common startup and data issues
+
+## Prerequisites
+
+- Python 3.11+
+- Node.js 18+
+- npm 9+
+
+Recommended:
+- isolated Python environment (venv/conda/poetry)
+- two terminals (API and dashboard)
+
+## 1) Python setup
+
+From repo root, install API and core packages into your active environment:
 
 ```bash
-git clone https://github.com/rpwalsh/dispatchlayer.git
-cd dispatchlayer
-cp .env.example .env          # edit to add optional API keys (NREL, EIA, ENTSO-E)
-docker compose up --build
+pip install -e ./apps/api
+pip install -e ./packages/domain
+pip install -e ./packages/predictive
 ```
 
-| Service   | URL                          |
-|-----------|------------------------------|
-| Dashboard | http://localhost:3000        |
-| API       | http://localhost:8000        |
-| API docs  | http://localhost:8000/docs   |
+If your environment uses additional package boundaries from `packages/*`, install those as needed for your route/test scope.
 
----
+## 2) Environment configuration
 
-## Option 2: Local development
+Provider credentials are optional for local preview workflows.
 
-**Prerequisites:** Python 3.11+, Node 20+
+- If credentials are missing, routes should expose degraded/auth-required states.
+- Do not add real secrets to repo files.
 
-### Backend
+If your team uses `.env` loading, keep secrets local and out of version control.
 
-```bash
-cd dispatchlayer
-cp .env.example .env
-
-# Install all packages in editable mode
-pip install \
-  -e packages/domain \
-  -e packages/predictive \
-  -e packages/forecasting \
-  -e packages/anomaly \
-  -e packages/dispatch \
-  -e packages/recommendations \
-  -e packages/adapters/open_meteo \
-  -e packages/adapters/noaa_nws \
-  -e packages/adapters/nasa_power \
-  -e packages/adapters/nrel \
-  -e packages/adapters/eia \
-  -e packages/adapters/entsoe \
-  -e apps/api
-
-uvicorn dispatchlayer_api.main:app --reload --port 8000
-```
-
-API is now running at http://localhost:8000. Interactive docs at http://localhost:8000/docs.
-
-### Frontend
+## 3) Dashboard setup
 
 ```bash
 cd apps/dashboard
 npm install
-npm run dev         # proxies /api/* to localhost:8000 automatically
 ```
 
-Dashboard is now running at http://localhost:3000.
+If lockfile conflicts occur, use your team policy (clean install or lock refresh) before continuing.
 
----
+## 4) Run API
 
-## Option 3: API only (no frontend)
+From repo root:
 
 ```bash
-pip install -e packages/domain -e packages/predictive -e packages/forecasting \
-    -e packages/anomaly -e packages/dispatch -e packages/recommendations \
-    -e packages/adapters/open_meteo -e packages/adapters/noaa_nws \
-    -e packages/adapters/nasa_power -e packages/adapters/nrel \
-    -e packages/adapters/eia -e packages/adapters/entsoe -e apps/api
-
-uvicorn dispatchlayer_api.main:app --port 8000
+uvicorn dispatchlayer_api.main:app --reload --app-dir apps/api/src
 ```
 
----
+API default URL: `http://localhost:8000`
 
-## First API call
+Expected startup result:
+- Uvicorn starts without import errors
+- `/docs` loads in browser
 
-Verify the service is running:
+## 5) Run dashboard
+
+In a second terminal:
 
 ```bash
-curl http://localhost:8000/health
-# {"status":"ok","service":"dispatchlayer-api","version":"0.1.0"}
+cd apps/dashboard
+npm run dev
 ```
 
-Run the full L→G→P→D site evaluation pipeline:
+Dashboard default URL: `http://localhost:3001`
+
+Expected startup result:
+- Vite server starts
+- dashboard shell loads without hard crash
+
+## 6) Baseline verification checklist
+
+- Open dashboard and navigate Sources and Charts pages
+- Confirm API docs load at `/docs`
+- Confirm no immediate runtime exceptions in terminal logs
+
+Recommended deeper checks:
+
+1. Sources page shows honest status categories (connected/auth-required/cached)
+2. Charts page selections render without placeholder fall-through
+3. Bands page renders charts without vertical overflow behavior
+4. API route samples return warnings when providers are unavailable
+
+## 7) Build checks
+
+Dashboard build:
 
 ```bash
-curl -s -X POST http://localhost:8000/api/v1/sites/evaluate \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "demo_solar_site",
-    "latitude": 44.9537,
-    "longitude": -93.09,
-    "asset_type": "solar",
-    "capacity_mw": 50.0,
-    "window_hours": 24,
-    "ghi_wm2": 650.0,
-    "temperature_c": 22.0,
-    "grid_demand_mw": 28000.0,
-    "forecast_residual_pct": -8.5,
-    "current_soc_pct": 72.0,
-    "price_per_mwh": 55.0
-  }' | python3 -m json.tool
+cd apps/dashboard
+npm run build
 ```
 
-The response includes `p10_mwh`, `p50_mwh`, `p90_mwh`, `forecast_trust_score`,
-`error_decomposition`, `structural_drift`, `findings`, and a full `audit_trace`.
-
----
-
-## Environment variables
-
-| Variable                             | Default    | Description                                         |
-|--------------------------------------|------------|-----------------------------------------------------|
-| `DISPATCHLAYER_ENV`                  | `local`    | Environment name                                    |
-| `OPEN_METEO_ENABLED`                 | `true`     | Enable Open-Meteo weather adapter (no key required) |
-| `NOAA_NWS_ENABLED`                   | `true`     | Enable NOAA NWS adapter (no key required)           |
-| `NASA_POWER_ENABLED`                 | `true`     | Enable NASA POWER adapter (no key required)         |
-| `NREL_API_KEY`                       | —          | NREL API key (optional; free at developer.nrel.gov) |
-| `EIA_API_KEY`                        | —          | EIA API key (optional; free at eia.gov)             |
-| `ENTSOE_API_KEY`                     | —          | ENTSO-E API key (optional; for European grid data)  |
-| `DISPATCHLAYER_HTTP_TIMEOUT_SECONDS` | `20`       | HTTP timeout for provider calls                     |
-| `DISPATCHLAYER_HTTP_RETRIES`         | `3`        | Retry count for provider calls                      |
-| `DISPATCHLAYER_CACHE_BACKEND`        | `sqlite`   | Cache backend (`sqlite` or `none`)                  |
-
----
-
-## Running tests
+API tests (if available in your environment):
 
 ```bash
-# All adapter contract tests (offline, using fixture responses)
-pip install pytest pytest-asyncio
-pytest packages/adapters/
-
-# Individual package
-pytest packages/adapters/eia/
-pytest packages/adapters/open_meteo/
+cd apps/api
+pytest
 ```
 
----
+## 8) Data expectations in local preview
 
-## Stack summary
+Local behavior may combine:
 
-| Layer       | Technology                                   |
-|-------------|----------------------------------------------|
-| Frontend    | React 18 + TypeScript + Vite + Recharts      |
-| API         | FastAPI + Uvicorn + Pydantic v2              |
-| Core logic  | Pure Python 3.11 (no ML runtime dependency)  |
-| Adapters    | httpx, async/await, SQLite cache             |
-| Container   | Docker + Nginx (dashboard), Python slim (API)|
-| Deployment  | docker compose up --build                    |
+- live public provider calls (when available)
+- snapshot-backed responses from `data/source_snapshots`
+- demo captures under `data/raw/curl/production_demo`
+
+This is expected for professional preview workflows.
+
+## Common Failure Modes
+
+- Missing module imports:
+  - Cause: dependencies installed into a different Python environment
+  - Fix: reinstall in current environment
+
+- Empty or sparse site context:
+  - Cause: missing source snapshot/demo files or provider failures
+  - Fix: check `data/source_snapshots` and provider warning fields
+
+- Port already in use:
+  - Cause: existing local process
+  - Fix: stop conflicting process or run with alternate port
+
+## API/Dashboard mismatch troubleshooting
+
+- Symptom: dashboard page loads but cards/charts are empty
+  - Check API route response payloads and warning fields
+  - Check browser console for route/asset load errors
+
+- Symptom: route returns data but UI status labels look wrong
+  - Validate status mapping in dashboard page logic
+  - Confirm backend source status fields are explicit
+
+- Symptom: TypeScript compile failures in dashboard
+  - Run `npx tsc --noEmit` inside `apps/dashboard`
+  - Fix type contract drift between chart components and data shape
+
+## Operational handoff notes
+
+For shift-to-shift or engineer-to-operator handoff, include:
+
+1. running commit/hash
+2. active provider credential state
+3. known degraded routes/connectors
+4. unresolved warnings and owner

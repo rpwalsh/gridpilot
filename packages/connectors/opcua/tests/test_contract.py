@@ -1,3 +1,6 @@
+﻿# Proprietary (c) Ryan Walsh / Walsh Tech Group
+# All rights reserved. Professional preview only.
+
 """Contract test for OPC UA connector using local fixture."""
 from dispatchlayer_connector_opcua.client import OpcUaConnectorClient
 from dispatchlayer_connector_opcua.config import OpcUaConfig, NodeQuality

@@ -1,3 +1,6 @@
+﻿# Proprietary (c) Ryan Walsh / Walsh Tech Group
+# All rights reserved. Professional preview only.
+
 from fastapi import APIRouter
 
 router = APIRouter(tags=["audit"])

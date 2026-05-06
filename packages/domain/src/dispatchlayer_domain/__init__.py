@@ -1,3 +1,6 @@
+﻿# Proprietary (c) Ryan Walsh / Walsh Tech Group
+# All rights reserved. Professional preview only.
+
 from .models import (
     GeoPoint, ForecastWindow, WeatherSample, SolarResourceSample,
     GridDemandSample, MarketSignal, GenerationMix, AssetTelemetry,

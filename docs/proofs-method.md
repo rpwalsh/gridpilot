@@ -1,61 +1,64 @@
-# Proofs Method
+﻿<!-- Proprietary (c) Ryan Walsh / Walsh Tech Group -->
+<!-- All rights reserved. Professional preview only. -->
 
-## Overview
+# Method and Validation Notes
 
-The Proofs page implements a blind holdout protocol for forecast envelope validation.
-Training data covers 2000–2024. The 2025 series is withheld during all fitting steps
-and revealed only for post-hoc comparison.
+This document defines practical method and validation standards for predictive workflows in DispatchLayer.
 
-## Training Protocol
+## Method Overview
 
-- **Series:** Monthly mean generation (MWh), 50 MW solar site
-- **Window:** 2000-01 to 2024-12 (300 months)
-- **Features:** Calendar month (seasonal), OLS linear trend (degradation proxy)
-- **No 2025 data** is used at any step of fitting or band construction
+The predictive path combines:
+- current signal conditions
+- source quality state
+- residual error behavior
+- asset/site context
 
-## Forecast Generation
+to produce:
+- forecast context outputs
+- confidence/trust indicators
+- drift warnings
+- decision trace records
 
-1. **Calendar month means** — arithmetic mean of each month (Jan–Dec) across 25 training years
-2. **OLS trend** — linear regression on annual means; applied as forward extrapolation
-3. **Band width** — P50 ± 1.64 × σ_training (training residual standard deviation)
-   - Theoretical coverage target: 90% (P10–P90 nominal)
-   - Observed 2025 coverage: 10/12 = 83.3%
+## Validation Objectives
 
-## Spectral Validation
+- Ensure output behavior is consistent with route intent
+- Ensure degraded inputs produce degraded confidence, not deceptive normal values
+- Ensure trace records are adequate for debugging and audit
+- Ensure operator-facing summaries remain understandable and honest
 
-Harmonic amplitudes computed via discrete Fourier transform at periods T ∈ {12, 6, 4, 3} months.
-Amplitude = √(re² + im²) / N, normalized per sample.
+## Validation Layers
 
-Agreement between historical, forecast, and observed spectra validates that the seasonal
-structure of the model is consistent with the held-out series.
+1. Unit validation
+- deterministic component behavior
+- edge case handling for null/missing/partial inputs
 
-## Metrics
+2. Route validation
+- request/response contract checks
+- warning propagation behavior
+- degraded mode response checks
 
-| Metric | Definition |
-|--------|------------|
-| MAE    | Mean absolute error (MWh) |
-| RMSE   | Root mean squared error (MWh) |
-| MAPE   | Mean absolute percentage error (%) |
-| Bias   | Mean signed residual (MWh) — positive = over-forecast |
-| Coverage | Fraction of observed months inside P10–P90 band |
-| R²     | Coefficient of determination on monthly actuals vs P50 |
+3. Integration validation
+- provider/connector dependency behavior
+- timeout/auth/unavailable handling
+- snapshot fallback behavior in preview workflows
 
-## Leakage Control
+4. Operator validation
+- verify warning text and status interpretation are actionable
+- verify confidence/drift presentation aligns with decision workflow
 
-The 2025 actuals are stored in a separate array (`deviations_2025`) that is applied
-only after the forecast is fully constructed. The forecast array is generated from
-training statistics only. This separation is enforced by code structure and verified
-by the `leakage: none` audit field.
+## Evidence Standard
 
-## Audit Fields
+Acceptable evidence includes:
+- repeatable automated tests
+- route-level examples with before/after outcomes
+- incident reproductions with traceable records
 
-Each proof result carries an `audit` object with:
+Avoid relying on abstract notation without runtime evidence.
 
-- `fixture_id` — stable identifier for the holdout fixture version
-- `training_period` / `holdout_period` — date ranges
-- `method` — forecast method description
-- `band_method` — band construction formula
-- `spectral_method` — harmonic periods used
-- `n_training` / `n_holdout` — sample counts
-- `leakage` — must read `none`
-- `generated_utc` — generation timestamp
+## Release Gate Checklist
+
+Before release:
+- degraded mode tests pass
+- confidence behavior validated under poor input quality
+- trace output fields present and consistent
+- docs updated to match current implementation

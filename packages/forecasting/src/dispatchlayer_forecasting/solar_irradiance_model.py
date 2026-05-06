@@ -1,3 +1,6 @@
+﻿# Proprietary (c) Ryan Walsh / Walsh Tech Group
+# All rights reserved. Professional preview only.
+
 from __future__ import annotations
 
 _TEMP_COEFFICIENT = -0.004

@@ -1,3 +1,8 @@
+﻿/*
+ * Proprietary (c) Ryan Walsh / Walsh Tech Group
+ * All rights reserved. Professional preview only.
+ */
+
 interface StatCardProps {
   label: string
   value: string | number

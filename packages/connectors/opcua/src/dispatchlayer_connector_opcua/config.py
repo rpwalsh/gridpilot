@@ -1,8 +1,11 @@
+﻿# Proprietary (c) Ryan Walsh / Walsh Tech Group
+# All rights reserved. Professional preview only.
+
 """
 OPC UA read-only connector configuration.
 
 Implements the OPC UA connection parameters following IEC 62541.
-All paths are read-only — no write, subscribe-with-control, or method calls.
+All paths are read-only â€” no write, subscribe-with-control, or method calls.
 """
 from __future__ import annotations
 

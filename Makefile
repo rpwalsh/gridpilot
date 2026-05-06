@@ -1,4 +1,7 @@
-.PHONY: install install-connectors test lint-language frontend api docker verify
+﻿# Proprietary (c) Ryan Walsh / Walsh Tech Group
+# All rights reserved. Professional preview only.
+
+.PHONY: install install-connectors test lint-language frontend api docker verify snapshots-recommended
 
 install:
 	pip install \
@@ -34,7 +37,7 @@ install-connectors:
 test:
 	python3 -m pytest --import-mode=importlib -q
 
-# ── Forbidden-term check ────────────────────────────────────────────────────
+# â”€â”€ Forbidden-term check â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 # Dispatch Layer is instrumentation-only.  These terms indicate language
 # generation / recommendation / narrative behaviour and must not appear in
 # production code or UI copy.
@@ -58,10 +61,10 @@ lint-language:
 		--exclude="test_evaluator.py" \
 		2>/dev/null; then \
 		echo ""; \
-		echo "lint-language: FAIL — forbidden terms found (see above)"; \
+		echo "lint-language: FAIL â€” forbidden terms found (see above)"; \
 		exit 1; \
 	else \
-		echo "lint-language: OK — no forbidden terms found"; \
+		echo "lint-language: OK â€” no forbidden terms found"; \
 	fi
 
 frontend:
@@ -78,4 +81,7 @@ docker:
 
 verify: test lint-language frontend
 	@echo ""
-	@echo "verify: all checks passed ✓"
+	@echo "verify: all checks passed âœ“"
+
+snapshots-recommended:
+	python scripts/capture_all_recommended_sources.py --years 5

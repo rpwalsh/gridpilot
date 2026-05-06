@@ -1,18 +1,21 @@
+﻿# Proprietary (c) Ryan Walsh / Walsh Tech Group
+# All rights reserved. Professional preview only.
+
 """
-P Layer — Predictive Evolution Engine
+P Layer â€” Predictive Evolution Engine
 
 Takes a PortfolioState (from the G layer) and propagates it forward across a
 forecast window, producing a PredictedState with explicit confidence intervals.
 
 The uncertainty decomposition follows the three-term error bound pattern:
 
-    total_error ≤ ε_G (structural) + ε_P (predictive) + ε_obs (observational)
+    total_error â‰¤ Îµ_G (structural) + Îµ_P (predictive) + Îµ_obs (observational)
 
-- ε_G:   How well the structural state captures the current situation.
+- Îµ_G:   How well the structural state captures the current situation.
          Degrades when data quality is low or forecast disagreement is high.
-- ε_P:   How reliably the predictive model extrapolates over this horizon.
+- Îµ_P:   How reliably the predictive model extrapolates over this horizon.
          Degrades with longer horizons, weather volatility, and regime transitions.
-- ε_obs: Irreducible noise from measurement uncertainty in the source data.
+- Îµ_obs: Irreducible noise from measurement uncertainty in the source data.
 
 The three-term decomposition is what drives the ForecastTrustScore: rather than
 reporting a single opaque confidence number, we tell operators which term is
@@ -43,13 +46,13 @@ class SitePrediction:
     p50_generation_mwh: float   # central estimate
     p90_generation_mwh: float   # optimistic bound
 
-    # Error decomposition — the three actionable terms
-    structural_error: float     # εG: state quality contribution to uncertainty
-    predictive_error: float     # εP: model horizon contribution
-    observational_noise: float  # εobs: irreducible measurement floor
+    # Error decomposition â€” the three actionable terms
+    structural_error: float     # ÎµG: state quality contribution to uncertainty
+    predictive_error: float     # ÎµP: model horizon contribution
+    observational_noise: float  # Îµobs: irreducible measurement floor
 
     # Derived trust score
-    forecast_trust: float       # 1 – (εG + εP + εobs), capped [0.1, 0.97]
+    forecast_trust: float       # 1 â€“ (ÎµG + ÎµP + Îµobs), capped [0.1, 0.97]
 
     risk_factors: list[str] = field(default_factory=list)
 
@@ -90,7 +93,7 @@ class PredictiveEvolutionEngine:
     _HORIZON_ERROR_COEFFICIENTS = [(12, 0.02), (24, 0.015), (48, 0.008), (72, 0.004)]
 
     def _predictive_error_for_horizon(self, window_hours: int) -> float:
-        """ε_P component: accumulate horizon error up to window_hours."""
+        """Îµ_P component: accumulate horizon error up to window_hours."""
         error = 0.0
         remaining = window_hours
         for (band_hours, rate) in self._HORIZON_ERROR_COEFFICIENTS:
@@ -201,7 +204,7 @@ class PredictiveEvolutionEngine:
 
 # Attach helper method to SiteState to avoid circular import
 def _site_state_structural_error_proxy(self: SiteState) -> float:
-    """εG for one site: degrades with low data quality and high forecast disagreement."""
+    """ÎµG for one site: degrades with low data quality and high forecast disagreement."""
     quality_penalty = 1.0 - self.data_quality
     return min(1.0, quality_penalty * 0.6 + self.forecast_disagreement_score * 0.4)
 

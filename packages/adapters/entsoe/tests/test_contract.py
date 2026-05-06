@@ -1,3 +1,6 @@
+﻿# Proprietary (c) Ryan Walsh / Walsh Tech Group
+# All rights reserved. Professional preview only.
+
 """Contract test for ENTSO-E adapter using local fixture."""
 import pathlib
 import asyncio

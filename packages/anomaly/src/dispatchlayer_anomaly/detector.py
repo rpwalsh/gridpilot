@@ -1,3 +1,6 @@
+﻿# Proprietary (c) Ryan Walsh / Walsh Tech Group
+# All rights reserved. Professional preview only.
+
 from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Optional
@@ -34,7 +37,7 @@ class DeviationEvent:
     decision_trace: DecisionTrace
 
 
-# Backward-compat alias — prefer DeviationEvent in new code
+# Backward-compat alias â€” prefer DeviationEvent in new code
 
 
 def detect_anomaly(

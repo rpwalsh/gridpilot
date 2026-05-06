@@ -1,3 +1,6 @@
+﻿# Proprietary (c) Ryan Walsh / Walsh Tech Group
+# All rights reserved. Professional preview only.
+
 from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
@@ -76,7 +79,7 @@ def optimize_dispatch(
         target_soc_pct = current_soc_pct - (discharge_kwh / capacity_kwh * 100.0)
         revenue = discharge_kwh * _DISCHARGE_EFFICIENCY * price_per_mwh / 1000.0
         estimated_value_usd = revenue
-        reasoning.append(f"High market price ${price_per_mwh:.0f}/MWh — discharge {discharge_kwh:.0f} kWh for ${revenue:.2f} revenue")
+        reasoning.append(f"High market price ${price_per_mwh:.0f}/MWh â€” discharge {discharge_kwh:.0f} kWh for ${revenue:.2f} revenue")
         reasoning.append(f"SoC will move from {current_soc_pct:.1f}% to {target_soc_pct:.1f}%")
 
     elif price_per_mwh <= _LOW_PRICE_THRESHOLD and headroom_kwh > 0 and surplus_kwh > 0:
@@ -85,7 +88,7 @@ def optimize_dispatch(
         target_soc_pct = current_soc_pct + (charge_kwh / capacity_kwh * 100.0)
         future_value = charge_kwh * (_HIGH_PRICE_THRESHOLD - price_per_mwh) / 1000.0
         estimated_value_usd = future_value
-        reasoning.append(f"Low market price ${price_per_mwh:.0f}/MWh with surplus solar — charge {charge_kwh:.0f} kWh")
+        reasoning.append(f"Low market price ${price_per_mwh:.0f}/MWh with surplus solar â€” charge {charge_kwh:.0f} kWh")
         reasoning.append(f"SoC will move from {current_soc_pct:.1f}% to {target_soc_pct:.1f}%")
 
     elif surplus_kwh > 0 and headroom_kwh > 0 and current_soc_pct < 70.0:
@@ -93,10 +96,10 @@ def optimize_dispatch(
         charge_kwh = min(headroom_kwh, surplus_kwh * _CHARGE_EFFICIENCY, capacity_kwh * 0.2)
         target_soc_pct = current_soc_pct + (charge_kwh / capacity_kwh * 100.0)
         estimated_value_usd = charge_kwh * price_per_mwh / 1000.0 * 0.5
-        reasoning.append(f"Moderate surplus solar {surplus_kwh:.0f} kWh available — charge opportunistically")
+        reasoning.append(f"Moderate surplus solar {surplus_kwh:.0f} kWh available â€” charge opportunistically")
 
     else:
-        reasoning.append(f"Price ${price_per_mwh:.0f}/MWh is moderate; SoC {current_soc_pct:.1f}% is acceptable — hold")
+        reasoning.append(f"Price ${price_per_mwh:.0f}/MWh is moderate; SoC {current_soc_pct:.1f}% is acceptable â€” hold")
         reasoning.append("No compelling case to charge or discharge in this window")
 
     target_soc_pct = max(_MIN_SOC_PCT, min(_MAX_SOC_PCT, target_soc_pct))

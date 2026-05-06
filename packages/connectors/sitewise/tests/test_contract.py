@@ -1,3 +1,6 @@
+﻿# Proprietary (c) Ryan Walsh / Walsh Tech Group
+# All rights reserved. Professional preview only.
+
 """Contract test for AWS IoT SiteWise connector using local fixture."""
 from dispatchlayer_connector_sitewise.client import SiteWiseConnectorClient
 from dispatchlayer_connector_sitewise.config import SiteWiseConfig

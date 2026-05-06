@@ -1,3 +1,8 @@
+﻿/*
+ * Proprietary (c) Ryan Walsh / Walsh Tech Group
+ * All rights reserved. Professional preview only.
+ */
+
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import DashboardCard from '../components/DashboardCard'
@@ -14,11 +19,11 @@ interface ConnectorRow {
 }
 
 const PROTOCOL_DESCRIPTIONS: Record<string, string> = {
-  'OTLP':           'OpenTelemetry/OTLP — platform service observability',
-  'OPC UA':         'OPC UA — industrial SCADA interoperability (read-only)',
-  'MQTT':           'MQTT — edge telemetry stream subscriber (read-only)',
-  'AWS SiteWise':   'AWS IoT SiteWise — industrial asset time-series (read-only)',
-  'S3/Parquet':     'S3/Parquet — historical archive replay (read-only)',
+  'OTLP':           'OpenTelemetry/OTLP â€” platform service observability',
+  'OPC UA':         'OPC UA â€” industrial SCADA interoperability (read-only)',
+  'MQTT':           'MQTT â€” edge telemetry stream subscriber (read-only)',
+  'AWS SiteWise':   'AWS IoT SiteWise â€” industrial asset time-series (read-only)',
+  'S3/Parquet':     'S3/Parquet â€” historical archive replay (read-only)',
 }
 
 export default function PipelineState() {
@@ -35,7 +40,7 @@ export default function PipelineState() {
       setConnectors(r.data.connectors)
       setTimestamp(r.data.timestamp_utc)
     } catch {
-      setError('Could not reach API — ensure the API is running')
+      setError('Could not reach API â€” ensure the API is running')
     }
     setLoading(false)
   }
@@ -50,7 +55,7 @@ export default function PipelineState() {
       <div className="gp-page-header">
         <h1 className="gp-page-title">Pipeline State</h1>
         <p className="gp-page-subtitle">
-          Connector state — source freshness, sample counts, quality codes, and protocol status.
+          Connector state â€” source freshness, sample counts, quality codes, and protocol status.
           All connectors are read-only. No command or control paths.
         </p>
       </div>
@@ -60,14 +65,14 @@ export default function PipelineState() {
           <StatCard label="Connectors" value={connectors.length} />
           <StatCard label="Running"    value={runningCount} accent="var(--gp-green)" />
           <StatCard label="Errors"     value={errorCount}   accent={errorCount > 0 ? 'var(--gp-red)' : 'var(--gp-green)'} />
-          <StatCard label="Polled UTC" value={timestamp ? new Date(timestamp).toISOString().slice(11, 19) : '—'} sub="last state poll" />
+          <StatCard label="Polled UTC" value={timestamp ? new Date(timestamp).toISOString().slice(11, 19) : 'â€”'} sub="last state poll" />
         </div>
       )}
 
       <DashboardCard title="Connector Matrix">
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '0.75rem' }}>
           <button onClick={fetchState} disabled={loading} className="gp-btn gp-btn--primary" style={{ fontSize: '0.8rem' }}>
-            {loading ? <><span className="gp-spinner" style={{ width: 12, height: 12, borderWidth: 2 }} /> Polling…</> : 'Poll State'}
+            {loading ? <><span className="gp-spinner" style={{ width: 12, height: 12, borderWidth: 2 }} /> Pollingâ€¦</> : 'Poll State'}
           </button>
         </div>
 
@@ -101,7 +106,7 @@ export default function PipelineState() {
                       />
                     </td>
                     <td style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
-                      {c.sample_count ?? '—'}
+                      {c.sample_count ?? 'â€”'}
                     </td>
                     <td style={{ fontSize: '0.72rem', color: 'var(--gp-text-muted)' }}>
                       {c.error
@@ -119,9 +124,9 @@ export default function PipelineState() {
       <DashboardCard title="Protocol Reference">
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '0.75rem' }}>
           {[
-            { id: 'OPC_UA',     name: 'OPC UA',               purpose: 'SCADA interoperability',     note: 'IEC 62541 — industrial read-only' },
-            { id: 'MQTT',       name: 'MQTT',                  purpose: 'Edge telemetry stream',      note: 'pub-sub — read-only subscriber' },
-            { id: 'SITEWISE',   name: 'AWS IoT SiteWise',      purpose: 'Industrial asset data',      note: 'TQV — batch property read' },
+            { id: 'OPC_UA',     name: 'OPC UA',               purpose: 'SCADA interoperability',     note: 'IEC 62541 â€” industrial read-only' },
+            { id: 'MQTT',       name: 'MQTT',                  purpose: 'Edge telemetry stream',      note: 'pub-sub â€” read-only subscriber' },
+            { id: 'SITEWISE',   name: 'AWS IoT SiteWise',      purpose: 'Industrial asset data',      note: 'TQV â€” batch property read' },
             { id: 'OTLP',       name: 'OpenTelemetry/OTLP',   purpose: 'Platform observability',     note: 'API latency / trace / metrics' },
             { id: 'S3_PARQUET', name: 'S3/Parquet archive',   purpose: 'Historical replay',           note: 'holdout validation / proofs' },
           ].map(p => (
