@@ -32,9 +32,9 @@ export default function GenerationForecast() {
   }
 
   const chartData = result && !result.error ? [
-    { scenario: 'P10 (pessimistic)', kw: result.p10_kw, fill: '#ef4444' },
-    { scenario: 'P50 (expected)',    kw: result.p50_kw, fill: '#0ea5e9' },
-    { scenario: 'P90 (optimistic)',  kw: result.p90_kw, fill: '#22c55e' },
+    { scenario: 'P10 (pessimistic)', kw: result.p10_kw, fill: '#f87171' },
+    { scenario: 'P50 (expected)',    kw: result.p50_kw, fill: '#d97706' },
+    { scenario: 'P90 (optimistic)',  kw: result.p90_kw, fill: '#4ade80' },
   ] : []
 
   const spread = result && !result.error ? result.p90_kw - result.p10_kw : null
@@ -105,7 +105,7 @@ export default function GenerationForecast() {
                 formatter={(v: number) => [`${v.toFixed(0)} kW`, 'Generation']}
                 contentStyle={{ borderRadius: 8, fontSize: 12, border: '1px solid var(--gp-border)' }}
               />
-              <ReferenceLine y={result.p50_kw} stroke="var(--gp-blue)" strokeDasharray="4 2" label={{ value: 'P50', fontSize: 11, fill: '#0ea5e9' }} />
+              <ReferenceLine y={result.p50_kw} stroke="var(--gp-blue)" strokeDasharray="4 2" label={{ value: 'P50', fontSize: 11, fill: 'var(--gp-blue)' }} />
               <Bar dataKey="kw" radius={[6, 6, 0, 0]}>
                 {chartData.map((entry, i) => (
                   <Bar key={i} dataKey="kw" fill={entry.fill} />

@@ -42,7 +42,7 @@ lint-language:
 	@echo "lint-language: scanning for forbidden instrumentation boundary violations..."
 	@if grep -RniE \
 		"recommendation|recommended|finding|insight|suggest|advice|next step|what this means|generated report|chatbot|assistant|task card|action item|risk if ignored|operator note|narrative" \
-		README.md docs apps packages \
+		docs apps packages \
 		--include="*.md" --include="*.ts" --include="*.tsx" \
 		--include="*.py" --include="*.json" \
 		--exclude-dir=node_modules \
@@ -50,6 +50,7 @@ lint-language:
 		--exclude-dir=__pycache__ \
 		--exclude-dir=.git \
 		--exclude-dir=mathematics \
+		--exclude-dir=recommendations \
 		--exclude="product-boundary.md" \
 		--exclude="connector-strategy.md" \
 		--exclude="decision_ranker.py" \

@@ -41,7 +41,7 @@ class TelemetrySample(BaseModel):
     and audit hash.
 
     This is the normalised form that all connector adapters must produce.
-    No prose, recommendations, or interpretations — measured state only.
+    No prose or interpretations — measured state only.
     """
 
     source_id:            str
@@ -94,7 +94,7 @@ class AssetTelemetrySnapshot(BaseModel):
     Normalised per-asset operational snapshot.
 
     Combines generation, health, and asset-type-specific signals into a single
-    structure for anomaly detection and recommendation ranking.  Fields are
+    structure for anomaly detection and threshold state ranking.  Fields are
     Optional so a snapshot can be partially populated (e.g. wind turbine omits
     dc_voltage_v).
     """

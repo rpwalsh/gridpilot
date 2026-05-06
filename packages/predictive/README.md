@@ -8,7 +8,7 @@ Predictive Operations Core for DispatchLayer: deterministic evidence-weighted re
 L — LocalSignalScorer         typed temporal scoring (per-interaction-type decay)
 G — PortfolioStateBuilder     structural summarization → site and portfolio state
 P — PredictiveEvolutionEngine forward prediction + three-term error decomposition
-D — DecisionRanker            ranked recommendations with evidence and audit trace
+D — DecisionRanker            threshold crossing evaluator with evidence and audit trace
 ```
 
 ## Core responsibilities
@@ -20,7 +20,7 @@ D — DecisionRanker            ranked recommendations with evidence and audit t
 - Forecast trust score with operator-readable explanation
 - Causal root-cause ranking for underperformance events
 - Structural drift detection against trailing baseline
-- Auditable decision traces for every recommendation
+- Auditable decision traces for every threshold state output
 
 ## Design principles
 

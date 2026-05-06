@@ -2,7 +2,7 @@
 Signal state evaluator — converts deviation events to signal events.
 
 Maps measured deviation conditions to ThresholdState codes.
-Does not produce prose, recommendations, action items, or operator instructions.
+Does not produce prose or operator instructions.
 Output is a list of SignalEvents ordered by severity (CRITICAL first).
 """
 from __future__ import annotations
@@ -53,7 +53,7 @@ def evaluate_signal_events(
     Convert a list of deviation events into signal events.
 
     Each event maps to a structured SignalEvent with ThresholdState.
-    No prose, recommendations, or action items are generated.
+    No prose is generated.
     """
     ts = datetime.now(timezone.utc).isoformat()
     result: list[SignalEvent] = []

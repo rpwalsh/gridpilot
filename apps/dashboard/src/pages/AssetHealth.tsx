@@ -164,8 +164,8 @@ export default function AssetHealth() {
                 health: results[a.asset_id]?.deviation_detected ? 0 : 100,
               }))}>
                 <PolarGrid stroke="var(--gp-border)" />
-                <PolarAngleAxis dataKey="subject" tick={{ fontSize: 11, fill: '#64748b' }} />
-                <PolarRadiusAxis domain={[0, 100]} tick={{ fontSize: 10, fill: '#94a3b8' }} />
+                <PolarAngleAxis dataKey="subject" tick={{ fontSize: 11, fill: '#7ab87a' }} />
+                <PolarRadiusAxis domain={[0, 100]} tick={{ fontSize: 10, fill: '#4a7a4a' }} />
                 <Tooltip contentStyle={{ borderRadius: 8, fontSize: 12 }} />
                 <Radar name="Utilization" dataKey="utilization" stroke="var(--gp-blue)" fill="var(--gp-blue)" fillOpacity={0.2} />
                 <Radar name="Health" dataKey="health" stroke="var(--gp-green)" fill="var(--gp-green)" fillOpacity={0.15} />

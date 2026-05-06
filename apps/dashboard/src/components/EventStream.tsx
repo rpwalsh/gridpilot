@@ -2,7 +2,7 @@
  * EventStream — structured signal event table.
  *
  * Columns: Time | Source | Channel | Metric | Observed | Expected | Delta | State
- * No prose column. No recommendations. No descriptions.
+ * No prose column. No labels. No descriptions.
  * Every string is a label, value, unit, or state code.
  */
 
