@@ -3,7 +3,6 @@ interface StatCardProps {
   value: string | number
   sub?: string
   accent?: string
-  icon?: React.ReactNode
 }
 
 export default function StatCard({ label, value, sub, accent = 'var(--gp-blue)' }: StatCardProps) {
