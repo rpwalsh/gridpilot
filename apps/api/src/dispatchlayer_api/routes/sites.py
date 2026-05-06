@@ -211,7 +211,7 @@ async def _resolve_weather_signals(
         sources.append({
             "provider": "eia",
             "status": "unconfigured",
-            "degraded_mode": "grid context omitted — set GRIDFORGE_EIA_API_KEY to enable",
+            "degraded_mode": "grid context omitted — set DISPATCHLAYER_EIA_API_KEY to enable",
         })
         warnings.append("EIA_API_KEY not configured; regional grid context omitted.")
 

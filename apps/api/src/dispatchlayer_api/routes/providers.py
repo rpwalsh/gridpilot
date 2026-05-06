@@ -108,7 +108,7 @@ async def providers_health() -> dict:
         else:
             results[name] = {
                 "status": "unconfigured",
-                "degraded_mode": f"Set GRIDFORGE_{key_attr.upper()} to enable",
+                "degraded_mode": f"Set DISPATCHLAYER_{key_attr.upper()} to enable",
                 "checked_utc": now_utc,
             }
 

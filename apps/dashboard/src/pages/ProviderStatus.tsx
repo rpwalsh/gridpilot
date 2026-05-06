@@ -37,19 +37,19 @@ const PROVIDER_DOCS: Record<string, { label: string; url: string; description: s
     label: 'EIA',
     url: 'https://www.eia.gov/opendata/',
     description: 'U.S. Energy Information Administration — EIA-930 grid demand, generation mix.',
-    keyVar: 'GRIDFORGE_EIA_API_KEY',
+    keyVar: 'DISPATCHLAYER_EIA_API_KEY',
   },
   nrel: {
     label: 'NREL',
     url: 'https://developer.nrel.gov/',
     description: 'NREL PVWatts, Wind Toolkit, ATB. Free with registration.',
-    keyVar: 'GRIDFORGE_NREL_API_KEY',
+    keyVar: 'DISPATCHLAYER_NREL_API_KEY',
   },
   entsoe: {
     label: 'ENTSO-E',
     url: 'https://transparency.entsoe.eu/content/static_content/Static%20content/web%20api/Guide.html',
     description: 'European transmission system — day-ahead prices, generation, cross-border flows.',
-    keyVar: 'GRIDFORGE_ENTSOE_API_KEY',
+    keyVar: 'DISPATCHLAYER_ENTSOE_API_KEY',
   },
 }
 

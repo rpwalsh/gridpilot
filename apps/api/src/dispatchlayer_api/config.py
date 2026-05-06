@@ -8,7 +8,7 @@ from pydantic_settings import SettingsConfigDict
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_prefix="GRIDFORGE_",
+        env_prefix="DISPATCHLAYER_",
         extra="ignore",
         env_file=".env",
         env_file_encoding="utf-8",

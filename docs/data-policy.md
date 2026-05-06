@@ -60,7 +60,7 @@ Every response includes a `sources` array:
     {
       "provider": "eia",
       "status": "unconfigured",
-      "degraded_mode": "grid context omitted — set GRIDFORGE_EIA_API_KEY to enable"
+      "degraded_mode": "grid context omitted — set DISPATCHLAYER_EIA_API_KEY to enable"
     }
   ],
   "warnings": [
