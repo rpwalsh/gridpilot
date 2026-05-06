@@ -1,9 +1,11 @@
 /**
- * AuditTimeline – risklab-ui Timeline pattern ported into GridPilot design system.
+ * AuditTimeline – renders the analysis pipeline audit trace as a vertical
+ * timeline with step names, reasoning, and I/O metadata.
  *
- * Port of risklab-ui Timeline / TimelineItem / TimelineDot / TimelineConnector
- * adapted to use GridPilot CSS variables.  Renders an L→G→P→D pipeline audit
- * trace as a vertical timeline with step names, reasoning, and I/O metadata.
+ * Adapted from risklab-ui Timeline / TimelineItem patterns to use the
+ * Dispatch Layer CSS variable system. Shows each pipeline step (signal scoring,
+ * structural state, forecast context, drift detection) with its inputs,
+ * outputs, and reasoning so engineers can inspect the full analysis path.
  */
 
 interface AuditStep {

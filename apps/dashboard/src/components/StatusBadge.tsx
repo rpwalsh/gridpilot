@@ -16,6 +16,10 @@ const BADGE_COLORS: Record<string, BadgeColor> = {
   enabled: 'green', disabled: 'slate',
   // action
   charge: 'green', discharge: 'red', hold: 'slate',
+  // provider status
+  success: 'green', fixture: 'blue', degraded: 'amber', error: 'red',
+  unconfigured: 'slate', unreachable: 'red', configured_not_called: 'purple',
+  configured_not_probed: 'purple', fixture_not_found: 'red',
 }
 
 export function resolveColor(key: string): BadgeColor {

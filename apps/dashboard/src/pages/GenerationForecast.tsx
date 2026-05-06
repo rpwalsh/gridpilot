@@ -42,16 +42,16 @@ export default function GenerationForecast() {
   return (
     <div className="gp-grid">
       <div className="gp-page-header">
-        <h1 className="gp-page-title">Generation Forecast</h1>
-        <p className="gp-page-subtitle">Probabilistic P10/P50/P90 generation scenarios for renewable assets</p>
+        <h1 className="gp-page-title">Forecast Context</h1>
+        <p className="gp-page-subtitle">P10/P50/P90 production envelope — expected generation range given current asset type, capacity, and weather inputs</p>
       </div>
 
       {result && !result.error && (
         <div className="gp-stat-grid">
-          <StatCard label="P10 Pessimistic" value={`${result.p10_kw?.toFixed(0)} kW`} icon="" accent="var(--gp-red)" />
-          <StatCard label="P50 Expected"   value={`${result.p50_kw?.toFixed(0)} kW`} icon="" accent="var(--gp-blue)" />
-          <StatCard label="P90 Optimistic"  value={`${result.p90_kw?.toFixed(0)} kW`} icon="" accent="var(--gp-green)" />
-          <StatCard label="Forecast Spread" value={`${spread?.toFixed(0)} kW`} icon="↔" accent="var(--gp-purple)" sub="P90 minus P10 uncertainty" />
+          <StatCard label="P10 Pessimistic" value={`${result.p10_kw?.toFixed(0)} kW`} accent="var(--gp-red)" />
+          <StatCard label="P50 Expected"   value={`${result.p50_kw?.toFixed(0)} kW`} accent="var(--gp-blue)" />
+          <StatCard label="P90 Optimistic"  value={`${result.p90_kw?.toFixed(0)} kW`} accent="var(--gp-green)" />
+          <StatCard label="Uncertainty Band" value={`${spread?.toFixed(0)} kW`} accent="var(--gp-purple)" sub="P90 − P10 spread" />
         </div>
       )}
 

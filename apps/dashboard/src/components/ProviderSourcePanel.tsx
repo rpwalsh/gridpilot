@@ -5,11 +5,11 @@
  * Shows each provider's status, freshness, cache, and degraded-mode warnings
  * exactly as returned by the /sites/evaluate `sources` block.
  *
- * GridPilot does not depend on fabricated runtime data.  The production path
+ * Dispatch Layer does not depend on fabricated runtime data.  The production path
  * uses real public provider adapters.  Recorded fixtures are used only for
  * tests, CI, offline demos, and failure-mode simulation.
  */
-import StatusBadge from './StatusBadge'
+import StatusBadge, { resolveColor } from './StatusBadge'
 
 interface ProviderSource {
   provider: string
@@ -30,22 +30,10 @@ interface Props {
   warnings?: string[]
 }
 
-const STATUS_COLOR: Record<string, string> = {
-  success: 'green',
-  fixture: 'blue',
-  degraded: 'amber',
-  error: 'red',
-  unconfigured: 'slate',
-  unreachable: 'red',
-  configured_not_called: 'purple',
-  configured_not_probed: 'purple',
-  fixture_not_found: 'red',
-}
-
 const DATA_MODE_LABEL: Record<string, { label: string; color: string; desc: string }> = {
   live:    { label: 'LIVE',    color: 'green',  desc: 'Calling real public provider APIs' },
-  fixture: { label: 'FIXTURE', color: 'blue',   desc: 'Recorded payloads — tests/offline demo only' },
-  hybrid:  { label: 'HYBRID',  color: 'purple', desc: 'Live where reachable; fixture fallback' },
+  fixture: { label: 'FIXTURE', color: 'blue',   desc: 'Offline fixture — tests and reproducible local analysis' },
+  hybrid:  { label: 'HYBRID',  color: 'purple', desc: 'Live where reachable; offline fixture fallback' },
 }
 
 export default function ProviderSourcePanel({ dataMode, sources, warnings = [] }: Props) {
@@ -85,7 +73,7 @@ export default function ProviderSourcePanel({ dataMode, sources, warnings = [] }
               <td>
                 <StatusBadge
                   label={s.status.replace(/_/g, ' ')}
-                  color={STATUS_COLOR[s.status] ?? 'slate'}
+                  color={resolveColor(s.status)}
                 />
               </td>
               <td style={{ fontSize: '0.78rem', color: 'var(--gp-text-muted)' }}>

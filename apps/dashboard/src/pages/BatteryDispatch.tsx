@@ -51,21 +51,20 @@ export default function BatteryDispatch() {
   return (
     <div className="gp-grid">
       <div className="gp-page-header">
-        <h1 className="gp-page-title">Battery Dispatch</h1>
-        <p className="gp-page-subtitle">AI-driven battery charge/discharge optimization for maximum value</p>
+        <h1 className="gp-page-title">Dispatch Analysis</h1>
+        <p className="gp-page-subtitle">Battery charge/discharge state analysis — net generation, demand, and SoC context for the dispatch window</p>
       </div>
 
       {result && !result.error && (
         <div className="gp-stat-grid">
           <StatCard
-            label="Recommended Action"
+            label="Analysis Result"
             value={result.action?.toUpperCase()}
-            icon={result.action === 'charge' ? '' : result.action === 'discharge' ? '' : '⏸'}
             accent={ACTION_ACCENT[result.action] ?? 'var(--gp-slate)'}
           />
-          <StatCard label="Net Value" value={`$${result.net_value_usd?.toFixed(2)}`} icon="" accent="var(--gp-teal)" />
-          <StatCard label="Current SoC" value={`${soc}%`} icon="" accent="var(--gp-blue)" />
-          <StatCard label="Price Signal" value={`$${price}/MWh`} icon="" accent="var(--gp-purple)" />
+          <StatCard label="Net Value" value={`$${result.net_value_usd?.toFixed(2)}`} accent="var(--gp-teal)" />
+          <StatCard label="Current SoC" value={`${soc}%`} accent="var(--gp-blue)" />
+          <StatCard label="Price Signal" value={`$${price}/MWh`} accent="var(--gp-purple)" />
         </div>
       )}
 
@@ -88,7 +87,7 @@ export default function BatteryDispatch() {
             <input className="gp-input" type="number" value={demand} onChange={e => setDemand(e.target.value)} style={{ width: 90 }} />
           </label>
           <button onClick={optimize} disabled={loading} className="gp-btn gp-btn--purple">
-            {loading ? <><span className="gp-spinner" style={{ width: 14, height: 14, borderWidth: 2 }} /> Optimizing…</> : ' Optimize'}
+            {loading ? <><span className="gp-spinner" style={{ width: 14, height: 14, borderWidth: 2 }} /> Analyzing…</> : 'Analyze Dispatch Window'}
           </button>
         </div>
       </DashboardCard>
@@ -99,7 +98,7 @@ export default function BatteryDispatch() {
 
       {result && !result.error && (
         <>
-          <DashboardCard title="Dispatch Decision">
+          <DashboardCard title="Dispatch Analysis Result">
             <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
               <div style={{
                 padding: '0.75rem 2rem', borderRadius: 10,
