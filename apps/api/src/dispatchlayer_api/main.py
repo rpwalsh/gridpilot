@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routes import providers, ingest, forecasts, anomalies, signals, connectors, dispatch, audit, predictive, sites, telemetry
+from .routes import providers, ingest, forecasts, anomalies, signals, connectors, dispatch, audit, predictive, sites, telemetry, system
 
 app = FastAPI(
     title="DispatchLayer API",
@@ -32,6 +32,7 @@ app.include_router(connectors.router, prefix=_prefix)
 app.include_router(dispatch.router, prefix=_prefix)
 app.include_router(audit.router, prefix=_prefix)
 app.include_router(predictive.router, prefix=_prefix)
+app.include_router(system.router, prefix=_prefix)
 
 
 @app.get("/health")
