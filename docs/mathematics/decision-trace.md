@@ -1,10 +1,10 @@
-# Decision Trace
+# Audit Trace
 
 ## Overview
 
-Every analysis pipeline execution produces a `decision_trace` object that fully documents the reasoning chain: which inputs were used, what each pipeline step computed, and why.
+Every analysis pipeline execution produces an `audit_trace` object that fully documents the pipeline: which inputs were used, what each pipeline step computed, and the calculation method.
 
-Decision traces are the primary mechanism for post-event replay and engineering review. An engineer can take any trace ID, retrieve the trace, and inspect the exact state of every input, calculation, and intermediate output at the time of analysis.
+Audit traces are the primary mechanism for post-event replay and engineering review. An engineer can take any trace ID and inspect the exact state of every input, calculation, and intermediate output at the time of analysis.
 
 ---
 
@@ -29,7 +29,7 @@ Decision traces are the primary mechanism for post-event replay and engineering 
         "forecast_residual_pct": -8.5
       },
       "output": { "interactions_scored": 4 },
-      "reasoning": "Scored typed temporal interactions with per-type exponential decay"
+      "method": "exponential_decay_typed_interactions"
     },
     {
       "step": "G_structural_summarization",
@@ -39,7 +39,7 @@ Decision traces are the primary mechanism for post-event replay and engineering 
         "data_quality": 0.87,
         "derating_risk": 0.14
       },
-      "reasoning": "Compressed local scores into site structural state"
+      "method": "site_structural_state_compression"
     },
     {
       "step": "P_predictive_evolution",
@@ -51,13 +51,13 @@ Decision traces are the primary mechanism for post-event replay and engineering 
         "predictive_error": 0.07,
         "observational_noise": 0.04
       },
-      "reasoning": "Propagated structural state forward with P10/P50/P90 bounds and three-term error decomposition"
+      "method": "p10_p50_p90_three_term_error_decomposition"
     },
     {
       "step": "structural_drift_detection",
       "inputs": { "recent_count": 1, "baseline_count": 0 },
       "output": { "risk": "none", "reason": "Insufficient baseline for comparison" },
-      "reasoning": "Compared recent residuals against trailing baseline for regime-shift detection"
+      "method": "residual_regime_shift_detection"
     }
   ]
 }
@@ -90,10 +90,9 @@ trace_id = f"trace_{uuid.uuid4().hex[:12]}"
 
 ## Retrieving a Trace
 
-Traces are stored in the API's audit log and retrievable by ID:
+Traces are embedded inline with each API response. The audit endpoint is a placeholder for future persistent storage:
 
 ```http
-GET /api/v1/audit/traces
 GET /api/v1/audit/trace/{trace_id}
 ```
 
@@ -103,23 +102,15 @@ In a production deployment, replace the in-memory store with a document or time-
 
 ## Using Traces for Post-Event Replay
 
-The audit trace is the primary tool for understanding what the system "saw" at a specific point in time.
-
 To replay a past analysis:
 
 1. Retrieve the trace from the audit log for the timestamp of interest.
-2. Read the `L_local_signal_scoring` inputs — these are the exact signal values (weather, grid, residual) that were active at that moment, including which were from live providers and which fell back to fixture.
-3. Read the `G_structural_summarization` output — this shows the site state the pipeline derived from those signals.
-4. Read the `P_predictive_evolution` output — this shows the forecast and confidence that resulted from that structural state.
-5. Read the `structural_drift_detection` output — this shows whether drift was flagged at that time.
+2. Read the `L_local_signal_scoring` inputs — these are the exact signal values at that moment.
+3. Read the `G_structural_summarization` output — the site state derived from those signals.
+4. Read the `P_predictive_evolution` output — the forecast and confidence that resulted.
+5. Read the `structural_drift_detection` output — whether drift was flagged at that time.
 
 This allows engineers to answer: *"What did the system see, and what did it compute, at 14:32 on 5 June?"*
-
----
-
-## Output Serialization
-
-The `output` field of each `TraceStep` may contain Pydantic models, dataclasses, or other non-JSON-native types. These are serialized via `str()` during `to_dict()`, ensuring traces are always JSON-serializable regardless of the intermediate computation types used internally.
 
 ---
 

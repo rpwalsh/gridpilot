@@ -68,7 +68,7 @@ For every 1°C above 25°C, you lose 0.4% of DC output. At 45°C (a typical summ
 
 ## Operator action matrix
 
-Use this table to determine how to respond to a detected residual. The system will generate specific recommendations, but this gives you the operational framing.
+Use this table to understand the operational context for a detected residual.
 
 | Residual | Magnitude | Likely cause | First check |
 |---|---|---|---|
@@ -76,7 +76,7 @@ Use this table to determine how to respond to a detected residual. The system wi
 | Negative | 30–60% | Inverter fault, partial curtailment, clipping, icing (wind) | Check SCADA alarms, review curtailment log |
 | Negative | > 60% | Full curtailment, protection shutdown, major equipment fault | Check curtailment dispatch, review protection relay log |
 | Positive | 15–30% | Clear-sky model lag, sensor reading high | Check GHI sensor calibration, compare to adjacent site |
-| Positive | > 30% | Sensor fault (irradiance high), capacity model error | Flag for sensor inspection; do not dispatch on optimistic forecast |
+| Positive | > 30% | Sensor fault (irradiance high), capacity model error | Flag for sensor inspection; do not act on optimistic forecast |
 
 ---
 
@@ -107,7 +107,7 @@ Structural drift is different from a single-interval residual. A single negative
 1. Residual flagged as significant (|−45%| > 15% threshold).
 2. Causal attribution triggered — top hypotheses: `wake_effect` (conf 0.72), `yaw_misalignment` (conf 0.58).
 3. Trust score adjusted: structural error term rises to 0.18 (above normal) because the model expectation is substantially wrong.
-4. Recommendation generated: `[IMMEDIATE]` Investigate turbine yaw alignment and upstream wake profile before next dispatch window.
+4. Attribution output displayed in dashboard for engineering review.
 
 ---
 
@@ -115,5 +115,4 @@ Structural drift is different from a single-interval residual. A single negative
 
 - [Causal Attribution](causal-attribution.md) — how the system ranks likely causes once a residual is detected
 - [Confidence Scoring](confidence-scoring.md) — how residuals affect trust score
-- [Predictive Math Core](predictive-math-core.md) — the full L→G→P→D pipeline
-- [Operator Guide](../operator-guide.md) — live situational awareness for power engineers
+- [Predictive Math Core](predictive-math-core.md) — the full L→G→P pipeline

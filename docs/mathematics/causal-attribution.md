@@ -10,7 +10,7 @@ This is not a recommendation engine. Causal attribution produces a ranked list o
 
 ## What It Produces
 
-For a given anomaly finding, causal attribution returns a list of hypotheses sorted by confidence:
+For a given deviation event, causal attribution returns a list of hypotheses sorted by confidence:
 
 ```json
 {
@@ -97,7 +97,7 @@ Every attribution step is recorded in the analysis pipeline audit trace:
     { "cause": "wake_effect", "confidence": 0.63 },
     { "cause": "blade_degradation", "confidence": 0.57 }
   ],
-  "reasoning": "Residual -34.2% at wind 9.1 m/s matches wake_effect (c_base=0.72) and blade_degradation (c_base=0.65) conditions; both scaled by signal confidence 0.87"
+  "method": "evidence_confidence_ranking: residual -34.2% at wind 9.1 m/s; wake_effect c_base=0.72, blade_degradation c_base=0.65; both scaled by signal confidence 0.87"
 }
 ```
 

@@ -26,11 +26,11 @@ export default function AuditTrail() {
         <p className="gp-page-subtitle">Replay any decision trace by ID — every evaluation is fully auditable</p>
       </div>
 
-      <DashboardCard title="Decision Trace Lookup">
+      <DashboardCard title="Audit Trace Lookup">
         <p style={{ color: 'var(--gp-text-secondary)', marginTop: 0, fontSize: '0.875rem' }}>
-          Every API response includes a <code style={{ background: 'var(--gp-slate-bg)', padding: '1px 5px', borderRadius: 3 }}>decision_trace</code> with
+          Every API response includes an <code style={{ background: 'var(--gp-slate-bg)', padding: '1px 5px', borderRadius: 3 }}>audit_trace</code> with
           a <code style={{ background: 'var(--gp-slate-bg)', padding: '1px 5px', borderRadius: 3 }}>trace_id</code>.
-          Paste an ID below to replay the full decision pipeline.
+          Paste an ID below to look up the pipeline record.
         </p>
         <div style={{ display: 'flex', gap: '0.75rem' }}>
           <input
@@ -60,7 +60,7 @@ export default function AuditTrail() {
                 {result.steps.map((step: any, i: number) => (
                   <div key={i} className="gp-step">
                     <div className="gp-step__name">{step.step}</div>
-                    <div className="gp-step__reason">{step.reasoning}</div>
+                    <div className="gp-step__reason">{step.method}</div>
                   </div>
                 ))}
               </div>

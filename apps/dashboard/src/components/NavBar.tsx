@@ -4,14 +4,14 @@ import { useEffect, useState } from 'react'
 const NAV_ITEMS = [
   { path: '/portfolio',  label: 'Overview'          },
   { path: '/health',     label: 'Asset State'        },
-  { path: '/telemetry',  label: 'Telemetry'          },
-  { path: '/forecast',   label: 'Forecast'           },
-  { path: '/proofs',     label: 'Proofs'             },
+  { path: '/telemetry',  label: 'Live Data'          },
+  { path: '/forecast',   label: 'Forecast Band'      },
+  { path: '/proofs',     label: 'Back-Test'          },
   { path: '/evaluate',   label: 'Site Analysis'      },
-  { path: '/dispatch',   label: 'Dispatch'           },
-  { path: '/pipeline',   label: 'Pipeline'           },
+  { path: '/dispatch',   label: 'Storage State'      },
+  { path: '/pipeline',   label: 'Source Status'      },
   { path: '/providers',  label: 'Sources'            },
-  { path: '/audit',      label: 'Audit'              },
+  { path: '/audit',      label: 'Source Record'      },
 ]
 
 function LiveTime() {
@@ -36,7 +36,7 @@ export default function NavBar() {
           <div>
             <div style={{ fontSize: '0.9rem', fontWeight: 800, lineHeight: 1, color: '#f8fafc' }}>Dispatch Layer</div>
             <div style={{ fontSize: '0.6rem', color: '#4a7a4a', fontWeight: 500, lineHeight: 1, marginTop: 1 }}>
-              Utility Operations Console
+              Plant Data Display
             </div>
           </div>
         </Link>
@@ -53,8 +53,8 @@ export default function NavBar() {
 
         {/* Alerts + user */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0 }}>
-          <AlertChip icon="🔔" count={2} color="#f87171" />
-          <AlertChip icon="⚠" count={5} color="#fbbf24" />
+          <AlertChip label="ALM" count={2} color="#f87171" />
+          <AlertChip label="WRN" count={5} color="#fbbf24" />
           <div style={{ fontSize: '0.72rem', color: '#7ab87a', fontWeight: 600, paddingLeft: 8, borderLeft: 'rgba(34,197,94,0.15) 1px solid' }}>
             OPS_CTRL ▾
           </div>
@@ -94,10 +94,10 @@ function StatusPill({ label, val, mono }: { label: string; val: React.ReactNode;
   )
 }
 
-function AlertChip({ icon, count, color }: { icon: string; count: number; color: string }) {
+function AlertChip({ label, count, color }: { label: string; count: number; color: string }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-      <span style={{ fontSize: '0.75rem', color }}>{icon}</span>
+      <span style={{ fontSize: '0.65rem', fontWeight: 700, color, letterSpacing: '0.5px' }}>{label}</span>
       <span style={{ fontSize: '0.72rem', fontWeight: 800, color }}>{count}</span>
     </div>
   )

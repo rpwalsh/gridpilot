@@ -39,7 +39,7 @@ from dispatchlayer_predictive import (
     compute_trust_score,
     detect_residual_drift,
 )
-from dispatchlayer_predictive.decision_trace import DecisionTrace
+from dispatchlayer_predictive.decision_trace import AuditTrace
 
 logger = logging.getLogger(__name__)
 router = APIRouter(tags=["sites"])
@@ -309,7 +309,7 @@ async def _resolve_weather_signals(
 @router.post("/sites/evaluate", response_model=SiteEvaluationResponse)
 async def evaluate_site(req: SiteEvaluationRequest) -> SiteEvaluationResponse:
     now = datetime.now(timezone.utc)
-    trace = DecisionTrace(model_versions={"predictive_core": "0.1.0", "pipeline": "L→G→P→D"})
+    trace = AuditTrace(model_versions={"predictive_core": "0.1.0", "pipeline": "L→G→P"})
 
     # ── Provider resolution ────────────────────────────────────────────────────
     wind_speed_mps, ghi_wm2, temperature_c, sources, warnings = (
@@ -344,7 +344,7 @@ async def evaluate_site(req: SiteEvaluationRequest) -> SiteEvaluationResponse:
             "forecast_residual_pct": req.forecast_residual_pct,
         },
         output={"interactions_scored": len(scores.interactions)},
-        reasoning="Scored typed temporal interactions with per-type exponential decay",
+        method="exponential_decay_typed_interactions",
     )
 
     #  G: Structural Summarization 
@@ -364,7 +364,7 @@ async def evaluate_site(req: SiteEvaluationRequest) -> SiteEvaluationResponse:
             "data_quality": round(site_state.data_quality, 3),
             "derating_risk": round(site_state.derating_risk, 3),
         },
-        reasoning="Compressed local scores into site structural state",
+        method="site_structural_state_compression",
     )
 
     #  P: Predictive Evolution 
@@ -381,7 +381,7 @@ async def evaluate_site(req: SiteEvaluationRequest) -> SiteEvaluationResponse:
             "predictive_error": round(prediction.predictive_error, 3),
             "observational_noise": round(prediction.observational_noise, 3),
         },
-        reasoning="Propagated structural state forward with p10/p50/p90 bounds and three-term error decomposition",
+        method="p10_p50_p90_three_term_error_decomposition",
     )
 
     #  Trust score 
@@ -400,7 +400,7 @@ async def evaluate_site(req: SiteEvaluationRequest) -> SiteEvaluationResponse:
         "structural_drift_detection",
         inputs={"recent_count": len(recent), "baseline_count": len(trailing)},
         output={"risk": drift_warning.risk.value, "reason": drift_warning.reason[:80]},
-        reasoning="Compared recent residuals against trailing baseline for regime-shift detection",
+        method="residual_regime_shift_detection",
     )
 
     #  Build response 

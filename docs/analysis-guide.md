@@ -144,7 +144,7 @@ Drift does not mean something is wrong. It means the relationship between input 
 
 ## What the Audit Trace Shows
 
-Every analysis run produces a full audit trace recording each pipeline step's inputs, outputs, and reasoning. The trace is returned in the API response and displayed in the dashboard timeline.
+Every analysis run produces a full audit trace recording each pipeline step's inputs, outputs, and calculation method. The trace is returned in the API response and displayed in the dashboard timeline.
 
 Engineers can use the trace to:
 

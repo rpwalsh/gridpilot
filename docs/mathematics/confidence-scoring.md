@@ -2,9 +2,9 @@
 
 ## What confidence means in practice
 
-A confidence score is DispatchLayer's estimate of how much it trusts the signals driving a forecast or recommendation. It is not a model accuracy metric — it is a live data-quality indicator that reflects whether the inputs to the predictive core are fresh, complete, and within expected ranges.
+A confidence score is DispatchLayer's estimate of how much it trusts the signals driving a forecast or analysis. It is not a model accuracy metric — it is a live data-quality indicator that reflects whether the inputs to the predictive core are fresh, complete, and within expected ranges.
 
-A recommendation backed by a confidence of 0.85 means the system has clean, fresh, consistent signals and you can act on it with low risk of the underlying data being wrong. A recommendation backed by 0.35 means something upstream is degraded — a sensor is suspect, a provider is slow, or the observed output diverges sharply from what the model expects.
+A confidence score of 0.85 means the system has clean, fresh, consistent signals. A score of 0.35 means something upstream is degraded — a sensor is suspect, a provider is slow, or the observed output diverges sharply from what the model expects.
 
 ---
 
@@ -55,10 +55,10 @@ Quadratic weighting strongly favours the more confident source. A source with co
 
 ## What to do at each confidence level
 
-| Range | Grade | What it means | Recommended action |
+| Range | Grade | Signal state | Typical data state |
 |-------|-------|----------------|-------------------|
 | 0.8–1.0 | A | Clean signals, fresh data, model consistent with observations | Proceed automatically or with routine review |
-| 0.5–0.8 | B | Minor degradation — one provider slow, small residual, or one signal near range limits | Flag for operator awareness; act on recommendations with normal care |
+| 0.5–0.8 | B | Minor degradation — one provider slow, small residual, or one signal near range limits | Flag for review; examine audit trace |
 | 0.2–0.5 | C | Significant degradation — stale data, anomalous reading, or large residual | Do not act automatically; review the audit trace to identify which signal is degraded |
 | 0.0–0.2 | D | Severe degradation — missing data, multiple anomalous signals, or very large residual | Do not act; escalate; the forecast is not reliable enough for automated dispatch |
 

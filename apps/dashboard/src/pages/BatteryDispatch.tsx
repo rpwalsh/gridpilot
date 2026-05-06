@@ -45,22 +45,22 @@ export default function BatteryDispatch() {
     solar: Math.max(0, Number(solar) * (1 - h * 0.15)),
     demand: Number(demand),
     net: Math.max(0, Number(solar) * (1 - h * 0.15)) - Number(demand),
-    soc: Math.min(100, Math.max(0, Number(soc) + (result.action === 'charge' ? h * 5 : result.action === 'discharge' ? -h * 5 : 0))),
+    soc: Math.min(100, Math.max(0, Number(soc) + (result.storage_state === 'charge' ? h * 5 : result.storage_state === 'discharge' ? -h * 5 : 0))),
   })) : []
 
   return (
     <div className="gp-grid">
       <div className="gp-page-header">
-        <h1 className="gp-page-title">Dispatch Analysis</h1>
-        <p className="gp-page-subtitle">Battery charge/discharge state analysis — net generation, demand, and SoC context for the dispatch window</p>
+        <h1 className="gp-page-title">Storage State</h1>
+        <p className="gp-page-subtitle">Battery storage state analysis — net generation, demand, and SoC context for the window</p>
       </div>
 
       {result && !result.error && (
         <div className="gp-stat-grid">
           <StatCard
-            label="Analysis Result"
-            value={result.action?.toUpperCase()}
-            accent={ACTION_ACCENT[result.action] ?? 'var(--gp-slate)'}
+            label="Storage State"
+            value={result.storage_state?.toUpperCase()}
+            accent={ACTION_ACCENT[result.storage_state] ?? 'var(--gp-slate)'}
           />
           <StatCard label="Net Value" value={`$${result.net_value_usd?.toFixed(2)}`} accent="var(--gp-teal)" />
           <StatCard label="Current SoC" value={`${soc}%`} accent="var(--gp-blue)" />
@@ -98,19 +98,19 @@ export default function BatteryDispatch() {
 
       {result && !result.error && (
         <>
-          <DashboardCard title="Dispatch Analysis Result">
+          <DashboardCard title="Storage State Result">
             <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
               <div style={{
                 padding: '0.75rem 2rem', borderRadius: 10,
-                background: ACTION_ACCENT[result.action] ?? 'var(--gp-slate)',
+                background: ACTION_ACCENT[result.storage_state] ?? 'var(--gp-slate)',
                 color: '#fff', fontWeight: 800, fontSize: '1.4rem', letterSpacing: 1,
               }}>
-                {result.action?.toUpperCase()}
+                {result.storage_state?.toUpperCase()}
               </div>
-              <div style={{ flex: 1, minWidth: 200 }}>
-                <ul style={{ margin: 0, paddingLeft: '1.25rem', color: 'var(--gp-text-secondary)', fontSize: '0.875rem' }}>
-                  {result.reasoning?.map((r: string, i: number) => <li key={i} style={{ marginBottom: 4 }}>{r}</li>)}
-                </ul>
+              <div style={{ flex: 1, minWidth: 200, color: 'var(--gp-text-secondary)', fontSize: '0.875rem' }}>
+                <div><strong>Target SoC:</strong> {result.target_soc_pct?.toFixed(1)}%</div>
+                <div><strong>Estimated value:</strong> ${result.estimated_value_usd?.toFixed(2)}</div>
+                <div><strong>Window:</strong> {result.window_hours}h</div>
               </div>
             </div>
           </DashboardCard>

@@ -7,14 +7,13 @@ Interactive docs: `http://localhost:8000/docs`
 ## Endpoints
 
 ### Sites (Primary Entry Point)
-- `POST /sites/evaluate` — **full L→G→P→D pipeline evaluation** for a single site
+- `POST /sites/evaluate` — **full L→G→P pipeline evaluation** for a single site
 
   Accepts site context signals (lat/lon, asset type, capacity, weather, grid demand, residuals) and returns:
   - Generation forecast with p10/p50/p90 bounds
   - Forecast trust score with three-term error decomposition (εG + εP + εobs)
   - Structural drift warning (regime-shift detection against trailing residuals)
-  - Ranked operational recommendations with `why_now`, `risk_if_ignored`, and estimated value
-  - Step-by-step audit trace (`trace_id`, model versions, per-step reasoning)
+  - Step-by-step audit trace (`trace_id`, model versions, per-step method)
 
   ```json
   POST /api/v1/sites/evaluate
@@ -40,22 +39,18 @@ Interactive docs: `http://localhost:8000/docs`
 - `GET /providers/health` — health check for all providers
 
 ### Ingest
-- `POST /ingest/weather` — fetch and normalize weather forecast from a provider
+- `POST /ingest/weather` — fetch and normalize weather data from a provider
 
 ### Forecasts
 - `POST /forecasts/site` — generate site-level generation forecast
 - `POST /forecasts/portfolio` — generate portfolio-level forecast with p10/p50/p90
 
 ### Anomalies
-- `POST /anomalies/detect` — detect anomalies in asset telemetry
+- `POST /anomalies/detect` — detect deviations in asset telemetry
 - `GET /anomalies/conditions` — list anomaly condition types
 
-### Recommendations
-- `POST /recommendations/generate` — generate ranked operational recommendations
-- `GET /recommendations/types` — list recommendation types
-
 ### Dispatch
-- `POST /dispatch/optimize` — optimize battery dispatch action
+- `POST /dispatch/optimize` — compute battery storage state for dispatch window
 
 ### Predictive Operations Core
 - `POST /predictive/signal-state` — normalize and validate signal state
@@ -65,8 +60,15 @@ Interactive docs: `http://localhost:8000/docs`
 - `POST /predictive/causal-attribution` — attribute underproduction cause
 - `POST /predictive/confidence` — compute evidence graph confidence
 
+### Signals
+- `POST /signals/evaluate` — evaluate signal events and threshold states
+
+### Connectors
+- `GET /connectors/state` — connector matrix (OPC UA / MQTT / SiteWise / OTel / Parquet)
+- `GET /connectors/protocols` — list supported connector protocols
+
 ### Audit
-- `GET /audit/trace/{trace_id}` — retrieve decision trace by ID
+- `GET /audit/trace/{trace_id}` — look up audit trace by ID
 
 ### Health
 - `GET /health` — service health check
@@ -74,15 +76,33 @@ Interactive docs: `http://localhost:8000/docs`
 
 ## Response Format
 
-All inference responses include:
+All inference responses include an `audit_trace` object:
+
 ```json
 {
   "result": { ... },
-  "decision_trace": {
+  "audit_trace": {
     "trace_id": "trace_abc123",
     "created_utc": "2024-01-15T10:00:00+00:00",
-    "steps": [...],
-    "model_versions": {}
+    "model_versions": { "predictive_core": "0.1.0" },
+    "steps": [
+      {
+        "step": "L_local_signal_scoring",
+        "inputs": { "data_mode": "hybrid", "wind_speed_mps": 9.1 },
+        "output": { "interactions_scored": 4 },
+        "method": "exponential_decay_typed_interactions"
+      }
+    ]
   }
 }
 ```
+
+## Product boundary
+
+Dispatch Layer is read-only. The API does not:
+- Generate recommendations or operator instructions
+- Return `why_now`, `risk_if_ignored`, or narrative text fields
+- Issue commands or write setpoints
+- Run language models or chatbot responses
+
+All responses are structured data: numbers, enums, timestamps, IDs, and audit records.

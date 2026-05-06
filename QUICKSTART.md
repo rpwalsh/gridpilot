@@ -40,7 +40,6 @@ pip install \
   -e packages/forecasting \
   -e packages/anomaly \
   -e packages/dispatch \
-  -e packages/recommendations \
   -e packages/adapters/open_meteo \
   -e packages/adapters/noaa_nws \
   -e packages/adapters/nasa_power \
@@ -70,7 +69,7 @@ Dashboard is now running at http://localhost:3000.
 
 ```bash
 pip install -e packages/domain -e packages/predictive -e packages/forecasting \
-    -e packages/anomaly -e packages/dispatch -e packages/recommendations \
+    -e packages/anomaly -e packages/dispatch \
     -e packages/adapters/open_meteo -e packages/adapters/noaa_nws \
     -e packages/adapters/nasa_power -e packages/adapters/nrel \
     -e packages/adapters/eia -e packages/adapters/entsoe -e apps/api
@@ -89,7 +88,7 @@ curl http://localhost:8000/health
 # {"status":"ok","service":"dispatchlayer-api","version":"0.1.0"}
 ```
 
-Run the full L→G→P→D site evaluation pipeline:
+Run the full L→G→P site evaluation pipeline:
 
 ```bash
 curl -s -X POST http://localhost:8000/api/v1/sites/evaluate \
@@ -111,7 +110,26 @@ curl -s -X POST http://localhost:8000/api/v1/sites/evaluate \
 ```
 
 The response includes `p10_mwh`, `p50_mwh`, `p90_mwh`, `forecast_trust_score`,
-`error_decomposition`, `structural_drift`, `findings`, and a full `audit_trace`.
+`error_decomposition`, `structural_drift`, and a full `audit_trace`.
+
+---
+
+## Source snapshots
+
+The Back-Test page renders from cached source snapshots, not live API calls.
+
+To capture a real weather snapshot for the Back-Test view:
+
+```bash
+python scripts/capture_weather_snapshot.py \
+  --lat 31.97 \
+  --lon -102.08 \
+  --start 2000-01-01 \
+  --end 2024-12-31 \
+  --out data/source_snapshots/weather/open_meteo_west_texas_2000_2024.json
+```
+
+See `data/source_snapshots/weather/README.md` for the snapshot format.
 
 ---
 
@@ -135,13 +153,15 @@ The response includes `p10_mwh`, `p50_mwh`, `p90_mwh`, `forecast_trust_score`,
 ## Running tests
 
 ```bash
-# All adapter contract tests (offline, using fixture responses)
-pip install pytest pytest-asyncio
-pytest packages/adapters/
+make install
+make test
+```
 
-# Individual package
-pytest packages/adapters/eia/
-pytest packages/adapters/open_meteo/
+Or manually:
+
+```bash
+PYTHONPATH=packages/domain/src:packages/predictive/src:packages/forecasting/src:packages/anomaly/src:packages/dispatch/src:packages/signals/src:packages/simulation/src:packages/adapters/open_meteo/src:packages/adapters/noaa_nws/src:packages/adapters/nasa_power/src:packages/adapters/nrel/src:packages/adapters/eia/src:packages/adapters/entsoe/src:packages/connectors/opentelemetry/src:packages/connectors/opcua/src:packages/connectors/mqtt/src:packages/connectors/sitewise/src:packages/connectors/parquet/src:apps/api/src \
+  python3 -m pytest --import-mode=importlib -q
 ```
 
 ---

@@ -10,7 +10,7 @@
 
 interface AuditStep {
   step: string
-  reasoning?: string
+  method?: string
   inputs?: Record<string, unknown>
   output?: unknown
   timestamp?: string
@@ -91,8 +91,8 @@ export default function AuditTimeline({ steps, traceId, modelVersions }: AuditTi
                 <div className="gp-timeline__step-name" style={{ color }}>
                   {step.step.replace(/_/g, ' ')}
                 </div>
-                {step.reasoning && (
-                  <div className="gp-timeline__reasoning">{step.reasoning}</div>
+                {step.method && (
+                  <div className="gp-timeline__reasoning">{step.method}</div>
                 )}
                 {(step.inputs || step.output != null) && (
                   <div className="gp-timeline__meta">

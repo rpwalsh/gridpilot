@@ -74,7 +74,7 @@ Each reconciliation step is recorded in the pipeline audit trace:
     "n_sources": 2
   },
   "output": { "reconciled_value": 690.4, "weights": [0.828, 0.548] },
-  "reasoning": "Weighted average of 2 sources using quadratic confidence weights"
+  "method": "weighted_average_quadratic_confidence_weights"
 }
 ```
 

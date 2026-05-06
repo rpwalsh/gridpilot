@@ -1,5 +1,7 @@
 .PHONY: install install-connectors test lint-language frontend api docker verify
 
+PYTHONPATH := packages/domain/src:packages/predictive/src:packages/forecasting/src:packages/anomaly/src:packages/dispatch/src:packages/signals/src:packages/simulation/src:packages/adapters/open_meteo/src:packages/adapters/noaa_nws/src:packages/adapters/nasa_power/src:packages/adapters/nrel/src:packages/adapters/eia/src:packages/adapters/entsoe/src:packages/connectors/opentelemetry/src:packages/connectors/opcua/src:packages/connectors/mqtt/src:packages/connectors/sitewise/src:packages/connectors/parquet/src:apps/api/src
+
 install:
 	pip install \
 		-e packages/domain \
@@ -32,7 +34,7 @@ install-connectors:
 		-e packages/connectors/parquet
 
 test:
-	python3 -m pytest --import-mode=importlib -q
+	PYTHONPATH=$(PYTHONPATH) python3 -m pytest --import-mode=importlib -q
 
 # ── Forbidden-term check ────────────────────────────────────────────────────
 # Dispatch Layer is instrumentation-only.  These terms indicate language
@@ -41,19 +43,17 @@ test:
 lint-language:
 	@echo "lint-language: scanning for forbidden instrumentation boundary violations..."
 	@if grep -RniE \
-		"recommendation|recommended|finding|insight|suggest|advice|next step|what this means|generated report|chatbot|assistant|task card|action item|risk if ignored|operator note|narrative" \
-		docs apps packages \
+		"recommendation|recommended|finding|insight|suggest|advice|next step|what this means|generated report|chatbot|assistant|task card|action item|risk if ignored|operator note|narrative|why_now" \
+		README.md API.md ARCHITECTURE.md DOMAIN_MODEL.md QUICKSTART.md docs apps packages \
 		--include="*.md" --include="*.ts" --include="*.tsx" \
 		--include="*.py" --include="*.json" \
 		--exclude-dir=node_modules \
+		--exclude-dir=dist \
 		--exclude-dir=.venv \
 		--exclude-dir=__pycache__ \
 		--exclude-dir=.git \
-		--exclude-dir=mathematics \
-		--exclude-dir=recommendations \
 		--exclude="product-boundary.md" \
 		--exclude="connector-strategy.md" \
-		--exclude="decision_ranker.py" \
 		--exclude="proofs-method.md" \
 		--exclude="test_evaluator.py" \
 		2>/dev/null; then \
@@ -78,4 +78,4 @@ docker:
 
 verify: test lint-language frontend
 	@echo ""
-	@echo "verify: all checks passed ✓"
+	@echo "verify: all checks passed"
