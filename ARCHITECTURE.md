@@ -23,7 +23,7 @@ DispatchLayer is designed as a decision-support and observability layer, not as 
 ## 2) Topology
 
 Main components:
-- Dashboard UI (`apps/dashboard`)
+- Dashboard UI (`apps/dashboard`, Vue 3 + Vite)
 - API service (`apps/api`)
 - Domain and predictive packages (`packages/*`)
 - Integration edges (adapters and connectors)
@@ -42,6 +42,8 @@ Typical request path:
 
 - Dashboard pages call route families by concern (sources, telemetry, forecasts, analytics).
 - UI rendering depends on both values and status metadata (warnings/source state).
+- The active browser entrypoint is `apps/dashboard/src/main.ts`, with route composition in `apps/dashboard/src/router.ts`.
+- Archived React code under `apps/dashboard/src/react-backup` is not part of the active runtime path.
 
 ### API to Domain/Predictive Packages
 
@@ -93,6 +95,10 @@ Dashboard responsibilities:
 - Visualize historical and forecast context
 - Show confidence and residual behavior in understandable terms
 - Avoid hidden assumptions about credentialed sources
+
+Frontend runtime notes:
+- Local development runs through the Vite dev server on port 3000 by default.
+- Production-style builds are created with `npm run build` in `apps/dashboard`.
 
 Important truth:
 - Not all visualizations are currently backed by production telemetry pipelines; some are demonstration datasets.

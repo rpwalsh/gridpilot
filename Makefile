@@ -1,7 +1,7 @@
 ﻿# Proprietary (c) Ryan Walsh / Walsh Tech Group
 # All rights reserved. Professional preview only.
 
-.PHONY: install install-connectors test lint-language frontend api docker verify snapshots-recommended
+.PHONY: install install-connectors test lint-language frontend api docker verify snapshots-recommended up-stack
 
 install:
 	pip install \
@@ -85,3 +85,6 @@ verify: test lint-language frontend
 
 snapshots-recommended:
 	python scripts/capture_all_recommended_sources.py --years 5
+
+up-stack:
+	powershell -ExecutionPolicy Bypass -File scripts/dev_stack.ps1

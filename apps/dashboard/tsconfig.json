@@ -10,12 +10,12 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx",
     "strict": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.vue", "src/**/*.test.ts"],
+  "exclude": ["src/react-port/**", "src/react-backup/**"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

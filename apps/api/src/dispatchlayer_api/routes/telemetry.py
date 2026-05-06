@@ -550,3 +550,89 @@ async def overview_source_summary() -> dict:
         },
     }
 
+
+_PRODUCTION_DEMO_FILES: dict[str, pathlib.Path] = {}
+
+def _site_file_map() -> dict[str, pathlib.Path]:
+    """Lazily build site_id → Path mapping from catalog."""
+    global _PRODUCTION_DEMO_FILES
+    if _PRODUCTION_DEMO_FILES:
+        return _PRODUCTION_DEMO_FILES
+    catalog = _load_production_demo_catalog()
+    repo_root = pathlib.Path(__file__).parent.parent.parent.parent.parent.parent
+    for rec in [*catalog.get("solar_sites", []), *catalog.get("wind_sites", [])]:
+        ts_file = rec.get("timeseries_file")
+        site_id = rec.get("site_id")
+        if ts_file and site_id:
+            _PRODUCTION_DEMO_FILES[str(site_id)] = repo_root / ts_file
+    return _PRODUCTION_DEMO_FILES
+
+
+@router.get("/timeseries/{site_id}")
+async def site_timeseries(
+    site_id: str,
+    hours: int = Query(default=168, ge=1, le=8760, description="Number of trailing hours to return"),
+) -> dict:
+    """
+    Return the last N hourly rows from the real Open-Meteo archive for a site.
+
+    All values are measured or reanalysis data from the Open-Meteo archive API
+    (ERA5/ECMWF). No synthetic or interpolated values are added.
+    """
+    fmap = _site_file_map()
+    path = fmap.get(site_id)
+    if path is None:
+        return {"error": f"Unknown site_id: {site_id}. Known sites: {sorted(fmap.keys())}"}
+    if not path.exists():
+        return {"error": f"Archive file not found: {path}"}
+
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return {"error": f"Failed to load archive: {exc}"}
+
+    hourly = payload.get("hourly", {})
+    times: list = hourly.get("time", [])
+    n = len(times)
+    if n == 0:
+        return {"error": "No time series data in archive file"}
+
+    start = max(0, n - hours)
+    rows: list[dict] = []
+    for i in range(start, n):
+        row: dict[str, Any] = {"ts": times[i]}
+        for field in [
+            "temperature_2m", "wind_speed_10m", "wind_speed_80m", "wind_speed_120m",
+            "wind_direction_10m", "wind_gusts_10m",
+            "shortwave_radiation", "direct_normal_irradiance", "diffuse_radiation",
+            "cloud_cover", "cloud_cover_low", "cloud_cover_mid", "cloud_cover_high",
+            "relative_humidity_2m", "precipitation", "pressure_msl",
+            "vapour_pressure_deficit",
+        ]:
+            arr = hourly.get(field)
+            if isinstance(arr, list) and i < len(arr):
+                row[field] = arr[i]
+        rows.append(row)
+
+    catalog_site: dict[str, Any] = {}
+    catalog = _load_production_demo_catalog()
+    for rec in [*catalog.get("solar_sites", []), *catalog.get("wind_sites", [])]:
+        if rec.get("site_id") == site_id:
+            catalog_site = rec
+            break
+
+    return {
+        "site_id": site_id,
+        "name": catalog_site.get("name") or site_id,
+        "asset_type": "solar" if site_id.startswith("solar_") else "wind",
+        "region": catalog_site.get("region"),
+        "latitude": payload.get("latitude"),
+        "longitude": payload.get("longitude"),
+        "source": "open_meteo_archive",
+        "hours_returned": len(rows),
+        "hours_requested": hours,
+        "archive_total_hours": n,
+        "hourly_units": payload.get("hourly_units", {}),
+        "rows": rows,
+    }
+

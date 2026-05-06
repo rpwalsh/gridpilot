@@ -64,12 +64,17 @@ If you need full production-grade integration behavior, use this repo as a basel
 
 DispatchLayer has two runtime applications and shared package layers:
 
-- Dashboard (`apps/dashboard`): presents operations-facing pages for source status, analytics, and forecast interpretation
+- Dashboard (`apps/dashboard`): Vue 3 + Vite single-page app for operations-facing pages, bootstrapped from `src/main.ts` and `src/router.ts`
 - API (`apps/api`): FastAPI service that composes route responses from package logic, adapters, connectors, and snapshots
 - Shared packages (`packages/*`): domain models plus forecasting/predictive/signal/anomaly/recommendation modules
 - Integration edges:
 	- Adapters (`packages/adapters/*`) for provider APIs
 	- Connectors (`packages/connectors/*`) for protocol/system edges
+
+Frontend implementation note:
+
+- The active frontend is the Vue application under `apps/dashboard/src`
+- `apps/dashboard/src/react-backup` is retained only as a reference archive from the earlier React implementation and is not the runtime entrypoint
 
 Normal request flow:
 
@@ -139,7 +144,7 @@ Quality principles:
 ## Monorepo Layout
 
 - `apps/api`: FastAPI service and route layer
-- `apps/dashboard`: React dashboard
+- `apps/dashboard`: Vue dashboard (active app) plus archived React backup sources under `src/react-backup`
 - `packages/domain`: core domain models and contracts
 - `packages/predictive`: scoring, trust, drift, decision trace support
 - `packages/forecasting`, `packages/signals`, `packages/anomaly`, `packages/recommendations`, `packages/dispatch`, `packages/simulation`: domain capabilities
@@ -154,7 +159,7 @@ Quality principles:
 1. Install Python packages for API and shared modules
 2. Install dashboard dependencies
 3. Start API from repo root
-4. Start dashboard from `apps/dashboard`
+4. Start the Vue dashboard from `apps/dashboard`
 5. Open dashboard and API docs endpoints
 
 Full commands are in `QUICKSTART.md`.

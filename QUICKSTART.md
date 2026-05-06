@@ -47,6 +47,9 @@ If your team uses `.env` loading, keep secrets local and out of version control.
 
 ## 3) Dashboard setup
 
+The active frontend is the Vue 3 dashboard in `apps/dashboard/src`.
+The older React implementation is kept only as a backup/reference under `apps/dashboard/src/react-backup`.
+
 ```bash
 cd apps/dashboard
 npm install
@@ -78,16 +81,23 @@ npm run dev
 ```
 
 Dashboard default URL: `http://localhost:3001`
+Dashboard default URL: `http://localhost:3000`
 
 Expected startup result:
 - Vite server starts
-- dashboard shell loads without hard crash
+- Vue dashboard shell loads without hard crash
 
 ## 6) Baseline verification checklist
 
 - Open dashboard and navigate Sources and Charts pages
 - Confirm API docs load at `/docs`
 - Confirm no immediate runtime exceptions in terminal logs
+
+Frontend implementation check:
+
+- `src/main.ts` is the Vite entrypoint
+- `src/router.ts` owns the active SPA route table
+- `src/react-backup` is not used by `npm run dev` or `npm run build`
 
 Recommended deeper checks:
 
@@ -134,7 +144,7 @@ This is expected for professional preview workflows.
 
 - Port already in use:
   - Cause: existing local process
-  - Fix: stop conflicting process or run with alternate port
+  - Fix: stop the conflicting process on port 3000 or run Vite with an alternate port
 
 ## API/Dashboard mismatch troubleshooting
 
