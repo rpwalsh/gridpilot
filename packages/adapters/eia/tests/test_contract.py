@@ -4,8 +4,8 @@ import pathlib
 import asyncio
 from datetime import datetime, timezone
 
-from gridforge_domain.models import ForecastWindow
-from gridforge_adapter_eia.client import EiaClient
+from dispatchlayer_domain.models import ForecastWindow
+from dispatchlayer_adapter_eia.client import EiaClient
 
 FIXTURE = pathlib.Path(__file__).parent / "fixtures" / "sample_response.json"
 
@@ -25,7 +25,7 @@ def test_eia_contract():
 
 
 def test_eia_no_key_returns_empty():
-    from gridforge_adapter_eia.config import EiaConfig
+    from dispatchlayer_adapter_eia.config import EiaConfig
     config = EiaConfig(api_key=None)
     client = EiaClient(config=config)
     window = ForecastWindow(

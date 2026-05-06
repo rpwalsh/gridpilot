@@ -17,36 +17,62 @@ export default function AuditTrail() {
     setLoading(false)
   }
 
+  const handleKey = (e: React.KeyboardEvent) => { if (e.key === 'Enter') lookup() }
+
   return (
-    <div style={{ display: 'grid', gap: '1.5rem' }}>
-      <h1 style={{ margin: 0, color: '#1e293b' }}>Audit Trail</h1>
+    <div className="gp-grid">
+      <div className="gp-page-header">
+        <h1 className="gp-page-title">Audit Trail</h1>
+        <p className="gp-page-subtitle">Replay any decision trace by ID — every evaluation is fully auditable</p>
+      </div>
+
       <DashboardCard title="Decision Trace Lookup">
-        <p style={{ color: '#64748b', marginTop: 0 }}>
-          Every API response includes a <code>decision_trace</code> with a <code>trace_id</code>. Paste an ID below to look it up.
+        <p style={{ color: 'var(--gp-text-secondary)', marginTop: 0, fontSize: '0.875rem' }}>
+          Every API response includes a <code style={{ background: 'var(--gp-slate-bg)', padding: '1px 5px', borderRadius: 3 }}>decision_trace</code> with
+          a <code style={{ background: 'var(--gp-slate-bg)', padding: '1px 5px', borderRadius: 3 }}>trace_id</code>.
+          Paste an ID below to replay the full decision pipeline.
         </p>
         <div style={{ display: 'flex', gap: '0.75rem' }}>
           <input
             type="text"
             value={traceId}
             onChange={e => setTraceId(e.target.value)}
+            onKeyDown={handleKey}
             placeholder="trace_abc123..."
-            style={{ flex: 1, padding: '0.4rem 0.75rem', border: '1px solid #cbd5e1', borderRadius: 4 }}
+            className="gp-input"
+            style={{ flex: 1 }}
           />
-          <button onClick={lookup} disabled={loading} style={{
-            padding: '0.5rem 1rem', background: '#1e293b', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer'
-          }}>
-            {loading ? 'Looking up...' : 'Lookup'}
+          <button onClick={lookup} disabled={loading || !traceId.trim()} className="gp-btn gp-btn--dark">
+            {loading ? <><span className="gp-spinner" style={{ width: 14, height: 14, borderWidth: 2 }} /> Looking up</> : 'Lookup'}
           </button>
         </div>
-        {result && (
-          <pre style={{
-            marginTop: '1rem', background: '#f8fafc', padding: '1rem', borderRadius: 4,
-            fontSize: '0.8rem', overflow: 'auto', maxHeight: 400
-          }}>
-            {JSON.stringify(result, null, 2)}
-          </pre>
-        )}
       </DashboardCard>
+
+      {result?.error && (
+        <div className="gp-callout gp-callout--danger">{result.error}</div>
+      )}
+
+      {result && !result.error && (
+        <>
+          {result.steps && (
+            <DashboardCard title="Pipeline Steps">
+              <div>
+                {result.steps.map((step: any, i: number) => (
+                  <div key={i} className="gp-step">
+                    <div className="gp-step__name">{step.step}</div>
+                    <div className="gp-step__reason">{step.reasoning}</div>
+                  </div>
+                ))}
+              </div>
+            </DashboardCard>
+          )}
+
+          <DashboardCard title="Raw Trace">
+            <pre className="gp-pre">{JSON.stringify(result, null, 2)}</pre>
+          </DashboardCard>
+        </>
+      )}
     </div>
   )
 }
+

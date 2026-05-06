@@ -3,8 +3,8 @@ import json
 import pathlib
 from datetime import datetime, timezone
 
-from gridforge_domain.models import GeoPoint, ForecastWindow
-from gridforge_adapter_nrel.client import NrelClient
+from dispatchlayer_domain.models import GeoPoint, ForecastWindow
+from dispatchlayer_adapter_nrel.client import NrelClient
 
 FIXTURE = pathlib.Path(__file__).parent / "fixtures" / "sample_response.json"
 
@@ -25,7 +25,7 @@ def test_nrel_contract():
 
 def test_nrel_no_key_returns_empty():
     import asyncio
-    from gridforge_adapter_nrel.config import NrelConfig
+    from dispatchlayer_adapter_nrel.config import NrelConfig
     config = NrelConfig(api_key=None)
     client = NrelClient(config=config)
     location = GeoPoint(latitude=44.98, longitude=-93.27)

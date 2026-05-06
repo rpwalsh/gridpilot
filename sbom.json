@@ -1,122 +1,122 @@
 {
-  "bomFormat": "GridForge-SBOM",
+  "bomFormat": "DispatchLayer-SBOM",
   "specVersion": "1.0",
   "version": 1,
   "metadata": {
     "timestamp": "2026-05-05T23:40:11.281053+00:00",
     "component": {
-      "name": "gridforge",
+      "name": "dispatchlayer",
       "version": "0.1.0",
       "type": "application"
     },
     "tools": [
       {
-        "name": "gridforge-sbom-gen",
+        "name": "dispatchlayer-sbom-gen",
         "version": "1.0"
       }
     ]
   },
   "components": [
     {
-      "name": "gridforge",
+      "name": "dispatchlayer",
       "version": "0.1.0",
       "ecosystem": "pypi",
       "type": "internal-library",
       "source": "pyproject.toml"
     },
     {
-      "name": "gridforge-adapter-eia",
+      "name": "dispatchlayer-adapter-eia",
       "version": "0.1.0",
       "ecosystem": "pypi",
       "type": "internal-library",
       "source": "packages/adapters/eia/pyproject.toml"
     },
     {
-      "name": "gridforge-adapter-entsoe",
+      "name": "dispatchlayer-adapter-entsoe",
       "version": "0.1.0",
       "ecosystem": "pypi",
       "type": "internal-library",
       "source": "packages/adapters/entsoe/pyproject.toml"
     },
     {
-      "name": "gridforge-adapter-nasa-power",
+      "name": "dispatchlayer-adapter-nasa-power",
       "version": "0.1.0",
       "ecosystem": "pypi",
       "type": "internal-library",
       "source": "packages/adapters/nasa_power/pyproject.toml"
     },
     {
-      "name": "gridforge-adapter-noaa-nws",
+      "name": "dispatchlayer-adapter-noaa-nws",
       "version": "0.1.0",
       "ecosystem": "pypi",
       "type": "internal-library",
       "source": "packages/adapters/noaa_nws/pyproject.toml"
     },
     {
-      "name": "gridforge-adapter-nrel",
+      "name": "dispatchlayer-adapter-nrel",
       "version": "0.1.0",
       "ecosystem": "pypi",
       "type": "internal-library",
       "source": "packages/adapters/nrel/pyproject.toml"
     },
     {
-      "name": "gridforge-adapter-open-meteo",
+      "name": "dispatchlayer-adapter-open-meteo",
       "version": "0.1.0",
       "ecosystem": "pypi",
       "type": "internal-library",
       "source": "packages/adapters/open_meteo/pyproject.toml"
     },
     {
-      "name": "gridforge-anomaly",
+      "name": "dispatchlayer-anomaly",
       "version": "0.1.0",
       "ecosystem": "pypi",
       "type": "internal-library",
       "source": "packages/anomaly/pyproject.toml"
     },
     {
-      "name": "gridforge-api",
+      "name": "dispatchlayer-api",
       "version": "0.1.0",
       "ecosystem": "pypi",
       "type": "internal-library",
       "source": "apps/api/pyproject.toml"
     },
     {
-      "name": "gridforge-dispatch",
+      "name": "dispatchlayer-dispatch",
       "version": "0.1.0",
       "ecosystem": "pypi",
       "type": "internal-library",
       "source": "packages/dispatch/pyproject.toml"
     },
     {
-      "name": "gridforge-domain",
+      "name": "dispatchlayer-domain",
       "version": "0.1.0",
       "ecosystem": "pypi",
       "type": "internal-library",
       "source": "packages/domain/pyproject.toml"
     },
     {
-      "name": "gridforge-forecasting",
+      "name": "dispatchlayer-forecasting",
       "version": "0.1.0",
       "ecosystem": "pypi",
       "type": "internal-library",
       "source": "packages/forecasting/pyproject.toml"
     },
     {
-      "name": "gridforge-predictive",
+      "name": "dispatchlayer-predictive",
       "version": "0.1.0",
       "ecosystem": "pypi",
       "type": "internal-library",
       "source": "packages/predictive/pyproject.toml"
     },
     {
-      "name": "gridforge-recommendations",
+      "name": "dispatchlayer-recommendations",
       "version": "0.1.0",
       "ecosystem": "pypi",
       "type": "internal-library",
       "source": "packages/recommendations/pyproject.toml"
     },
     {
-      "name": "gridforge-simulation",
+      "name": "dispatchlayer-simulation",
       "version": "0.1.0",
       "ecosystem": "pypi",
       "type": "internal-library",

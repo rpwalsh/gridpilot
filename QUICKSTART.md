@@ -1,6 +1,6 @@
-# GridForge — Quickstart
+# DispatchLayer — Quickstart
 
-Three ways to run GridForge: Docker Compose (recommended), local Python + Node, or API-only.
+Three ways to run DispatchLayer: Docker Compose (recommended), local Python + Node, or API-only.
 
 ---
 
@@ -9,8 +9,8 @@ Three ways to run GridForge: Docker Compose (recommended), local Python + Node, 
 **Prerequisites:** Docker 24+, Docker Compose v2
 
 ```bash
-git clone https://github.com/rpwalsh/gridforge.git
-cd gridforge
+git clone https://github.com/rpwalsh/dispatchlayer.git
+cd dispatchlayer
 cp .env.example .env          # edit to add optional API keys (NREL, EIA, ENTSO-E)
 docker compose up --build
 ```
@@ -30,7 +30,7 @@ docker compose up --build
 ### Backend
 
 ```bash
-cd gridforge
+cd dispatchlayer
 cp .env.example .env
 
 # Install all packages in editable mode
@@ -49,7 +49,7 @@ pip install \
   -e packages/adapters/entsoe \
   -e apps/api
 
-uvicorn gridforge_api.main:app --reload --port 8000
+uvicorn dispatchlayer_api.main:app --reload --port 8000
 ```
 
 API is now running at http://localhost:8000. Interactive docs at http://localhost:8000/docs.
@@ -75,7 +75,7 @@ pip install -e packages/domain -e packages/predictive -e packages/forecasting \
     -e packages/adapters/nasa_power -e packages/adapters/nrel \
     -e packages/adapters/eia -e packages/adapters/entsoe -e apps/api
 
-uvicorn gridforge_api.main:app --port 8000
+uvicorn dispatchlayer_api.main:app --port 8000
 ```
 
 ---
@@ -86,7 +86,7 @@ Verify the service is running:
 
 ```bash
 curl http://localhost:8000/health
-# {"status":"ok","service":"gridforge-api","version":"0.1.0"}
+# {"status":"ok","service":"dispatchlayer-api","version":"0.1.0"}
 ```
 
 Run the full L→G→P→D site evaluation pipeline:

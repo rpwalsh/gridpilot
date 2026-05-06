@@ -1,27 +1,11 @@
 import { useState } from 'react'
 import DashboardCard from '../components/DashboardCard'
+import StatCard from '../components/StatCard'
+import StatusBadge from '../components/StatusBadge'
 import axios from 'axios'
 
 const TRUST_COLORS: Record<string, string> = {
-  high: '#22c55e',
-  medium: '#f59e0b',
-  low: '#ef4444',
-  very_low: '#7f1d1d',
-}
-
-const DRIFT_COLORS: Record<string, string> = {
-  none: '#22c55e',
-  low: '#84cc16',
-  medium: '#f59e0b',
-  high: '#ef4444',
-  critical: '#7f1d1d',
-}
-
-const PRIORITY_COLORS: Record<string, string> = {
-  critical: '#7f1d1d',
-  high: '#ef4444',
-  medium: '#f59e0b',
-  low: '#94a3b8',
+  high: 'var(--gp-green)', medium: 'var(--gp-amber)', low: 'var(--gp-amber)', very_low: 'var(--gp-red)',
 }
 
 const DEFAULT_SITE = {
@@ -60,35 +44,36 @@ export default function SiteEvaluation() {
   }
 
   const inp = (label: string, key: string, type = 'number') => (
-    <label style={{ display: 'flex', flexDirection: 'column', gap: 2, fontSize: '0.85rem', color: '#475569' }}>
+    <label className="gp-label" key={key}>
       {label}
       <input
         type={type}
         value={(form as any)[key]}
         onChange={e => set(key, type === 'number' ? Number(e.target.value) : e.target.value)}
-        style={{ padding: '0.35rem 0.5rem', border: '1px solid #cbd5e1', borderRadius: 4, fontSize: '0.9rem', width: 120 }}
+        className="gp-input"
+        style={{ width: type === 'text' ? 160 : 110 }}
       />
     </label>
   )
 
   return (
-    <div style={{ display: 'grid', gap: '1.5rem' }}>
-      <h1 style={{ margin: 0, color: '#1e293b' }}>Site Evaluation</h1>
-      <p style={{ margin: 0, color: '#64748b' }}>
-        Full L→G→P→D pipeline evaluation. Accepts site context signals and returns a forecast,
-        three-term trust score, structural drift warning, and ranked operational recommendations
-        with a complete audit trace.
-      </p>
+    <div className="gp-grid">
+      <div className="gp-page-header">
+        <h1 className="gp-page-title">Site Evaluation</h1>
+        <p className="gp-page-subtitle">
+          Full L-G-P-D pipeline: local signals, structural summary, predictive evolution, trust scoring,
+          drift detection, ranked recommendations, audit trace.
+        </p>
+      </div>
 
       <DashboardCard title="Site Configuration">
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
           {inp('Site name', 'name', 'text')}
           {inp('Latitude', 'latitude')}
           {inp('Longitude', 'longitude')}
-          <label style={{ display: 'flex', flexDirection: 'column', gap: 2, fontSize: '0.85rem', color: '#475569' }}>
+          <label className="gp-label">
             Asset type
-            <select value={form.asset_type} onChange={e => set('asset_type', e.target.value)}
-              style={{ padding: '0.35rem 0.5rem', border: '1px solid #cbd5e1', borderRadius: 4, fontSize: '0.9rem' }}>
+            <select className="gp-select" value={form.asset_type} onChange={e => set('asset_type', e.target.value)}>
               <option value="solar">Solar</option>
               <option value="wind">Wind</option>
               <option value="wind_solar">Wind + Solar</option>
@@ -99,129 +84,124 @@ export default function SiteEvaluation() {
           {inp('Window (hours)', 'window_hours')}
         </div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
-          {inp('GHI (W/m²)', 'ghi_wm2')}
-          {inp('Temperature (°C)', 'temperature_c')}
+          {inp('GHI (W/m2)', 'ghi_wm2')}
+          {inp('Temperature (C)', 'temperature_c')}
           {inp('Grid demand (MW)', 'grid_demand_mw')}
           {inp('Forecast residual (%)', 'forecast_residual_pct')}
           {inp('Battery SoC (%)', 'current_soc_pct')}
           {inp('Price ($/MWh)', 'price_per_mwh')}
         </div>
-        <button onClick={run} disabled={loading} style={{
-          padding: '0.6rem 1.5rem', background: '#0ea5e9', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer', fontWeight: 600
-        }}>
-          {loading ? 'Evaluating...' : 'Run Evaluation'}
+        <button onClick={run} disabled={loading} className="gp-btn gp-btn--primary">
+          {loading ? <><span className="gp-spinner" style={{ width: 14, height: 14, borderWidth: 2 }} /> Evaluating</> : 'Run Evaluation'}
         </button>
-        {error && <div style={{ marginTop: '0.75rem', color: '#ef4444' }}>{error}</div>}
+        {error && <div className="gp-callout gp-callout--danger" style={{ marginTop: '0.75rem' }}>{error}</div>}
       </DashboardCard>
 
       {result && (
         <>
-          {/* Generation Forecast */}
-          <DashboardCard title="Generation Forecast">
-            <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
-              {[
-                { label: 'P10 (pessimistic)', value: `${result.p10_mwh} MWh`, color: '#ef4444' },
-                { label: 'P50 (expected)', value: `${result.p50_mwh} MWh`, color: '#0ea5e9' },
-                { label: 'P90 (optimistic)', value: `${result.p90_mwh} MWh`, color: '#22c55e' },
-              ].map(m => (
-                <div key={m.label} style={{ textAlign: 'center', minWidth: 120 }}>
-                  <div style={{ fontSize: '1.75rem', fontWeight: 700, color: m.color }}>{m.value}</div>
-                  <div style={{ fontSize: '0.8rem', color: '#64748b' }}>{m.label}</div>
-                </div>
-              ))}
-            </div>
-          </DashboardCard>
+          <div className="gp-stat-grid">
+            <StatCard label="P10 Pessimistic" value={`${result.p10_mwh} MWh`} accent="var(--gp-red)" />
+            <StatCard label="P50 Expected"   value={`${result.p50_mwh} MWh`} accent="var(--gp-blue)" />
+            <StatCard label="P90 Optimistic"  value={`${result.p90_mwh} MWh`} accent="var(--gp-green)" />
+            <StatCard
+              label="Forecast Trust"
+              value={`${Math.round(result.forecast_trust_score * 100)}%`}
+              sub={result.forecast_trust_grade?.replace('_', ' ')}
+              accent={TRUST_COLORS[result.forecast_trust_grade] ?? 'var(--gp-slate)'}
+            />
+          </div>
 
-          {/* Forecast Trust */}
           <DashboardCard title="Forecast Trust Score">
-            <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
-              <div style={{ textAlign: 'center' }}>
+            <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+              <div style={{ textAlign: 'center', minWidth: 90 }}>
                 <div style={{
                   fontSize: '2.5rem', fontWeight: 800,
-                  color: TRUST_COLORS[result.forecast_trust_grade] || '#94a3b8'
+                  color: TRUST_COLORS[result.forecast_trust_grade] ?? 'var(--gp-slate)',
                 }}>
                   {Math.round(result.forecast_trust_score * 100)}%
                 </div>
-                <div style={{ fontSize: '0.8rem', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 1 }}>
-                  {result.forecast_trust_grade.replace('_', ' ')}
-                </div>
+                <StatusBadge label={result.forecast_trust_grade} />
               </div>
-              <div style={{ flex: 1, minWidth: 280 }}>
+              <div style={{ flex: 1, minWidth: 260 }}>
                 {['structural_error', 'predictive_error', 'observational_noise'].map(k => {
-                  const term = result.error_decomposition[k]
+                  const term = result.error_decomposition?.[k]
+                  if (!term) return null
                   const pct = Math.round(term.score * 100)
                   return (
                     <div key={k} style={{ marginBottom: '0.6rem' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', marginBottom: 2 }}>
-                        <span style={{ color: '#475569', fontWeight: 600 }}>{k.replace('_', ' ')} (ε)</span>
-                        <span style={{ color: '#1e293b' }}>{pct}%</span>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', marginBottom: 3 }}>
+                        <span style={{ color: 'var(--gp-text-secondary)', fontWeight: 600 }}>{k.replace(/_/g, ' ')}</span>
+                        <span style={{ fontWeight: 700 }}>{pct}%</span>
                       </div>
-                      <div style={{ height: 6, background: '#e2e8f0', borderRadius: 3 }}>
-                        <div style={{ height: 6, borderRadius: 3, width: `${Math.min(pct, 100)}%`, background: pct > 20 ? '#f59e0b' : '#22c55e' }} />
+                      <div className="gp-progress">
+                        <div className="gp-progress__bar" style={{
+                          width: `${Math.min(pct, 100)}%`,
+                          background: pct > 20 ? 'var(--gp-amber)' : 'var(--gp-green)',
+                        }} />
                       </div>
-                      <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: 2 }}>{term.meaning}</div>
+                      <div style={{ fontSize: '0.72rem', color: 'var(--gp-text-muted)', marginTop: 2 }}>{term.meaning}</div>
                     </div>
                   )
                 })}
               </div>
             </div>
-            {result.trust_warnings.length > 0 && (
-              <div style={{ marginTop: '0.75rem', padding: '0.6rem 1rem', background: '#fef3c7', borderRadius: 4, fontSize: '0.85rem', color: '#92400e' }}>
-                {result.trust_warnings.map((w: string, i: number) => <div key={i}>⚠ {w}</div>)}
+            {result.trust_warnings?.length > 0 && (
+              <div className="gp-callout gp-callout--warning" style={{ marginTop: '0.75rem' }}>
+                {result.trust_warnings.map((w: string, i: number) => <div key={i}>{w}</div>)}
               </div>
             )}
           </DashboardCard>
 
-          {/* Structural Drift */}
           <DashboardCard title="Structural Drift">
             <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-              <div style={{
-                padding: '0.5rem 1.25rem', borderRadius: 6, fontWeight: 700, fontSize: '0.9rem',
-                background: DRIFT_COLORS[result.structural_drift.risk] || '#94a3b8',
-                color: '#fff', alignSelf: 'flex-start', textTransform: 'uppercase', letterSpacing: 0.5,
-              }}>
-                {result.structural_drift.risk}
-              </div>
+              <StatusBadge
+                label={result.structural_drift?.risk ?? 'unknown'}
+                color={
+                  result.structural_drift?.risk === 'none' ? 'green' :
+                  result.structural_drift?.risk === 'low' ? 'green' :
+                  result.structural_drift?.risk === 'medium' ? 'amber' :
+                  result.structural_drift?.risk === 'high' ? 'orange' : 'red'
+                }
+              />
               <div>
-                <div style={{ fontSize: '0.9rem', color: '#1e293b', marginBottom: 4 }}>{result.structural_drift.reason}</div>
-                {result.structural_drift.recommended_action && (
-                  <div style={{ fontSize: '0.85rem', color: '#475569' }}>→ {result.structural_drift.recommended_action}</div>
+                <div style={{ fontSize: '0.9rem', color: 'var(--gp-text-primary)', marginBottom: 4 }}>{result.structural_drift?.reason}</div>
+                {result.structural_drift?.recommended_action && (
+                  <div style={{ fontSize: '0.85rem', color: 'var(--gp-text-secondary)' }}>
+                    Recommended: {result.structural_drift.recommended_action}
+                  </div>
                 )}
               </div>
             </div>
           </DashboardCard>
 
-          {/* Recommendations */}
-          {result.recommendations.length > 0 && (
+          {result.recommendations?.length > 0 && (
             <DashboardCard title="Operational Recommendations">
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+              <table className="gp-table">
                 <thead>
-                  <tr style={{ background: '#f8fafc' }}>
-                    {['Priority', 'Action', 'Type', 'Confidence', 'Value', 'Urgency'].map(h => (
-                      <th key={h} style={{ padding: '0.5rem 0.75rem', textAlign: 'left', color: '#475569', fontWeight: 600, borderBottom: '1px solid #e2e8f0' }}>{h}</th>
-                    ))}
+                  <tr>
+                    <th>Priority</th>
+                    <th>Action</th>
+                    <th>Type</th>
+                    <th style={{ textAlign: 'right' }}>Confidence</th>
+                    <th style={{ textAlign: 'right' }}>Est. Value</th>
+                    <th style={{ textAlign: 'right' }}>Urgency</th>
                   </tr>
                 </thead>
                 <tbody>
                   {result.recommendations.map((rec: any, i: number) => (
-                    <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                      <td style={{ padding: '0.5rem 0.75rem' }}>
-                        <span style={{
-                          padding: '2px 8px', borderRadius: 4, fontSize: '0.75rem', fontWeight: 700,
-                          background: PRIORITY_COLORS[rec.priority] || '#94a3b8', color: '#fff'
-                        }}>{rec.priority}</span>
+                    <tr key={i}>
+                      <td><StatusBadge label={rec.priority} /></td>
+                      <td>
+                        <div style={{ fontWeight: 600 }}>{rec.action}</div>
+                        {rec.why_now && <div style={{ fontSize: '0.75rem', color: 'var(--gp-text-muted)', marginTop: 2 }}>{rec.why_now}</div>}
                       </td>
-                      <td style={{ padding: '0.5rem 0.75rem', color: '#1e293b', maxWidth: 300 }}>
-                        <div>{rec.action}</div>
-                        {rec.why_now && <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: 2 }}>{rec.why_now}</div>}
+                      <td style={{ color: 'var(--gp-text-secondary)', fontSize: '0.8rem' }}>{rec.type?.replace(/_/g, ' ')}</td>
+                      <td style={{ textAlign: 'right', fontWeight: 700 }}>{Math.round(rec.confidence * 100)}%</td>
+                      <td style={{ textAlign: 'right', color: rec.estimated_value_usd > 0 ? 'var(--gp-green-text)' : 'var(--gp-text-muted)', fontWeight: 600 }}>
+                        {rec.estimated_value_usd > 0 ? `$${rec.estimated_value_usd.toLocaleString()}` : '-'}
                       </td>
-                      <td style={{ padding: '0.5rem 0.75rem', color: '#64748b', whiteSpace: 'nowrap' }}>{rec.type.replace(/_/g, ' ')}</td>
-                      <td style={{ padding: '0.5rem 0.75rem', color: '#475569' }}>{Math.round(rec.confidence * 100)}%</td>
-                      <td style={{ padding: '0.5rem 0.75rem', color: rec.estimated_value_usd > 0 ? '#166534' : '#64748b' }}>
-                        {rec.estimated_value_usd > 0 ? `$${rec.estimated_value_usd.toLocaleString()}` : '—'}
-                      </td>
-                      <td style={{ padding: '0.5rem 0.75rem', color: '#64748b', whiteSpace: 'nowrap' }}>
-                        {rec.urgency_hours != null ? `${rec.urgency_hours}h` : '—'}
+                      <td style={{ textAlign: 'right', color: 'var(--gp-text-muted)', fontSize: '0.8rem' }}>
+                        {rec.urgency_hours != null ? `${rec.urgency_hours}h` : '-'}
                       </td>
                     </tr>
                   ))}
@@ -230,18 +210,17 @@ export default function SiteEvaluation() {
             </DashboardCard>
           )}
 
-          {/* Audit Trace */}
           <DashboardCard title="Audit Trace">
-            <div style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '0.5rem' }}>
-              Trace ID: <code style={{ background: '#f1f5f9', padding: '1px 6px', borderRadius: 3 }}>{result.audit_trace.trace_id}</code>
-              &nbsp;· Pipeline: <strong>{result.audit_trace.model_versions?.pipeline}</strong>
-              &nbsp;· Core: v{result.audit_trace.model_versions?.predictive_core}
+            <div style={{ fontSize: '0.8rem', color: 'var(--gp-text-secondary)', marginBottom: '0.75rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+              <span>Trace ID: <code style={{ background: 'var(--gp-slate-bg)', padding: '1px 5px', borderRadius: 3 }}>{result.audit_trace?.trace_id}</code></span>
+              <span>Pipeline: <strong>{result.audit_trace?.model_versions?.pipeline}</strong></span>
+              <span>Core: v{result.audit_trace?.model_versions?.predictive_core}</span>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-              {result.audit_trace.steps.map((step: any, i: number) => (
-                <div key={i} style={{ padding: '0.5rem 0.75rem', background: '#f8fafc', borderRadius: 4, borderLeft: '3px solid #0ea5e9' }}>
-                  <div style={{ fontWeight: 600, color: '#1e293b', fontSize: '0.85rem' }}>{step.step}</div>
-                  <div style={{ fontSize: '0.78rem', color: '#475569', marginTop: 2 }}>{step.reasoning}</div>
+            <div>
+              {result.audit_trace?.steps?.map((step: any, i: number) => (
+                <div key={i} className="gp-step">
+                  <div className="gp-step__name">{step.step}</div>
+                  <div className="gp-step__reason">{step.reasoning}</div>
                 </div>
               ))}
             </div>
@@ -251,3 +230,4 @@ export default function SiteEvaluation() {
     </div>
   )
 }
+

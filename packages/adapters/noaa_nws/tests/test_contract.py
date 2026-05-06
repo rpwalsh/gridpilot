@@ -4,8 +4,8 @@ import pathlib
 import pytest
 from datetime import datetime, timezone
 
-from gridforge_domain.models import GeoPoint, ForecastWindow
-from gridforge_adapter_noaa_nws.client import NoaaNwsClient
+from dispatchlayer_domain.models import GeoPoint, ForecastWindow
+from dispatchlayer_adapter_noaa_nws.client import NoaaNwsClient
 
 FIXTURE = pathlib.Path(__file__).parent / "fixtures" / "sample_response.json"
 

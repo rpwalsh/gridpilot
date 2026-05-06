@@ -1,25 +1,25 @@
-# GridForge Architecture
+# DispatchLayer Architecture
 
 ## Overview
 
-GridForge uses a hexagonal/ports-and-adapters architecture. The core domain is pure Python with no external dependencies. Adapters implement provider protocols. The API layer orchestrates across packages.
+DispatchLayer uses a hexagonal/ports-and-adapters architecture. The core domain is pure Python with no external dependencies. Adapters implement provider protocols. The API layer orchestrates across packages.
 
 ## Layers
 
 ```
-┌─────────────────────────────────────────────┐
-│                 Dashboard (React)            │
-├─────────────────────────────────────────────┤
-│              FastAPI (gridforge-api)         │
-├──────────────┬──────────────────────────────┤
-│ Forecasting  │ Anomaly │ Dispatch │ Recs     │
-├──────────────┴──────────────────────────────┤
-│         Predictive Operations Core                │
-├──────────────┬──────────────────────────────┤
-│   Domain Models + Protocols                  │
-├──────────────┴──────────────────────────────┤
-│  Adapters: Open-Meteo │ NOAA │ NASA │ etc.  │
-└─────────────────────────────────────────────┘
+
+                 Dashboard (React)            
+
+              FastAPI (dispatchlayer-api)         
+
+ Forecasting   Anomaly  Dispatch  Recs     
+
+         Predictive Operations Core                
+
+   Domain Models + Protocols                  
+
+  Adapters: Open-Meteo  NOAA  NASA  etc.  
+
 ```
 
 ## Decision Traces

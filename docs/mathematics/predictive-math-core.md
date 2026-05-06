@@ -2,7 +2,7 @@
 
 ## Overview
 
-GridForge's predictive analytics engine implements Walsh's deterministic evidence-weighted reasoning, a framework for combining multiple uncertain data sources into calibrated probabilistic forecasts with full auditability.
+DispatchLayer's predictive analytics engine implements Walsh's deterministic evidence-weighted reasoning, a framework for combining multiple uncertain data sources into calibrated probabilistic forecasts with full auditability.
 
 ## Core Principle
 

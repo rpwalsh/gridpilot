@@ -5,8 +5,8 @@ import pytest
 from datetime import datetime, timezone
 from unittest.mock import AsyncMock, patch
 
-from gridforge_domain.models import GeoPoint, ForecastWindow
-from gridforge_adapter_open_meteo.client import OpenMeteoClient
+from dispatchlayer_domain.models import GeoPoint, ForecastWindow
+from dispatchlayer_adapter_open_meteo.client import OpenMeteoClient
 
 
 FIXTURE = pathlib.Path(__file__).parent / "fixtures" / "sample_response.json"

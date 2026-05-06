@@ -3,11 +3,11 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "gridforge-adapter-open-meteo"
+name = "dispatchlayer-adapter-open-meteo"
 version = "0.1.0"
-description = "GridForge adapter for Open-Meteo weather API"
+description = "DispatchLayer adapter for Open-Meteo weather API"
 requires-python = ">=3.11"
-dependencies = ["gridforge-domain>=0.1.0", "httpx>=0.24", "pydantic>=2.0", "pydantic-settings>=2.0"]
+dependencies = ["dispatchlayer-domain>=0.1.0", "httpx>=0.24", "pydantic>=2.0", "pydantic-settings>=2.0"]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/gridforge_adapter_open_meteo"]
+packages = ["src/dispatchlayer_adapter_open_meteo"]

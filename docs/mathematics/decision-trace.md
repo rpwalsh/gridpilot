@@ -2,7 +2,7 @@
 
 ## Overview
 
-Every inference response from GridForge includes a `decision_trace` object that fully documents the reasoning chain that produced the result.
+Every inference response from DispatchLayer includes a `decision_trace` object that fully documents the reasoning chain that produced the result.
 
 ## Structure
 
@@ -31,7 +31,7 @@ Every inference response from GridForge includes a `decision_trace` object that 
     }
   ],
   "model_versions": {
-    "gridforge_predictive": "0.1.0"
+    "dispatchlayer_predictive": "0.1.0"
   }
 }
 ```

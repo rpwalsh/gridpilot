@@ -1,4 +1,4 @@
-# GridForge Domain Model
+# DispatchLayer Domain Model
 
 ## Core Entities
 
@@ -32,9 +32,9 @@ All weather/grid data access is through typed Protocol interfaces:
 
 ```
 ProviderError
-├── ProviderAuthError
-├── ProviderRateLimitError
-├── ProviderUnavailableError
-├── ProviderSchemaError
-└── ProviderDataGapError
+ ProviderAuthError
+ ProviderRateLimitError
+ ProviderUnavailableError
+ ProviderSchemaError
+ ProviderDataGapError
 ```

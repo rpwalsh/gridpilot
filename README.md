@@ -1,12 +1,12 @@
-# GridForge
+# DispatchLayer
 
-GridForge is a production-oriented renewable operations intelligence platform.
+DispatchLayer is a production-oriented renewable operations intelligence platform.
 
 It converts real public weather, solar-resource, and grid data into normalized domain models, forecast outputs, operational recommendations, and auditable decision traces.
 
 The project is built around production engineering concerns: typed provider adapters, caching, retries, source attribution, data-quality scoring, deterministic predictive logic, FastAPI service boundaries, and a clean full-stack dashboard.
 
-GridForge does not depend on fabricated business data at runtime. The application uses live public data adapters where available. Synthetic fixtures are used only for deterministic testing, offline CI, and fault-injection simulation.
+DispatchLayer does not depend on fabricated business data at runtime. The application uses live public data adapters where available. Synthetic fixtures are used only for deterministic testing, offline CI, and fault-injection simulation.
 
 ---
 
@@ -14,7 +14,7 @@ GridForge does not depend on fabricated business data at runtime. The applicatio
 
 Renewable operators do not simply need dashboards. They need systems that turn weather, telemetry, grid constraints, and asset behavior into timely operational decisions.
 
-GridForge demonstrates that flow end to end:
+DispatchLayer demonstrates that flow end to end:
 
 ```
 weather + telemetry + grid context
@@ -28,7 +28,7 @@ weather + telemetry + grid context
 
 ## Predictive Operations Core
 
-GridForge includes a deterministic predictive operations core for converting renewable-energy time-series data into auditable operational recommendations.
+DispatchLayer includes a deterministic predictive operations core for converting renewable-energy time-series data into auditable operational recommendations.
 
 The core uses a four-layer operator architecture:
 
@@ -47,11 +47,11 @@ The core uses a four-layer operator architecture:
 4. **D — Decision Ranking**
    Produces ranked recommendations with evidence, confidence, urgency, and estimated business impact. Every recommendation includes an audit trace showing which signals, rules, and model versions drove the output.
 
-This allows GridForge to move beyond dashboarding: the system converts weather and telemetry into reproducible operating decisions, not charts.
+This allows DispatchLayer to move beyond dashboarding: the system converts weather and telemetry into reproducible operating decisions, not charts.
 
 ### Forecast trust score
 
-Instead of a single opaque confidence number, GridForge exposes the three-term decomposition to operators:
+Instead of a single opaque confidence number, DispatchLayer exposes the three-term decomposition to operators:
 
 ```json
 {
@@ -68,7 +68,7 @@ Instead of a single opaque confidence number, GridForge exposes the three-term d
 
 ### Structural drift detection
 
-GridForge tracks whether the relationship between input signals and output measurements has shifted from the recent baseline. When residuals diverge, it warns operators before the bias compounds across a full dispatch window.
+DispatchLayer tracks whether the relationship between input signals and output measurements has shifted from the recent baseline. When residuals diverge, it warns operators before the bias compounds across a full dispatch window.
 
 ### Root-cause ranking
 
@@ -88,7 +88,7 @@ When underperformance is detected, the predictive core ranks likely causes rathe
 
 ## Data Sources
 
-GridForge uses real public APIs by default.
+DispatchLayer uses real public APIs by default.
 
 | Domain | Provider | Cost | Auth | Adapter |
 |---|---|---|---|---|
@@ -125,18 +125,18 @@ API + Dashboard + Audit Trail
 ### Platform layers
 
 ```
-GridForge Platform
-  ├── GridForge API          (apps/api)
-  ├── GridForge Operations Engine
-  │     ├── forecasting
-  │     ├── anomaly
-  │     ├── dispatch
-  │     └── recommendations
-  └── Predictive Operations Core   (packages/predictive)
-        ├── L: LocalSignalScorer
-        ├── G: PortfolioStateBuilder
-        ├── P: PredictiveEvolutionEngine
-        └── D: DecisionRanker
+DispatchLayer Platform
+   DispatchLayer API          (apps/api)
+   DispatchLayer Operations Engine
+        forecasting
+        anomaly
+        dispatch
+        recommendations
+   Predictive Operations Core   (packages/predictive)
+         L: LocalSignalScorer
+         G: PortfolioStateBuilder
+         P: PredictiveEvolutionEngine
+         D: DecisionRanker
 ```
 
 ---
@@ -151,7 +151,7 @@ pip install -e packages/domain -e packages/predictive -e packages/forecasting \
     -e packages/adapters/nasa_power -e packages/adapters/nrel \
     -e packages/adapters/eia -e packages/adapters/entsoe \
     -e apps/api
-uvicorn gridforge_api.main:app --reload
+uvicorn dispatchlayer_api.main:app --reload
 # API docs: http://localhost:8000/docs
 ```
 
