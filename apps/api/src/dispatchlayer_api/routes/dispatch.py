@@ -31,12 +31,11 @@ async def optimize(req: DispatchRequest) -> dict:
     )
     return {
         "battery_id": result.battery_id,
-        "action": result.action.value,
+        "storage_state": result.storage_state.value,
         "window_hours": result.window_hours,
-        "reasoning": result.reasoning,
         "estimated_value_usd": result.estimated_value_usd,
         "net_value_usd": result.net_value_usd,
         "current_soc_pct": result.current_soc_pct,
         "target_soc_pct": result.target_soc_pct,
-        "decision_trace": result.decision_trace.to_dict(),
+        "audit_trace": result.audit_trace.to_dict(),
     }

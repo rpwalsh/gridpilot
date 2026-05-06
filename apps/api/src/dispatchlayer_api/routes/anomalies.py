@@ -75,7 +75,7 @@ async def detect_asset_anomaly(req: AnomalyDetectRequest) -> dict:
             {"cause": h.cause, "confidence": h.confidence, "evidence": h.evidence}
             for h in event.hypotheses
         ],
-        "decision_trace": event.decision_trace.to_dict(),
+        "audit_trace": event.audit_trace.to_dict(),
     }
 
 

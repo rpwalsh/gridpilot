@@ -6,22 +6,26 @@ import uuid
 
 
 @dataclass
-class TraceStep:
+class AuditStep:
     step: str
     inputs: dict[str, Any]
     output: Any
-    reasoning: str
+    method: str
+
+
+# Backward-compatible alias
+TraceStep = AuditStep
 
 
 @dataclass
-class DecisionTrace:
+class AuditTrace:
     trace_id: str = field(default_factory=lambda: f"trace_{uuid.uuid4().hex[:12]}")
     created_utc: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
-    steps: list[TraceStep] = field(default_factory=list)
+    steps: list[AuditStep] = field(default_factory=list)
     model_versions: dict[str, str] = field(default_factory=dict)
 
-    def add_step(self, step: str, inputs: dict, output: Any, reasoning: str) -> None:
-        self.steps.append(TraceStep(step, inputs, output, reasoning))
+    def add_step(self, step: str, inputs: dict, output: Any, method: str) -> None:
+        self.steps.append(AuditStep(step, inputs, output, method))
 
     def to_dict(self) -> dict:
         return {
@@ -32,9 +36,13 @@ class DecisionTrace:
                     "step": s.step,
                     "inputs": s.inputs,
                     "output": str(s.output) if not isinstance(s.output, (dict, list, str, int, float, bool, type(None))) else s.output,
-                    "reasoning": s.reasoning,
+                    "method": s.method,
                 }
                 for s in self.steps
             ],
             "model_versions": self.model_versions,
         }
+
+
+# Backward-compatible alias
+DecisionTrace = AuditTrace

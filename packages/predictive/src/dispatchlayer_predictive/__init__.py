@@ -5,15 +5,14 @@ from .residuals import ResidualResult, compute_residual
 from .reconciliation import reconcile_forecast, ReconciliationResult
 from .causal_attribution import CausalHypothesis, attribute_wind_turbine_underproduction, attribute_solar_underproduction
 from .forecast_bounds import ForecastBounds, compute_forecast_bounds
-from .decision_trace import TraceStep, DecisionTrace
+from .decision_trace import AuditStep, AuditTrace, TraceStep, DecisionTrace
 
-# Four-layer L→G→P→D pipeline
+# Four-layer L→G→P pipeline
 from .local_signal_scorer import (
     EntityType, InteractionType, ScoredInteraction, LocalScoreSet, LocalSignalScorer,
 )
 from .portfolio_state_builder import SiteState, PortfolioState, PortfolioStateBuilder
 from .predictive_evolution import SitePrediction, PortfolioPrediction, PredictiveEvolutionEngine
-from .decision_ranker import Priority, DecisionSet, DecisionRanker
 from .forecast_trust import ErrorTermExplanation, ForecastTrustScore, compute_trust_score
 from .structural_drift import DriftRisk, DriftWarning, detect_residual_drift, detect_portfolio_drift
 
@@ -26,15 +25,13 @@ __all__ = [
     "ReconciliationResult", "reconcile_forecast",
     "CausalHypothesis", "attribute_wind_turbine_underproduction", "attribute_solar_underproduction",
     "ForecastBounds", "compute_forecast_bounds",
-    "TraceStep", "DecisionTrace",
+    "AuditStep", "AuditTrace",
     # L layer
     "EntityType", "InteractionType", "ScoredInteraction", "LocalScoreSet", "LocalSignalScorer",
     # G layer
     "SiteState", "PortfolioState", "PortfolioStateBuilder",
     # P layer
     "SitePrediction", "PortfolioPrediction", "PredictiveEvolutionEngine",
-    # D layer — internal signal state evaluator
-    "Priority", "DecisionSet", "DecisionRanker",
     # Trust & drift
     "ErrorTermExplanation", "ForecastTrustScore", "compute_trust_score",
     "DriftRisk", "DriftWarning", "detect_residual_drift", "detect_portfolio_drift",

@@ -13,7 +13,7 @@ from dispatchlayer_predictive.causal_attribution import (
     CausalHypothesis,
 )
 from dispatchlayer_predictive.signal_state import Signal, SignalState
-from dispatchlayer_predictive.decision_trace import DecisionTrace
+from dispatchlayer_predictive.decision_trace import AuditTrace
 from .conditions import AnomalyCondition
 from datetime import timezone
 
@@ -31,10 +31,7 @@ class DeviationEvent:
     actual_output_kw: float
     confidence: float
     hypotheses: list[CausalHypothesis]
-    decision_trace: DecisionTrace
-
-
-# Backward-compat alias — prefer DeviationEvent in new code
+    audit_trace: AuditTrace
 
 
 def detect_anomaly(
@@ -43,7 +40,7 @@ def detect_anomaly(
     threshold_pct: float = 10.0,
 ) -> Optional[DeviationEvent]:
     """Detect deviation in asset telemetry against physics-model expectation."""
-    trace = DecisionTrace(model_versions={"anomaly": "0.1.0", "predictive_core": "0.1.0"})
+    trace = AuditTrace(model_versions={"anomaly": "0.1.0", "predictive_core": "0.1.0"})
     now_utc = telemetry.timestamp_utc
 
     if telemetry.output_kw is None:
@@ -58,7 +55,7 @@ def detect_anomaly(
             "compute_expected_wind",
             inputs={"wind_speed_mps": wind_speed, "capacity_kw": telemetry.capacity_kw},
             output=expected,
-            reasoning="Applied polynomial wind power curve to derive expected output",
+            method="wind_power_curve_polynomial",
         )
     elif telemetry.asset_type == AssetType.SOLAR_INVERTER:
         ghi = weather.shortwave_radiation_wm2 or 0.0
@@ -68,7 +65,7 @@ def detect_anomaly(
             "compute_expected_solar",
             inputs={"ghi_wm2": ghi, "temperature_c": temp, "capacity_kw": telemetry.capacity_kw},
             output=expected,
-            reasoning="Applied PVWatts-style irradiance model to derive expected output",
+            method="pvwatts_irradiance_model",
         )
     else:
         return None
@@ -81,7 +78,7 @@ def detect_anomaly(
         "compute_residual",
         inputs={"expected": expected, "actual": actual},
         output={"percent_delta": residual.percent_delta, "direction": residual.direction},
-        reasoning=f"Residual {residual.percent_delta:.1f}% {'exceeds' if residual.is_significant else 'within'} threshold {threshold_pct}%",
+        method=f"residual_threshold_{threshold_pct}pct",
     )
 
     if not residual.is_significant:
@@ -109,7 +106,7 @@ def detect_anomaly(
         "causal_attribution",
         inputs={"residual_pct": residual.percent_delta, "asset_type": telemetry.asset_type.value},
         output=[h.cause for h in hypotheses],
-        reasoning=f"Ranked {len(hypotheses)} causal hypotheses by evidence confidence",
+        method="evidence_confidence_ranking",
     )
 
     if residual.direction == "under":
@@ -132,5 +129,5 @@ def detect_anomaly(
         actual_output_kw=actual,
         confidence=confidence,
         hypotheses=hypotheses,
-        decision_trace=trace,
+        audit_trace=trace,
     )
