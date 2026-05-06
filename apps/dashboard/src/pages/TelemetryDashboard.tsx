@@ -229,7 +229,6 @@ function SolarInverterCard({ snap }: { snap: AssetSnapshot }) {
           { label: 'DC power kW', value: dcPower },
           { label: 'AC power kW', value: snap.ac_power_kw ?? snap.power_kw },
           { label: 'Inverter eff %', value: snap.inverter_efficiency_pct },
-          { label: 'Frequency Hz', value: snap.frequency_hz },
           { label: 'Ambient °C', value: snap.temperature_c },
           { label: 'Avail %', value: snap.availability_pct },
         ].map(({ label, value }) => (
@@ -294,7 +293,7 @@ function BessCard({ snap }: { snap: AssetSnapshot }) {
       <div className="gp-signal-grid">
         {[
           { label: 'Pack voltage V', value: snap.pack_voltage_v },
-          { label: 'Pack current A', value: snap.pack_current_a },
+          { label: 'Pack current A', value: snap.dc_current_a },
           { label: 'Cell temp °C', value: snap.cell_temperature_c, alarm: (snap.cell_temperature_c ?? 0) > 40 },
           { label: 'Thermal derate', value: snap.thermal_derate_flag ? 'YES' : 'no' },
           { label: 'SoH %', value: snap.state_of_health_pct },
@@ -379,10 +378,10 @@ export default function TelemetryDashboard() {
       <div className="gp-page-header">
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
           <div>
-            <h1 className="gp-page-title">Telemetry Dashboard</h1>
+            <h1 className="gp-page-title">Telemetry</h1>
             <p className="gp-page-subtitle">
               SCADA fleet snapshot — IEC 61400-25 wind · IEC 61724-1 solar · BMS telemetry.
-              Expected vs actual output, root-cause ranking, fault codes.
+              Actual vs. expected output, deviation analysis, fault codes.
             </p>
           </div>
           <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
@@ -397,7 +396,7 @@ export default function TelemetryDashboard() {
             <label className="gp-label" style={{ marginBottom: 0 }}>
               Data mode
               <select className="gp-select" value={dataMode} onChange={e => setDataMode(e.target.value as any)}>
-                <option value="fixture">Fixture (recorded — offline demo)</option>
+                <option value="fixture">Offline fixture (recorded SCADA capture)</option>
                 <option value="live">Live (POST /telemetry/ingest)</option>
               </select>
             </label>
@@ -426,13 +425,12 @@ export default function TelemetryDashboard() {
           {/* KPI row */}
           {assets.length > 0 && (
             <div className="gp-stat-grid">
-              <StatCard label="Assets" value={assets.length} icon="⚙" />
-              <StatCard label="Total Output" value={`${totalActualMW.toFixed(1)} MW`} icon="⚡" accent="var(--gp-blue)" />
-              <StatCard label="Anomalies" value={anomalies.length} icon="⚠" accent={anomalies.length > 0 ? 'var(--gp-red)' : 'var(--gp-green)'} />
+              <StatCard label="Assets" value={assets.length} />
+              <StatCard label="Total Output" value={`${totalActualMW.toFixed(1)} MW`} accent="var(--gp-blue)" />
+              <StatCard label="Deviations" value={anomalies.length} accent={anomalies.length > 0 ? 'var(--gp-red)' : 'var(--gp-green)'} />
               <StatCard
                 label="Fleet Availability"
                 value={`${Math.round(assets.filter(a => (a.availability_pct ?? 100) > 90).length / Math.max(assets.length, 1) * 100)}%`}
-                icon=""
                 accent="var(--gp-teal)"
               />
             </div>

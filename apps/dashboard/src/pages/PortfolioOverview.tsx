@@ -31,8 +31,8 @@ export default function PortfolioOverview() {
   return (
     <div className="gp-grid">
       <div className="gp-page-header">
-        <h1 className="gp-page-title">Portfolio Overview</h1>
-        <p className="gp-page-subtitle">Real-time data provider status and fleet-level signal health</p>
+        <h1 className="gp-page-title">System Overview</h1>
+        <p className="gp-page-subtitle">Provider availability, signal coverage, and fleet-level data source status</p>
       </div>
 
       {error && (
@@ -42,10 +42,10 @@ export default function PortfolioOverview() {
       )}
 
       <div className="gp-stat-grid">
-        <StatCard label="Total Providers" value={total || '—'} icon="" />
-        <StatCard label="Enabled" value={enabled || '—'} icon="" accent="var(--gp-green)" />
-        <StatCard label="Missing Keys" value={missingKey} icon="" accent={missingKey > 0 ? 'var(--gp-amber)' : 'var(--gp-green)'} />
-        <StatCard label="Coverage" value={total > 0 ? `${Math.round(enabled / total * 100)}%` : '—'} icon="" accent="var(--gp-teal)" />
+        <StatCard label="Total Providers" value={total || '—'} />
+        <StatCard label="Configured" value={enabled || '—'} accent="var(--gp-green)" />
+        <StatCard label="Missing Keys" value={missingKey} accent={missingKey > 0 ? 'var(--gp-amber)' : 'var(--gp-green)'} />
+        <StatCard label="Coverage" value={total > 0 ? `${Math.round(enabled / total * 100)}%` : '—'} accent="var(--gp-teal)" />
       </div>
 
       <DashboardCard title="Data Provider Status">

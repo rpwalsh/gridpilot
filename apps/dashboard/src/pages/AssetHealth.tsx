@@ -72,40 +72,40 @@ export default function AssetHealth() {
   return (
     <div className="gp-grid">
       <div className="gp-page-header">
-        <h1 className="gp-page-title">Asset Health</h1>
+        <h1 className="gp-page-title">Asset State</h1>
         <p className="gp-page-subtitle">
-          Z-score anomaly detection across the renewable fleet. Asset defaults seeded from
-          recorded SCADA fixture (West Texas wind + Mojave solar, 2025-06-05T20:00Z).
+          Telemetry deviation analysis — actual vs. expected output comparison across the fleet.
+          Asset values sourced from offline SCADA fixture (West Texas wind + Mojave solar, 2025-06-05T20:00Z).
           See <code>apps/api/tests/fixtures/scada_fleet_snapshot.json → _provenance</code>.
         </p>
       </div>
 
       {/* Fixture provenance notice */}
       <div className="gp-callout gp-callout--info" style={{ fontSize: '0.82rem' }}>
-        <strong>Data notice:</strong> Asset signal values below are from a recorded fixture,
-        not fabricated. WTG-MCW-002 demonstrates a real anomaly pattern:
+        <strong>Fixture notice:</strong> Asset signal values are from a recorded SCADA capture,
+        not fabricated inputs. WTG-MCW-002 demonstrates a real deviation pattern:
         pitch controller deviation (blade_pitch_deg=12.4°, fault code PITCH_CTRL_DEVIATION),
         confirmed by the expected-vs-actual residual of −40.4%.
-        All expected outputs computed from IEC 61400-1 power curve physics.
+        Expected outputs computed from IEC 61400-1 power curve physics.
       </div>
 
       {Object.keys(results).length > 0 && (
         <div className="gp-stat-grid">
-          <StatCard label="Assets Checked" value={DEMO_ASSETS.length} icon="" />
-          <StatCard label="Anomalies" value={anomalyCount} icon="" accent={anomalyCount > 0 ? 'var(--gp-red)' : 'var(--gp-green)'} />
-          <StatCard label="Healthy" value={DEMO_ASSETS.length - anomalyCount} icon="" accent="var(--gp-green)" />
-          <StatCard label="Detection Rate" value={`${Math.round((1 - anomalyCount / DEMO_ASSETS.length) * 100)}%`} icon="" accent="var(--gp-teal)" sub="Fraction healthy" />
+          <StatCard label="Assets Analyzed" value={DEMO_ASSETS.length} />
+          <StatCard label="Deviations" value={anomalyCount} accent={anomalyCount > 0 ? 'var(--gp-red)' : 'var(--gp-green)'} />
+          <StatCard label="Within Envelope" value={DEMO_ASSETS.length - anomalyCount} accent="var(--gp-green)" />
+          <StatCard label="Within-Envelope Rate" value={`${Math.round((1 - anomalyCount / DEMO_ASSETS.length) * 100)}%`} accent="var(--gp-teal)" sub="Fraction within expected range" />
         </div>
       )}
 
-      <DashboardCard title="Fleet Anomaly Detection">
+      <DashboardCard title="Fleet Telemetry Deviation Analysis">
         <p style={{ color: 'var(--gp-text-secondary)', margin: '0 0 1rem', fontSize: '0.875rem' }}>
-          Runs Z-score anomaly detection on {DEMO_ASSETS.length} SCADA-sourced assets comparing
-          actual output vs. expected from the physics model. WTG-MCW-002 will show as anomaly
+          Z-score deviation analysis on {DEMO_ASSETS.length} SCADA-sourced assets comparing
+          actual output vs. expected from the physics model. WTG-MCW-002 shows a deviation
           (underproduction due to pitch controller deviation).
         </p>
         <button onClick={runAll} disabled={loading} className="gp-btn gp-btn--warning">
-          {loading ? <><span className="gp-spinner" style={{ width: 14, height: 14, borderWidth: 2 }} /> Scanning…</> : '⚡ Run Detection on All Assets'}
+          {loading ? <><span className="gp-spinner" style={{ width: 14, height: 14, borderWidth: 2 }} /> Analyzing…</> : 'Analyze All Assets'}
         </button>
       </DashboardCard>
 

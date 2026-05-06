@@ -111,24 +111,24 @@ curl -s -X POST http://localhost:8000/api/v1/sites/evaluate \
 ```
 
 The response includes `p10_mwh`, `p50_mwh`, `p90_mwh`, `forecast_trust_score`,
-`error_decomposition`, `structural_drift`, `recommendations`, and a full `audit_trace`.
+`error_decomposition`, `structural_drift`, `findings`, and a full `audit_trace`.
 
 ---
 
 ## Environment variables
 
-| Variable                      | Default    | Description                                         |
-|-------------------------------|------------|-----------------------------------------------------|
-| `GRIDFORGE_ENV`               | `local`    | Environment name                                    |
-| `OPEN_METEO_ENABLED`          | `true`     | Enable Open-Meteo weather adapter (no key required) |
-| `NOAA_NWS_ENABLED`            | `true`     | Enable NOAA NWS adapter (no key required)           |
-| `NASA_POWER_ENABLED`          | `true`     | Enable NASA POWER adapter (no key required)         |
-| `NREL_API_KEY`                | —          | NREL API key (optional; free at developer.nrel.gov) |
-| `EIA_API_KEY`                 | —          | EIA API key (optional; free at eia.gov)             |
-| `ENTSOE_API_KEY`              | —          | ENTSO-E API key (optional; for European grid data)  |
-| `GRIDFORGE_HTTP_TIMEOUT_SECONDS` | `20`    | HTTP timeout for provider calls                     |
-| `GRIDFORGE_HTTP_RETRIES`      | `3`        | Retry count for provider calls                      |
-| `GRIDFORGE_CACHE_BACKEND`     | `sqlite`   | Cache backend (`sqlite` or `none`)                  |
+| Variable                             | Default    | Description                                         |
+|--------------------------------------|------------|-----------------------------------------------------|
+| `DISPATCHLAYER_ENV`                  | `local`    | Environment name                                    |
+| `OPEN_METEO_ENABLED`                 | `true`     | Enable Open-Meteo weather adapter (no key required) |
+| `NOAA_NWS_ENABLED`                   | `true`     | Enable NOAA NWS adapter (no key required)           |
+| `NASA_POWER_ENABLED`                 | `true`     | Enable NASA POWER adapter (no key required)         |
+| `NREL_API_KEY`                       | —          | NREL API key (optional; free at developer.nrel.gov) |
+| `EIA_API_KEY`                        | —          | EIA API key (optional; free at eia.gov)             |
+| `ENTSOE_API_KEY`                     | —          | ENTSO-E API key (optional; for European grid data)  |
+| `DISPATCHLAYER_HTTP_TIMEOUT_SECONDS` | `20`       | HTTP timeout for provider calls                     |
+| `DISPATCHLAYER_HTTP_RETRIES`         | `3`        | Retry count for provider calls                      |
+| `DISPATCHLAYER_CACHE_BACKEND`        | `sqlite`   | Cache backend (`sqlite` or `none`)                  |
 
 ---
 

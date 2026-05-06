@@ -1,22 +1,21 @@
 """
 POST /api/v1/sites/evaluate
 
-Full L→G→P→D pipeline evaluation for a configured renewable site.
-Accepts lat/lon, asset type, and capacity; returns forecast, trust score,
-structural drift warning, causal root-cause ranking, and ranked recommendations
-— all backed by an audit trace.
+Full analysis pipeline evaluation for a configured renewable site.
+Accepts lat/lon, asset type, and capacity; returns forecast context, data-quality
+confidence, structural drift warning, and audit trace — all traceable to source inputs.
 
 data_mode controls the external-signal layer:
   live    — call real public provider adapters (Open-Meteo, NASA POWER)
-  fixture — use recorded provider payloads (tests, offline demo, CI)
+  fixture — use recorded provider payloads (tests, offline analysis, CI)
   hybrid  — live where reachable; fixture fallback for missing/failed providers
 
 Every response includes a `sources` block that attributes each signal to its
 provider, reports freshness, cache status, and any degraded-mode warnings.
 
-GridPilot does not depend on fabricated runtime data.  The production path uses
+Dispatch Layer does not depend on fabricated runtime data.  The production path uses
 provider adapters for real public weather, solar-resource, and grid data.
-Recorded fixtures are used only for tests, CI, offline demos, and failure-mode
+Recorded fixtures are used only for tests, CI, offline analysis, and failure-mode
 simulation.
 """
 
@@ -37,7 +36,6 @@ from dispatchlayer_predictive import (
     LocalSignalScorer,
     PortfolioStateBuilder,
     PredictiveEvolutionEngine,
-    DecisionRanker,
     compute_trust_score,
     detect_residual_drift,
 )
@@ -148,20 +146,18 @@ class SiteEvaluationResponse(BaseModel):
     data_mode: str
     sources: list[dict]
     warnings: list[str]
-    # Forecast
+    # Forecast context
     expected_generation_mwh: float
     p10_mwh: float
     p50_mwh: float
     p90_mwh: float
-    # Trust
+    # Data-quality confidence
     forecast_trust_score: float
     forecast_trust_grade: str
     error_decomposition: dict
     trust_warnings: list[str]
     # Drift
     structural_drift: dict
-    # Recommendations
-    recommendations: list[dict]
     # Audit
     audit_trace: dict
 
@@ -215,7 +211,7 @@ async def _resolve_weather_signals(
         sources.append({
             "provider": "eia",
             "status": "unconfigured",
-            "degraded_mode": "grid context omitted — set GRIDFORGE_EIA_API_KEY to enable",
+            "degraded_mode": "grid context omitted — set DISPATCHLAYER_EIA_API_KEY to enable",
         })
         warnings.append("EIA_API_KEY not configured; regional grid context omitted.")
 
@@ -407,39 +403,7 @@ async def evaluate_site(req: SiteEvaluationRequest) -> SiteEvaluationResponse:
         reasoning="Compared recent residuals against trailing baseline for regime-shift detection",
     )
 
-    #  D: Decision Ranking 
-    ranker = DecisionRanker(price_per_mwh=req.price_per_mwh)
-    decisions = ranker.rank_site(
-        prediction,
-        has_battery=req.current_soc_pct is not None,
-        current_soc_pct=req.current_soc_pct,
-        forecast_residual_pct=req.forecast_residual_pct,
-    )
-
-    trace.add_step(
-        "D_decision_ranking",
-        inputs={"price_per_mwh": req.price_per_mwh, "recommendation_count": len(decisions.recommendations)},
-        output=[r.action[:80] for r in decisions.recommendations[:3]],
-        reasoning="Ranked recommendations by evidence_strength × confidence × urgency × financial_impact × constraint_validity",
-    )
-
     #  Build response 
-    recommendations = [
-        {
-            "priority": r.priority,
-            "action": r.action,
-            "type": r.recommendation_type.value,
-            "why_now": r.why_now,
-            "confidence": round(r.confidence, 3),
-            "urgency_hours": r.urgency_hours,
-            "estimated_value_usd": round(r.estimated_value_usd or 0.0, 2),
-            "evidence": r.evidence,
-            "risk_if_ignored": r.risk_if_ignored,
-            "score": round(r.recommendation_score, 4),
-        }
-        for r in decisions.recommendations
-    ]
-
     return SiteEvaluationResponse(
         site_id=req.name,
         asset_type=req.asset_type,
@@ -479,7 +443,5 @@ async def evaluate_site(req: SiteEvaluationRequest) -> SiteEvaluationResponse:
             "reason": drift_warning.reason,
             "recommended_action": drift_warning.recommended_action,
         },
-        recommendations=recommendations,
         audit_trace=trace.to_dict(),
     )
-

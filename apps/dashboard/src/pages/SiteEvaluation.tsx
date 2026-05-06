@@ -11,7 +11,7 @@ const TRUST_COLORS: Record<string, string> = {
 }
 
 const DEFAULT_SITE = {
-  name: 'st_paul_solar_bess',
+  name: 'north_ridge_solar',
   latitude: 44.9537,
   longitude: -93.09,
   asset_type: 'solar',
@@ -30,8 +30,8 @@ const DEFAULT_SITE = {
 
 const DATA_MODE_DESCS: Record<string, string> = {
   live:    'Calls real public providers (Open-Meteo, NASA POWER)',
-  fixture: 'Recorded payloads — tests/offline demo only',
-  hybrid:  'Live where reachable; fixture fallback for missing providers',
+  fixture: 'Offline SCADA fixture — reproducible local analysis',
+  hybrid:  'Live where reachable; offline fixture fallback for unavailable providers',
 }
 
 export default function SiteEvaluation() {
@@ -90,15 +90,15 @@ export default function SiteEvaluation() {
   return (
     <div className="gp-grid">
       <div className="gp-page-header">
-        <h1 className="gp-page-title">Site Evaluation</h1>
+        <h1 className="gp-page-title">Snapshot Analysis</h1>
         <p className="gp-page-subtitle">
-          Full L→G→P→D pipeline: local signals → structural summary → predictive evolution →
-          trust scoring → drift detection → ranked recommendations → audit trace.
-          Live mode calls Open-Meteo for real weather signals at the given lat/lon.
+          Ingest a site snapshot and run the full analysis pipeline: signal scoring →
+          structural state → forecast context → data-quality confidence → drift detection → audit trace.
+          Live mode fetches real weather signals from Open-Meteo for the given coordinates.
         </p>
       </div>
 
-      <DashboardCard title="Site Configuration">
+      <DashboardCard title="Snapshot Parameters">
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
           {txtInp('Site name', 'name')}
           {numInp('Latitude', 'latitude')}
@@ -151,12 +151,12 @@ export default function SiteEvaluation() {
         </div>
         {form.data_mode !== 'fixture' && (
           <div style={{ fontSize: '0.78rem', color: 'var(--gp-text-muted)', marginBottom: '0.75rem' }}>
-            💡 GHI, Temperature, Wind speed will be fetched from Open-Meteo for ({form.latitude}, {form.longitude}).
+            GHI, Temperature, and Wind speed will be fetched from Open-Meteo for ({form.latitude}, {form.longitude}).
             Enter values to override provider signals.
           </div>
         )}
         <button onClick={run} disabled={loading} className="gp-btn gp-btn--primary">
-          {loading ? <><span className="gp-spinner" style={{ width: 14, height: 14, borderWidth: 2 }} /> Evaluating…</> : 'Run Evaluation'}
+          {loading ? <><span className="gp-spinner" style={{ width: 14, height: 14, borderWidth: 2 }} /> Analyzing…</> : 'Analyze Snapshot'}
         </button>
         {error && <div className="gp-callout gp-callout--danger" style={{ marginTop: '0.75rem' }}>{error}</div>}
       </DashboardCard>
@@ -179,14 +179,14 @@ export default function SiteEvaluation() {
             <StatCard label="P50 Expected"   value={`${result.p50_mwh} MWh`} accent="var(--gp-blue)" />
             <StatCard label="P90 Optimistic"  value={`${result.p90_mwh} MWh`} accent="var(--gp-green)" />
             <StatCard
-              label="Forecast Trust"
+              label="Data-Quality Confidence"
               value={`${Math.round(result.forecast_trust_score * 100)}%`}
               sub={result.forecast_trust_grade?.replace('_', ' ')}
               accent={TRUST_COLORS[result.forecast_trust_grade] ?? 'var(--gp-slate)'}
             />
           </div>
 
-          <DashboardCard title="Forecast Trust Score">
+          <DashboardCard title="Forecast Confidence & Error Decomposition">
             <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
               <div style={{ textAlign: 'center', minWidth: 90 }}>
                 <div style={{
@@ -240,53 +240,12 @@ export default function SiteEvaluation() {
               />
               <div>
                 <div style={{ fontSize: '0.9rem', color: 'var(--gp-text-primary)', marginBottom: 4 }}>{result.structural_drift?.reason}</div>
-                {result.structural_drift?.recommended_action && (
-                  <div style={{ fontSize: '0.85rem', color: 'var(--gp-text-secondary)' }}>
-                    Recommended: {result.structural_drift.recommended_action}
-                  </div>
-                )}
               </div>
             </div>
           </DashboardCard>
 
-          {result.recommendations?.length > 0 && (
-            <DashboardCard title="Operational Recommendations">
-              <table className="gp-table">
-                <thead>
-                  <tr>
-                    <th>Priority</th>
-                    <th>Action</th>
-                    <th>Type</th>
-                    <th style={{ textAlign: 'right' }}>Confidence</th>
-                    <th style={{ textAlign: 'right' }}>Est. Value</th>
-                    <th style={{ textAlign: 'right' }}>Urgency</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {result.recommendations.map((rec: any, i: number) => (
-                    <tr key={i}>
-                      <td><StatusBadge label={rec.priority} /></td>
-                      <td>
-                        <div style={{ fontWeight: 600 }}>{rec.action}</div>
-                        {rec.why_now && <div style={{ fontSize: '0.75rem', color: 'var(--gp-text-muted)', marginTop: 2 }}>{rec.why_now}</div>}
-                      </td>
-                      <td style={{ color: 'var(--gp-text-secondary)', fontSize: '0.8rem' }}>{rec.type?.replace(/_/g, ' ')}</td>
-                      <td style={{ textAlign: 'right', fontWeight: 700 }}>{Math.round(rec.confidence * 100)}%</td>
-                      <td style={{ textAlign: 'right', color: rec.estimated_value_usd > 0 ? 'var(--gp-green-text)' : 'var(--gp-text-muted)', fontWeight: 600 }}>
-                        {rec.estimated_value_usd > 0 ? `$${rec.estimated_value_usd.toLocaleString()}` : '—'}
-                      </td>
-                      <td style={{ textAlign: 'right', color: 'var(--gp-text-muted)', fontSize: '0.8rem' }}>
-                        {rec.urgency_hours != null ? `${rec.urgency_hours}h` : '—'}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </DashboardCard>
-          )}
-
-          {/* Audit Trace — risklab-ui Timeline pattern */}
-          <DashboardCard title="Audit Trace — L→G→P→D Pipeline">
+          {/* Audit Trace */}
+          <DashboardCard title="Audit Trace — Analysis Pipeline">
             <AuditTimeline
               steps={result.audit_trace?.steps ?? []}
               traceId={result.audit_trace?.trace_id}

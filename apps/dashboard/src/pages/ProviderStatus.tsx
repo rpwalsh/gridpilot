@@ -14,7 +14,7 @@
 import { useState, useEffect } from 'react'
 import DashboardCard from '../components/DashboardCard'
 import StatCard from '../components/StatCard'
-import StatusBadge from '../components/StatusBadge'
+import StatusBadge, { resolveColor } from '../components/StatusBadge'
 import axios from 'axios'
 
 const PROVIDER_DOCS: Record<string, { label: string; url: string; description: string; keyVar?: string }> = {
@@ -37,32 +37,22 @@ const PROVIDER_DOCS: Record<string, { label: string; url: string; description: s
     label: 'EIA',
     url: 'https://www.eia.gov/opendata/',
     description: 'U.S. Energy Information Administration — EIA-930 grid demand, generation mix.',
-    keyVar: 'GRIDFORGE_EIA_API_KEY',
+    keyVar: 'DISPATCHLAYER_EIA_API_KEY',
   },
   nrel: {
     label: 'NREL',
     url: 'https://developer.nrel.gov/',
     description: 'NREL PVWatts, Wind Toolkit, ATB. Free with registration.',
-    keyVar: 'GRIDFORGE_NREL_API_KEY',
+    keyVar: 'DISPATCHLAYER_NREL_API_KEY',
   },
   entsoe: {
     label: 'ENTSO-E',
     url: 'https://transparency.entsoe.eu/content/static_content/Static%20content/web%20api/Guide.html',
     description: 'European transmission system — day-ahead prices, generation, cross-border flows.',
-    keyVar: 'GRIDFORGE_ENTSOE_API_KEY',
+    keyVar: 'DISPATCHLAYER_ENTSOE_API_KEY',
   },
 }
 
-const STATUS_COLOR: Record<string, string> = {
-  success: 'green',
-  fixture: 'blue',
-  degraded: 'amber',
-  error: 'red',
-  unconfigured: 'slate',
-  unreachable: 'red',
-  configured_not_called: 'purple',
-  configured_not_probed: 'purple',
-}
 
 export default function ProviderStatus() {
   const [health, setHealth] = useState<any>(null)
@@ -93,26 +83,26 @@ export default function ProviderStatus() {
       <div className="gp-page-header">
         <h1 className="gp-page-title">Provider Status</h1>
         <p className="gp-page-subtitle">
-          Live provider health checks — real latency probes for key-free APIs.
-          Key-gated providers report "unconfigured" until environment variables are set.
+          Live provider health probes — real latency checks for key-free APIs.
+          Key-gated providers report "unconfigured" until environment variables are configured.
         </p>
       </div>
 
       {/* Data policy callout */}
       <div className="gp-callout gp-callout--info" style={{ fontSize: '0.85rem' }}>
-        <strong>Data policy:</strong> GridPilot does not depend on fabricated runtime data.
+        <strong>Data policy:</strong> Dispatch Layer does not depend on fabricated runtime data.
         The production path uses provider adapters for real public weather, solar-resource, and
-        grid data. Recorded fixtures are used only for tests, CI, offline demos, and
+        grid data. Offline fixtures are used only for tests, CI, reproducible local analysis, and
         failure-mode simulation. Each result includes source attribution, provider status,
         freshness, cache status, and any degraded-mode warnings.
       </div>
 
       {health && !health.error && (
         <div className="gp-stat-grid">
-          <StatCard label="Total Providers" value={total} icon="🔌" />
-          <StatCard label="Live / Reachable" value={live} icon="✅" accent={live > 0 ? 'var(--gp-green)' : 'var(--gp-red)'} />
-          <StatCard label="Unconfigured" value={Object.values(providers).filter((p: any) => p.status === 'unconfigured').length} icon="🔑" accent="var(--gp-amber)" />
-          <StatCard label="Warnings" value={warnings.length} icon="⚠" accent={warnings.length > 0 ? 'var(--gp-amber)' : 'var(--gp-green)'} />
+          <StatCard label="Total Providers" value={total} />
+          <StatCard label="Live / Reachable" value={live} accent={live > 0 ? 'var(--gp-green)' : 'var(--gp-red)'} />
+          <StatCard label="Unconfigured" value={Object.values(providers).filter((p: any) => p.status === 'unconfigured').length} accent="var(--gp-amber)" />
+          <StatCard label="Warnings" value={warnings.length} accent={warnings.length > 0 ? 'var(--gp-amber)' : 'var(--gp-green)'} />
         </div>
       )}
 
@@ -162,7 +152,7 @@ export default function ProviderStatus() {
                     <td>
                       <StatusBadge
                         label={info.status?.replace(/_/g, ' ')}
-                        color={STATUS_COLOR[info.status] ?? 'slate'}
+                        color={resolveColor(info.status ?? '')}
                       />
                     </td>
                     <td style={{ textAlign: 'right', fontWeight: 600, fontSize: '0.85rem' }}>
@@ -219,16 +209,16 @@ export default function ProviderStatus() {
             <ul style={{ margin: 0, paddingLeft: '1.25rem', fontSize: '0.875rem', color: 'var(--gp-text-secondary)', lineHeight: 2 }}>
               <li>Recorded provider responses (mathematically verified)</li>
               <li>Deterministic CI tests</li>
-              <li>Offline demo mode</li>
+              <li>Offline fixture mode</li>
               <li>Fault-injection simulation</li>
               <li>Provider schema regression tests</li>
             </ul>
           </div>
         </div>
         <div style={{ marginTop: '1rem', fontSize: '0.82rem', color: 'var(--gp-text-muted)', borderTop: '1px solid var(--gp-border)', paddingTop: '0.75rem' }}>
-          The demo can run offline with fixtures, but the runtime architecture is built around
-          real public provider adapters. The important part is not the sample data; it is the
-          adapter boundary, normalization, source attribution, and auditable decision path.
+          The runtime can operate offline with fixtures, but the architecture is built around
+          real public provider adapters. The adapter boundary, normalization, source attribution,
+          and auditable analysis path are the same in both modes.
         </div>
       </DashboardCard>
     </div>

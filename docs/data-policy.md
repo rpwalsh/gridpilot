@@ -1,6 +1,6 @@
 # Data Policy
 
-GridPilot does not depend on fabricated runtime data.
+DispatchLayer does not depend on fabricated runtime data.
 
 The production path uses provider adapters for real public weather, solar-resource, and grid data.
 Recorded fixtures are used only for tests, CI, offline demos, and failure-mode simulation.
@@ -60,7 +60,7 @@ Every response includes a `sources` array:
     {
       "provider": "eia",
       "status": "unconfigured",
-      "degraded_mode": "grid context omitted — set GRIDFORGE_EIA_API_KEY to enable"
+      "degraded_mode": "grid context omitted — set DISPATCHLAYER_EIA_API_KEY to enable"
     }
   ],
   "warnings": [
@@ -73,7 +73,7 @@ Every response includes a `sources` array:
 
 ## Hardware telemetry
 
-GridPilot supports hardware telemetry through normalized ingestion interfaces.
+DispatchLayer supports hardware telemetry through normalized ingestion interfaces.
 Public demos use recorded fixtures and in-process stores because real SCADA and
 asset telemetry are customer-owned.
 
