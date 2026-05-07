@@ -5,12 +5,15 @@ DispatchLayer is organized as an API plus dashboard around a shared predictive c
 ## High-Level Components
 
 1. Data layer
-   - Archive weather/resource snapshots (hourly)
-   - Site catalog with 10 demo sites
+   - Archive weather/resource snapshots (hourly, Open-Meteo ERA5/ECMWF)
+   - Site catalog with 10 demo sites (5 solar, 5 wind)
+   - Source snapshots under `data/source_snapshots/`
 
 2. API layer (apps/api)
-   - FastAPI routes for summary, timeseries, pipeline, forecasting, dispatch
+   - FastAPI routes for summary, timeseries, pipeline, forecasting, dispatch,
+     anomalies, signals, connectors, audit, and predictive primitives
    - Request-level composition of forecast, uncertainty, and trace artifacts
+   - Auto-generated docs at `/docs` (Swagger) and `/redoc`
 
 3. Dashboard layer (apps/dashboard)
    - Vue page flows for validation, forecast, and diagnostics
@@ -18,6 +21,14 @@ DispatchLayer is organized as an API plus dashboard around a shared predictive c
 
 4. Package layer (packages/*)
    - Domain entities, predictive math, dispatch logic, adapters/connectors
+   - See PYTHON_DEEPDIVE.md for full topology
+
+5. Connector layer (packages/connectors/*)
+   - Read-only industrial-protocol connectors
+   - OpenTelemetry/OTLP, OPC UA/SCADA, MQTT, AWS IoT SiteWise, S3/Parquet
+   - Exposed via `GET /api/v1/connectors/state` and `/connectors/protocols`
+   - All connectors fail soft: runtime errors are caught and reported as
+     connector state `"ERROR"` without crashing the API
 
 ## Forecast Data Flow
 
@@ -51,4 +62,20 @@ DispatchLayer is organized as an API plus dashboard around a shared predictive c
 
 - Pipeline includes audit_trace and recommendation evidence.
 - Dashboard exposes forecast bands plus input state and spectral signal tables.
+- Each API response embeds a DecisionTrace with trace_id, step inputs/outputs,
+  reasoning strings, and model version tags.
+
+## Makefile Quick Reference
+
+| Target              | Description                                            |
+|---------------------|--------------------------------------------------------|
+| `make install`      | Install all Python packages (editable) + npm install   |
+| `make api`          | Start API on port 8000                                 |
+| `make dashboard`    | Start Vite dev server on port 3000                     |
+| `make test`         | Run all Python tests                                   |
+| `make lint-language`| Check for forbidden instrumentation-boundary terms     |
+| `make frontend`     | Production build of the dashboard                      |
+| `make verify`       | Full check: tests + lint + frontend build              |
+| `make docker`       | Build and run via docker compose                       |
+| `make snapshots-recommended` | Capture 5-year archive snapshots for all demo sites |
 
