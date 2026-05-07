@@ -1,48 +1,27 @@
-﻿<!-- Proprietary (c) Ryan Walsh / Walsh Tech Group -->
-<!-- All rights reserved. Professional preview only. -->
+﻿# Decision Trace
 
-# Decision Trace
+Decision trace captures how a forecast or recommendation was produced.
 
-Decision trace is the audit log that explains how predictive outputs were produced.
+## Trace Elements
 
-## Purpose
+- trace_id
+- created_utc
+- ordered steps
+- model versions and hashes
+- key intermediate outputs
 
-- support incident debugging
-- support operational handoff
-- support engineering validation and review
+## Required Characteristics
 
-## Required Fields
+- deterministic ordering
+- machine-readable fields
+- stable identifiers for audit and replay
 
-- UTC timestamp
-- pipeline step name
-- key inputs used
-- key outputs produced
-- reasoning summary
-- component/model version identifiers
+## Forecast Workflow Example
 
-## Recommended Fields
+1. ingest latest site row
+2. normalize signals
+3. compute baseline and residual profile
+4. generate p10/p50/p90 projection
+5. compute confidence and recommendations
+6. return artifacts and trace
 
-- source status snapshot at evaluation time
-- warning list at evaluation time
-- confidence before/after reconciliation (where relevant)
-- request correlation id
-
-## Quality Standards
-
-Trace should be:
-- concise
-- consistent
-- deterministic in structure
-- sufficient for post-event reconstruction
-
-## Operational Use Cases
-
-- explain why confidence changed
-- investigate unexpected recommendation shifts
-- compare behavior between two runs/environments
-
-## Anti-Patterns to Avoid
-
-- traces that omit degraded source context
-- traces with ambiguous step names
-- traces that include outputs without input references

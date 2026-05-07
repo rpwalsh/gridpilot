@@ -571,7 +571,7 @@ def _site_file_map() -> dict[str, pathlib.Path]:
 @router.get("/timeseries/{site_id}")
 async def site_timeseries(
     site_id: str,
-    hours: int = Query(default=168, ge=1, le=8760, description="Number of trailing hours to return"),
+    hours: int = Query(default=168, ge=1, le=43800, description="Number of trailing hours to return"),
 ) -> dict:
     """
     Return the last N hourly rows from the real Open-Meteo archive for a site.

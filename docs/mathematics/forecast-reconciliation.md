@@ -1,39 +1,23 @@
-﻿<!-- Proprietary (c) Ryan Walsh / Walsh Tech Group -->
-<!-- All rights reserved. Professional preview only. -->
+﻿# Forecast Reconciliation
 
-# Forecast Reconciliation
+Reconciliation aligns point forecasts and interval forecasts across views.
 
-Forecast reconciliation is the controlled process of comparing expected context with observed outcomes and updating confidence interpretation.
+## Objectives
 
-## Operational Goal
+- maintain p10 <= p50 <= p90 at every timestamp
+- avoid discontinuities at observed-to-forecast boundary
+- enforce non-negative generation values
 
-Keep planning context aligned with real behavior while preserving traceability.
+## Common Steps
 
-## Standard Reconciliation Sequence
+1. monotonicity check for interval bounds
+2. clipping and floor rules for physical validity
+3. optional smoothing at horizon transition
+4. consistency checks against capacity limits
 
-1. Align windows
-- compare observed and expected on the same UTC window and resolution
+## Validation Checks
 
-2. Compute residual updates
-- update bias, spread, outlier metrics
+- no bound inversions
+- no negative power values
+- stable band width progression under similar inputs
 
-3. Re-evaluate confidence
-- adjust trust/confidence based on updated residual and quality state
-
-4. Record trace
-- attach reconciliation summary to trace metadata
-
-5. Communicate impact
-- reflect updated confidence/warnings in manager-facing outputs
-
-## Governance Rules
-
-- never overwrite historical outputs without trace
-- keep before/after context recoverable
-- ensure reconciliation logic is deterministic for reproducibility
-
-## Practical Review Questions
-
-- did source quality change during the reconciliation window?
-- are deviations isolated or persistent?
-- does updated confidence match operational intuition and quality evidence?

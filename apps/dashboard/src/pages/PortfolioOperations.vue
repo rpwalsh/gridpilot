@@ -55,20 +55,17 @@
             <th>Site</th>
             <th>Type</th>
             <th>Region</th>
-            <th>Wind 10m m/s</th>
-            <th>Wind 80m m/s</th>
-            <th>GHI W/m²</th>
-            <th>DNI W/m²</th>
-            <th>Temp °C</th>
-            <th>Cloud Cover %</th>
-            <th>Forecast P50</th>
-            <th>Archive Pts</th>
-            <th>Latest Obs</th>
+            <th>Wind</th>
+            <th>GHI</th>
+            <th>Temp</th>
+            <th>P50</th>
+            <th>Pts</th>
+            <th>Latest</th>
             <th>Source</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="s in filtered" :key="s.site_id" class="site-row" @click="selectSite(s.site_id)">
+          <tr v-for="s in visibleRows" :key="s.site_id" class="site-row" @click="selectSite(s.site_id)">
             <td class="td-name">{{ s.name }}</td>
             <td>
               <span :class="['type-pill', s.asset_type === 'solar' ? 'type-pill--solar' : 'type-pill--wind']">
@@ -77,11 +74,8 @@
             </td>
             <td class="td-mono">{{ s.region ?? '—' }}</td>
             <td class="td-num">{{ fmtN(s.wind_speed_mps, 1) }}</td>
-            <td class="td-num td-dim">—</td>
             <td class="td-num">{{ s.ghi_wm2 != null ? Math.round(s.ghi_wm2) : '—' }}</td>
-            <td class="td-num td-dim">—</td>
             <td class="td-num">{{ fmtN(s.temperature_c, 1) }}</td>
-            <td class="td-num td-dim">—</td>
             <td class="td-num td-cyan">{{ fmtForecast(s.site_id) }}</td>
             <td class="td-num">{{ s.hourly_points.toLocaleString() }}</td>
             <td class="td-mono">{{ fmtTs(s.timestamp_utc) }}</td>
@@ -129,6 +123,8 @@ const filtered = computed(() => {
   if (filterRegion.value) s = s.filter(x => x.region === filterRegion.value)
   return s
 })
+
+const visibleRows = computed(() => filtered.value.slice(0, 8))
 
 function fmtN(v: number | null | undefined, decimals = 0) {
   if (v == null) return '—'
@@ -200,7 +196,7 @@ onMounted(load)
   height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
   overflow: hidden;
 }
 
@@ -212,7 +208,7 @@ onMounted(load)
 }
 
 .page-eyebrow {
-  font-size: 11px;
+  font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.1em;
   color: var(--text-1);
@@ -224,15 +220,15 @@ onMounted(load)
   background: rgba(10, 30, 48, 0.95);
   border: 1px solid var(--cyan-border);
   color: var(--text-0);
-  font-size: 11px;
-  padding: 4px 8px;
+  font-size: 9px;
+  padding: 3px 7px;
   border-radius: 6px;
   outline: none;
 }
 
 .btn-refresh {
   background: none; border: 1px solid var(--cyan-border); color: var(--cyan);
-  border-radius: 6px; padding: 4px 10px; cursor: pointer; font-size: 11px;
+  border-radius: 6px; padding: 3px 8px; cursor: pointer; font-size: 9px;
 }
 .btn-refresh:disabled { opacity: 0.4; cursor: default; }
 
@@ -244,29 +240,29 @@ onMounted(load)
 /* Summary pills */
 .ops-summary {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   flex-shrink: 0;
 }
 
 .sum-pill {
   background: linear-gradient(180deg, rgba(10,30,48,0.95), rgba(4,14,24,0.98));
   border: 1px solid var(--cyan-border);
-  border-radius: 8px;
-  padding: 6px 12px;
+  border-radius: 7px;
+  padding: 4px 8px;
   display: flex;
   gap: 8px;
   align-items: baseline;
 }
 
 .sum-label {
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 700;
   letter-spacing: 0.1em;
   color: var(--text-2);
 }
 
 .sum-val {
-  font-size: 14px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--text-0);
   font-variant-numeric: tabular-nums;
@@ -276,41 +272,39 @@ onMounted(load)
 .ops-table-wrap {
   flex: 1;
   min-height: 0;
-  overflow: auto;
+  overflow: hidden;
   background: linear-gradient(180deg, rgba(10,30,48,0.95), rgba(4,14,24,0.98));
   border: 1px solid var(--cyan-border);
-  border-radius: 10px;
+  border-radius: 8px;
 }
 
 .loading-row {
-  padding: 16px;
-  font-size: 12px;
+  padding: 10px;
+  font-size: 10px;
   color: var(--text-2);
 }
 
 .dl-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 11px;
+  font-size: 9px;
 }
 
 .dl-table th {
-  position: sticky;
-  top: 0;
   background: rgba(6, 18, 30, 0.98);
   text-align: left;
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-2);
-  padding: 8px 10px;
+  padding: 4px 6px;
   border-bottom: 1px solid var(--cyan-border);
   white-space: nowrap;
 }
 
 .dl-table td {
-  padding: 6px 10px;
+  padding: 3px 6px;
   color: var(--text-0);
   border-bottom: 1px solid rgba(96,190,255,0.05);
   white-space: nowrap;
@@ -319,8 +313,8 @@ onMounted(load)
 .site-row { cursor: pointer; transition: background 0.1s; }
 .site-row:hover td { background: rgba(40,191,255,0.04); }
 
-.td-name  { font-weight: 500; max-width: 180px; overflow: hidden; text-overflow: ellipsis; }
-.td-mono  { font-family: 'Menlo', monospace; font-size: 10px; color: var(--text-1); }
+.td-name  { font-weight: 500; max-width: 140px; overflow: hidden; text-overflow: ellipsis; }
+.td-mono  { font-family: 'Menlo', monospace; font-size: 8px; color: var(--text-1); }
 .td-num   { text-align: right; font-variant-numeric: tabular-nums; color: var(--text-1); }
 .td-dim   { color: var(--text-2); }
 .td-cyan  { color: var(--cyan); font-weight: 500; }
@@ -334,8 +328,8 @@ onMounted(load)
 .ops-footer {
   flex-shrink: 0;
   display: flex;
-  gap: 8px;
-  font-size: 10px;
+  gap: 6px;
+  font-size: 8px;
   color: var(--text-2);
   padding: 2px 0;
 }

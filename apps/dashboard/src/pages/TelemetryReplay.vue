@@ -15,14 +15,9 @@
           <option :value="2160">90 d</option>
         </select>
         <select v-model="primaryField" class="dl-select">
-          <option value="wind_speed_10m">Wind 10m m/s</option>
-          <option value="wind_speed_80m">Wind 80m m/s</option>
-          <option value="shortwave_radiation">GHI W/m²</option>
-          <option value="direct_normal_irradiance">DNI W/m²</option>
-          <option value="temperature_2m">Temperature °C</option>
-          <option value="cloud_cover">Cloud Cover %</option>
-          <option value="precipitation">Precipitation mm</option>
-          <option value="pressure_msl">Pressure hPa</option>
+          <option v-for="field in availableFieldOptions" :key="field.value" :value="field.value">
+            {{ field.label }}
+          </option>
         </select>
         <button class="btn-refresh" @click="loadSite" :disabled="loading">↻</button>
       </div>
@@ -121,6 +116,8 @@ let chart: Chart | null = null
 
 const rows = computed(() => tsData.value?.rows ?? [])
 const currentRow = computed<TimeseriesRow | null>(() => rows.value[cursorIdx.value] ?? null)
+const currentSite = computed(() => catalog.value.find(site => site.site_id === selectedSite.value) ?? null)
+const currentSiteType = computed(() => currentSite.value?.asset_type ?? 'solar')
 
 const FIELD_LABELS: Record<string, string> = {
   wind_speed_10m: 'Wind Speed 10m (m/s)',
@@ -135,6 +132,73 @@ const FIELD_LABELS: Record<string, string> = {
 
 const primaryFieldLabel = computed(() => FIELD_LABELS[primaryField.value] ?? primaryField.value)
 
+type SupportedSiteType = 'solar' | 'wind'
+type FieldOption = { value: string; label: string; siteTypes: SupportedSiteType[] }
+
+const FIELD_OPTIONS: FieldOption[] = [
+  { value: 'wind_speed_10m', label: 'Wind 10m m/s', siteTypes: ['wind'] },
+  { value: 'wind_speed_80m', label: 'Wind 80m m/s', siteTypes: ['wind'] },
+  { value: 'shortwave_radiation', label: 'GHI W/m²', siteTypes: ['solar'] },
+  { value: 'direct_normal_irradiance', label: 'DNI W/m²', siteTypes: ['solar'] },
+  { value: 'temperature_2m', label: 'Temperature °C', siteTypes: ['solar', 'wind'] },
+  { value: 'cloud_cover', label: 'Cloud Cover %', siteTypes: ['solar', 'wind'] },
+  { value: 'precipitation', label: 'Precipitation mm', siteTypes: ['solar', 'wind'] },
+  { value: 'pressure_msl', label: 'Pressure hPa', siteTypes: ['solar', 'wind'] },
+] 
+
+const DEFAULT_FIELDS: Record<SupportedSiteType, string[]> = {
+  solar: ['shortwave_radiation', 'direct_normal_irradiance', 'temperature_2m', 'cloud_cover'],
+  wind: ['wind_speed_10m', 'wind_speed_80m', 'temperature_2m', 'pressure_msl'],
+}
+
+const availableFieldOptions = computed(() => {
+  const allowedSiteType = currentSiteType.value
+  return FIELD_OPTIONS.filter((field) => {
+    if (!field.siteTypes.includes(allowedSiteType)) return false
+    return hasFieldData(field.value)
+  })
+})
+
+function hasFieldData(field: string) {
+  return rows.value.some((row) => getFieldValue(row, field) != null)
+}
+
+function getFieldValue(row: TimeseriesRow, field: string): number | null {
+  switch (field) {
+    case 'wind_speed_10m':
+      return row.wind_speed_10m
+    case 'wind_speed_80m':
+      return row.wind_speed_80m
+    case 'shortwave_radiation':
+      return row.shortwave_radiation
+    case 'direct_normal_irradiance':
+      return row.direct_normal_irradiance
+    case 'temperature_2m':
+      return row.temperature_2m
+    case 'cloud_cover':
+      return row.cloud_cover
+    case 'precipitation':
+      return row.precipitation
+    case 'pressure_msl':
+      return row.pressure_msl
+    default:
+      return null
+  }
+}
+
+function chooseDefaultField() {
+  const preferredFields = DEFAULT_FIELDS[currentSiteType.value]
+  const preferredMatch = preferredFields.find(field => hasFieldData(field))
+  return preferredMatch ?? availableFieldOptions.value[0]?.value ?? 'temperature_2m'
+}
+
+function ensureValidPrimaryField() {
+  if (!rows.value.length) return
+  if (!availableFieldOptions.value.some(field => field.value === primaryField.value)) {
+    primaryField.value = chooseDefaultField()
+  }
+}
+
 async function loadCatalog() {
   try {
     const s = await api.sourceSummary()
@@ -144,9 +208,6 @@ async function loadCatalog() {
       selectedSite.value = (siteParam && catalog.value.find(x => x.site_id === siteParam))
         ? siteParam
         : catalog.value[0].site_id
-      // Default to appropriate field for site type
-      const site = catalog.value.find(x => x.site_id === selectedSite.value)
-      if (site?.asset_type === 'solar') primaryField.value = 'shortwave_radiation'
       await loadSite()
     }
   } catch (e: any) {
@@ -161,22 +222,24 @@ async function loadSite() {
   error.value = ''
   try {
     tsData.value = await api.timeseries(selectedSite.value, hours.value)
+    ensureValidPrimaryField()
     cursorIdx.value = Math.max(0, rows.value.length - 1)
-    await nextTick()
-    renderChart()
   } catch (e: any) {
     error.value = e?.message ?? 'Failed to load timeseries'
   } finally {
     loading.value = false
+    await nextTick()
+    renderChart()
   }
 }
 
 function renderChart() {
   if (!canvasRef.value || rows.value.length === 0) return
+  ensureValidPrimaryField()
   if (chart) { chart.destroy(); chart = null }
 
   const labels = rows.value.map(r => r.ts.slice(0, 16).replace('T', ' '))
-  const values = rows.value.map(r => (r as any)[primaryField.value] as number | null)
+  const values = rows.value.map(r => getFieldValue(r, primaryField.value))
 
   chart = new Chart(canvasRef.value, {
     type: 'line',
@@ -249,7 +312,7 @@ onBeforeUnmount(() => { if (chart) chart.destroy() })
   height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
   overflow: hidden;
 }
 
@@ -261,27 +324,27 @@ onBeforeUnmount(() => { if (chart) chart.destroy() })
 }
 
 .page-eyebrow {
-  font-size: 11px;
+  font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.1em;
   color: var(--text-1);
 }
 
-.replay-controls { display: flex; gap: 8px; align-items: center; }
+.replay-controls { display: flex; gap: 6px; align-items: center; }
 
 .dl-select {
   background: rgba(10,30,48,0.95);
   border: 1px solid var(--cyan-border);
   color: var(--text-0);
-  font-size: 11px;
-  padding: 4px 8px;
+  font-size: 9px;
+  padding: 3px 7px;
   border-radius: 6px;
   outline: none;
 }
 
 .btn-refresh {
   background: none; border: 1px solid var(--cyan-border); color: var(--cyan);
-  border-radius: 6px; padding: 4px 10px; cursor: pointer; font-size: 11px;
+  border-radius: 6px; padding: 3px 8px; cursor: pointer; font-size: 9px;
 }
 .btn-refresh:disabled { opacity: 0.4; }
 
@@ -292,27 +355,27 @@ onBeforeUnmount(() => { if (chart) chart.destroy() })
 
 /* Frame KPIs */
 .frame-kpis {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
   flex-shrink: 0;
 }
 
 .fkpi {
   background: linear-gradient(180deg, rgba(10,30,48,0.95), rgba(4,14,24,0.98));
   border: 1px solid var(--cyan-border);
-  border-radius: 8px;
-  padding: 6px 12px;
+  border-radius: 7px;
+  padding: 4px 8px;
   display: flex;
   flex-direction: column;
   gap: 1px;
-  min-width: 90px;
+  min-width: 0;
 }
 
 .fkpi--source { flex: 1; }
 
 .fkpi-label {
-  font-size: 8px;
+  font-size: 7px;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -320,14 +383,14 @@ onBeforeUnmount(() => { if (chart) chart.destroy() })
 }
 
 .fkpi-val {
-  font-size: 13px;
+  font-size: 10px;
   font-weight: 600;
   color: var(--text-0);
   font-variant-numeric: tabular-nums;
 }
 
 .fkpi-val--dim {
-  font-size: 10px;
+  font-size: 8px;
   font-weight: 400;
   color: var(--text-2);
   font-family: 'Menlo', monospace;
@@ -339,23 +402,23 @@ onBeforeUnmount(() => { if (chart) chart.destroy() })
   min-height: 0;
   background: linear-gradient(180deg, rgba(10,30,48,0.95), rgba(4,14,24,0.98));
   border: 1px solid var(--cyan-border);
-  border-radius: 10px;
-  padding: 12px;
+  border-radius: 8px;
+  padding: 8px;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
 .chart-label {
-  font-size: 11px;
+  font-size: 9px;
   font-weight: 600;
   color: var(--text-1);
   flex-shrink: 0;
 }
 
-.chart-pts { font-size: 10px; font-weight: 400; color: var(--text-2); margin-left: 8px; }
+.chart-pts { font-size: 8px; font-weight: 400; color: var(--text-2); margin-left: 6px; }
 
-.loading-row { font-size: 12px; color: var(--text-2); padding: 8px 0; }
+.loading-row { font-size: 10px; color: var(--text-2); padding: 6px 0; }
 
 .chart-wrap {
   flex: 1;
@@ -367,12 +430,12 @@ onBeforeUnmount(() => { if (chart) chart.destroy() })
 .replay-scrub {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
   flex-shrink: 0;
 }
 
 .scrub-label {
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 700;
   letter-spacing: 0.1em;
   color: var(--text-2);
@@ -386,18 +449,24 @@ onBeforeUnmount(() => { if (chart) chart.destroy() })
 }
 
 .scrub-ts {
-  font-size: 10px;
+  font-size: 8px;
   font-family: 'Menlo', monospace;
   color: var(--text-1);
-  min-width: 140px;
+  min-width: 120px;
   text-align: right;
 }
 
 .replay-footer {
   flex-shrink: 0;
-  font-size: 10px;
+  font-size: 8px;
   color: var(--text-2);
   font-family: 'Menlo', monospace;
   padding-bottom: 2px;
+}
+
+@media (max-width: 1200px) {
+  .frame-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 </style>

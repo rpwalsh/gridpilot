@@ -1,48 +1,30 @@
-﻿<!-- Proprietary (c) Ryan Walsh / Walsh Tech Group -->
-<!-- All rights reserved. Professional preview only. -->
+﻿# Residual Analysis
 
-# Residual Analysis
+Residual analysis evaluates model error behavior over time.
 
-Residual is the difference between observed and expected values.
+## Definitions
 
-## Operational Purpose
+For timestamp t:
 
-Residual analysis detects when forecast context is diverging from field reality.
+- observed value: y_t
+- expected value: yhat_t
+- residual: r_t = y_t - yhat_t
 
-## Core Measures
+## Summary Metrics
 
-- bias: average residual direction over a window
-- spread: variation of residuals over time
-- outlier frequency: count of large deviations
-- regime shift: abrupt change in residual behavior pattern
+- mean error (bias)
+- MAE
+- RMSE
+- residual standard deviation
 
-## Why Managers Care
+## Operational Interpretation
 
-Residual behavior is often the earliest indicator that current planning confidence should be reduced.
+- persistent positive bias: under-forecast tendency
+- persistent negative bias: over-forecast tendency
+- rising variance: regime shift or signal degradation
 
-## Interpretation Patterns
+## Link to Confidence
 
-- persistent positive bias: system regularly underestimates observed values
-- persistent negative bias: system regularly overestimates observed values
-- rising spread: stability is declining
-- clustered outliers: potentially changing conditions or data quality issue
+Residual spread informs interval width and confidence scoring.
+Poor residual behavior should widen forecast bands and reduce trust score.
 
-## Escalation Criteria
-
-Escalate when:
-- directional bias persists across multiple windows
-- spread increases materially and remains elevated
-- outliers cluster in short time spans
-
-## Expected System Behavior
-
-When residual quality worsens, system should:
-- lower confidence/trust
-- raise drift warning signals
-- preserve source/warning context for troubleshooting
-
-## Analysis Hygiene
-
-- evaluate residuals with source quality context
-- keep UTC-aligned windows
-- avoid single-point conclusions without trend confirmation

@@ -1,59 +1,37 @@
-﻿<!-- Proprietary (c) Ryan Walsh / Walsh Tech Group -->
-<!-- All rights reserved. Professional preview only. -->
+﻿# Confidence Scoring
 
-# Confidence Scoring
+Confidence scoring summarizes uncertainty and calibration quality.
 
-Confidence scoring estimates how much reliance to place on forecast context for a specific time window.
+## Components
 
-## Why It Matters
+Total uncertainty score can be composed from:
 
-Operations teams need a clear signal for when to trust normal planning assumptions and when to apply caution.
+- structural error
+- predictive error
+- observational noise
+- calibration error
 
-## Main Drivers
+A simple additive form is:
 
-- data freshness
-- data completeness
-- cross-signal consistency
-- recent residual stability
-- provider and connector health
+U = ws*Es + wp*Ep + wn*En + wc*Ec
 
-## Typical Levels
+where ws + wp + wn + wc = 1.
 
-- High:
-  - inputs are fresh and consistent
-  - residual behavior stable
-  - normal planning confidence
+## Coverage Calibration
 
-- Medium:
-  - partial degradation present
-  - additional monitoring recommended
-  - moderate planning caution
+Given forecast interval [P10, P90] and observed value y:
 
-- Low:
-  - significant data or stability issues
-  - conservative assumptions required
-  - escalation likely needed
+- P10 hit: y >= P10
+- P90 hit: y <= P90
 
-## Operational Actions by Level
+Empirical coverage targets:
 
-High:
-- continue normal planning cadence
+- lower bound near 90% for P10 rule
+- upper bound near 90% for P90 rule
 
-Medium:
-- tighten review frequency
-- monitor critical feeds more closely
+## Dashboard Context
 
-Low:
-- increase safety margin
-- validate source and connector state
-- log escalation and owner
+Coverage is displayed alongside holdout hits.
 
-## Common Failure Patterns
+High holdout hit with weak coverage indicates calibration issues.
 
-- stale but present data appears complete without freshness checks
-- confidence not reduced when key source goes degraded
-- low confidence not reflected in operator workflow
-
-## Quality Rule
-
-Confidence outputs must track data-quality reality. If inputs degrade, confidence should degrade.

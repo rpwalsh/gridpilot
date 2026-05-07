@@ -24,15 +24,18 @@
         </RouterLink>
       </div>
 
-      <div class="nav-footer">
-        <span class="live-dot"></span>
-        <span class="live-label">LIVE</span>
-        <span class="live-time">{{ nowStr }}</span>
-      </div>
+      <div class="nav-footer"></div>
     </nav>
 
     <!-- Right content area -->
     <div class="gp-shell__content">
+      <header class="gp-shell__header">
+        <div class="shell-clock">
+          <span class="live-dot"></span>
+          <span class="live-label">LIVE</span>
+          <span class="live-time">{{ nowStr }}</span>
+        </div>
+      </header>
       <main class="gp-shell__main">
         <RouterView />
       </main>
@@ -51,12 +54,10 @@ const primaryNav = [
   { label: 'Forecast',  to: '/forecast' },
   { label: 'Sources',   to: '/sources' },
   { label: 'Dispatch',  to: '/dispatch' },
-  { label: 'Replay',    to: '/replay' },
   { label: 'History',   to: '/history' },
   { label: 'Bands',     to: '/bands' },
   { label: 'Charts',    to: '/charts' },
-  { label: 'Governance',to: '/governance' },
-  { label: 'Arch',      to: '/architecture' },
+  { label: 'Gov+Arch',  to: '/governance' },
 ]
 const nowStr = ref('')
 let clock: ReturnType<typeof setInterval> | null = null
@@ -76,10 +77,13 @@ onBeforeUnmount(() => { if (clock) clearInterval(clock) })
 <style scoped>
 .nav-footer {
   margin-top: auto;
-  padding: 1rem 1.5rem 1.5rem;
+}
+
+.shell-clock {
+  margin-left: auto;
   display: flex;
-  flex-direction: column;
-  gap: 3px;
+  align-items: center;
+  gap: 7px;
 }
 
 .live-dot {

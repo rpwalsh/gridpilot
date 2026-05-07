@@ -1,64 +1,44 @@
-﻿<!-- Proprietary (c) Ryan Walsh / Walsh Tech Group -->
-<!-- All rights reserved. Professional preview only. -->
+﻿# Proofs Method
 
-# Method and Validation Notes
+This method defines how forecast quality claims are established in the dashboard.
 
-This document defines practical method and validation standards for predictive workflows in DispatchLayer.
+## Proof Configuration
 
-## Method Overview
+- History window: 5 years (43800h)
+- Holdout policy: year 2025 when present
+- Training window: all non-holdout months
+- Hit rule: monthly relative error <= 6%
 
-The predictive path combines:
-- current signal conditions
-- source quality state
-- residual error behavior
-- asset/site context
+## Computation Overview
 
-to produce:
-- forecast context outputs
-- confidence/trust indicators
-- drift warnings
-- decision trace records
+1. Build modeled hourly generation from archive signals.
+2. Aggregate to monthly totals.
+3. Split training vs holdout by month key and forced holdout year.
+4. Fit profile from training months.
+5. Score holdout months with no training leakage.
+6. Compute P10/P90 containment over hourly modeled series.
 
-## Validation Objectives
+## Required Evidence in UI
 
-- Ensure output behavior is consistent with route intent
-- Ensure degraded inputs produce degraded confidence, not deceptive normal values
-- Ensure trace records are adequate for debugging and audit
-- Ensure operator-facing summaries remain understandable and honest
+- Holdout hit numerator/denominator
+- P10 and P90 coverage values
+- Forecast output table (P10/P50/P90 values by timestamp)
+- Spectral signal table (period and variance share)
 
-## Validation Layers
+## Invalid Proof Patterns
 
-1. Unit validation
-- deterministic component behavior
-- edge case handling for null/missing/partial inputs
+- Using holdout values as projection fallback
+- Counting null projections as hits
+- Reporting score without split context
 
-2. Route validation
-- request/response contract checks
-- warning propagation behavior
-- degraded mode response checks
+## Reporting Format
 
-3. Integration validation
-- provider/connector dependency behavior
-- timeout/auth/unavailable handling
-- snapshot fallback behavior in preview workflows
+For each claim, provide:
 
-4. Operator validation
-- verify warning text and status interpretation are actionable
-- verify confidence/drift presentation aligns with decision workflow
+- Site
+- Time window
+- Training/holdout range
+- Holdout hit percentage
+- Coverage percentages
+- Primary spectral components
 
-## Evidence Standard
-
-Acceptable evidence includes:
-- repeatable automated tests
-- route-level examples with before/after outcomes
-- incident reproductions with traceable records
-
-Avoid relying on abstract notation without runtime evidence.
-
-## Release Gate Checklist
-
-Before release:
-- degraded mode tests pass
-- confidence behavior validated under poor input quality
-- trace output fields present and consistent
-- docs updated to match current implementation

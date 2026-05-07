@@ -135,6 +135,16 @@ html, body {
     0 10px 24px rgba(0,0,0,0.28);
 }
 
+select.console-input {
+  background-color: #081a2a;
+  color: var(--text-0);
+}
+
+select.console-input option {
+  background-color: #081a2a;
+  color: var(--text-0);
+}
+
 .metric-value {
   font-size: 30px;
   line-height: 1;

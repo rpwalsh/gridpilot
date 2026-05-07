@@ -1,93 +1,40 @@
-﻿<!-- Proprietary (c) Ryan Walsh / Walsh Tech Group -->
-<!-- All rights reserved. Professional preview only. -->
+﻿# Connector Strategy
 
-# Connector Strategy
+This document defines connector expectations for DispatchLayer's archive-first workflow.
 
-This strategy describes how connector integrations should be designed, implemented, and operated in DispatchLayer.
+## Strategy Principles
 
-## Scope
+- Prefer deterministic, replayable archive snapshots for proof runs.
+- Keep provider-specific logic in adapters, not in domain logic.
+- Preserve units and source provenance per field.
+- Fail soft with explicit degraded metadata when providers are unavailable.
 
-Connector scope is read-oriented integration for protocol/system edges:
-- OpenTelemetry
-- OPC UA
-- MQTT
-- AWS SiteWise
-- S3/Parquet archives
+## Current Provider Footprint
 
-Connector scope does not include command/control actions unless explicitly governed and designed.
+- Open-Meteo (archive and forecast weather/resource)
+- NASA POWER (historical irradiance/weather)
+- NOAA/NWS (weather and related public signals)
+- Optional market/system sources via adapters
 
-## Strategic Objectives
+## Contract Requirements
 
-- Reliable ingestion visibility from external systems
-- Explicit health and error-state reporting
-- Predictable degraded behavior under partial failure
-- Clear mapping from protocol-native data to internal domain shape
+Each connector should produce:
 
-## Architecture Principles
+- timestamped values in UTC
+- field-level units
+- source and retrieval metadata
+- null-safe values for missing fields
 
-1. Health-first contract
-- Every connector must expose operational state
-- State should include last-success and failure context where practical
+## Operational Notes
 
-2. Deterministic normalization
-- Map protocol-native payloads to stable internal fields
-- Keep unit semantics and quality flags explicit
+- Dashboard forecast workflow depends on stable hourly fields in timeseries.
+- Spectral diagnostics are sensitive to irregular gaps and timestamp drift.
+- Connector changes should be validated against 5-year windows where possible.
 
-3. Degraded-mode transparency
-- Return partial availability and warnings when possible
-- Never silently present degraded input as healthy
+## Testing Checklist
 
-4. Operationally useful errors
-- Surface error category and connector identity
-- Keep error output actionable for escalation
+- schema compatibility with timeseries route
+- unit map completeness
+- monotonic timestamp order
+- graceful behavior on partial outages
 
-## Rollout Plan
-
-Phase 1: Connectivity and state
-- basic connection checks
-- status endpoint integration
-
-Phase 2: Sampling and mapping
-- read sample payloads
-- normalize core fields
-
-Phase 3: Reliability and throughput
-- retry policy
-- backoff/timing behavior
-- sampling consistency checks
-
-Phase 4: Observability and operations
-- metrics, alerts, runbooks
-- incident response integration
-
-## Required Metrics
-
-Minimum connector metrics:
-- success rate
-- latency
-- missing/invalid sample ratio
-- reconnect/retry count
-- time since last good sample
-
-## Testing Expectations
-
-- unit tests for normalization mapping
-- integration tests for connector state behavior
-- degraded-path tests for timeout/auth/network failures
-- schema stability checks for route consumers
-
-## Operations Runbook Triggers
-
-Raise connector incident when:
-- connector remains in error beyond threshold window
-- repeated retries with no successful sample
-- state flaps frequently (unstable connection)
-- normalized payload quality drops below agreed threshold
-
-## Ownership Guidance
-
-For each connector define:
-- technical owner
-- escalation path
-- SLO/target thresholds
-- known dependency constraints

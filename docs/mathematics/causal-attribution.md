@@ -1,39 +1,31 @@
-﻿<!-- Proprietary (c) Ryan Walsh / Walsh Tech Group -->
-<!-- All rights reserved. Professional preview only. -->
+﻿# Causal Attribution
 
-# Causal Attribution (Practical Use)
+Causal attribution explains which signals most influenced a forecast decision.
 
-In DispatchLayer, causal attribution means likely contributing factors behind observed changes in forecast/residual behavior.
+## Inputs
 
-## Intended Use
+- normalized signal values
+- recent residual behavior
+- asset type and capacity context
+- model-specific feature contributions
 
-- prioritize investigation
-- support manager/engineer triage conversations
-- explain major behavior shifts in plain language
+## Output Shape
 
-## Not Intended Use
+For each dominant factor:
 
-- claim definitive scientific causality
-- replace field inspection or engineering judgment
-- provide legal or compliance-grade causation proof
+- signal_name
+- weight or contribution magnitude
+- direction (upward or downward effect)
+- short explanation
 
-## Recommended Output Format
+## Practical Use
 
-For each major factor, include:
-- factor name
-- direction of impact (up/down)
-- relative contribution level
-- data quality confidence note
+- explain why P50 shifted between adjacent horizons
+- explain widening or narrowing of P10-P90 bands
+- separate weather-driven vs structural effects
 
-## Operational Interpretation Rules
+## Guardrails
 
-- treat attribution as guidance, not proof
-- weigh attribution confidence against source quality state
-- investigate high-impact factors first
+- Attribution is explanatory, not proof of true physical causality.
+- Contributions should be reported with uncertainty context.
 
-## Escalation Guidance
-
-Escalate when:
-- high-impact factors are tied to degraded or missing data
-- attribution shifts rapidly across adjacent windows
-- attribution conflicts with observed telemetry context

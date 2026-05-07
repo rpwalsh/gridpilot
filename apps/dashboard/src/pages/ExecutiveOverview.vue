@@ -65,7 +65,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="s in sites" :key="s.site_id">
+            <tr v-for="s in visibleSites" :key="s.site_id">
               <td class="td-name">{{ s.name }}</td>
               <td><span :class="['type-pill', s.asset_type === 'solar' ? 'type-pill--solar' : 'type-pill--wind']">{{ s.asset_type }}</span></td>
               <td class="td-mono">{{ s.region ?? '—' }}</td>
@@ -146,6 +146,7 @@ const portfolioForecast = ref<PortfolioForecastResponse | null>(null)
 const asOf = ref('')
 
 const sites = computed(() => summary.value?.sites ?? [])
+const visibleSites = computed(() => sites.value.slice(0, 8))
 const solarSites = computed(() => sites.value.filter(s => s.asset_type === 'solar'))
 const windSites = computed(() => sites.value.filter(s => s.asset_type === 'wind'))
 
@@ -235,7 +236,7 @@ onMounted(load)
   height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
   overflow: hidden;
 }
 
@@ -250,21 +251,21 @@ onMounted(load)
 .exec-header__right { display: flex; align-items: center; gap: 8px; }
 
 .page-eyebrow {
-  font-size: 11px;
+  font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.1em;
   color: var(--text-1);
 }
 
 .exec-ts {
-  font-size: 11px;
+  font-size: 9px;
   font-variant-numeric: tabular-nums;
   color: var(--text-2);
   font-family: 'Menlo', monospace;
 }
 
 .pill {
-  font-size: 10px;
+  font-size: 8px;
   font-weight: 700;
   letter-spacing: 0.08em;
   padding: 2px 8px;
@@ -275,7 +276,7 @@ onMounted(load)
 
 .btn-refresh {
   background: none; border: 1px solid var(--cyan-border); color: var(--cyan);
-  border-radius: 6px; padding: 3px 8px; cursor: pointer; font-size: 14px;
+  border-radius: 6px; padding: 2px 7px; cursor: pointer; font-size: 11px;
 }
 .btn-refresh:disabled { opacity: 0.4; cursor: default; }
 
@@ -289,22 +290,22 @@ onMounted(load)
 .exec-kpis {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 8px;
+  gap: 6px;
   flex-shrink: 0;
 }
 
 .kpi-card {
   background: linear-gradient(180deg, rgba(10,30,48,0.95), rgba(4,14,24,0.98));
   border: 1px solid var(--cyan-border);
-  border-radius: 10px;
-  padding: 10px 12px;
+  border-radius: 8px;
+  padding: 7px 9px;
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 
 .kpi-label {
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -312,7 +313,7 @@ onMounted(load)
 }
 
 .kpi-value {
-  font-size: 22px;
+  font-size: 16px;
   font-weight: 600;
   letter-spacing: -0.03em;
   color: var(--text-0);
@@ -320,12 +321,12 @@ onMounted(load)
   font-variant-numeric: tabular-nums;
 }
 
-.kpi-value--sm { font-size: 15px; }
-.kpi-denom { font-size: 14px; color: var(--text-2); }
-.kpi-unit { font-size: 11px; color: var(--text-2); margin-left: 2px; }
+.kpi-value--sm { font-size: 12px; }
+.kpi-denom { font-size: 11px; color: var(--text-2); }
+.kpi-unit { font-size: 9px; color: var(--text-2); margin-left: 2px; }
 
 .kpi-sub {
-  font-size: 10px;
+  font-size: 8px;
   color: var(--text-2);
 }
 
@@ -335,41 +336,41 @@ onMounted(load)
   min-height: 0;
   display: grid;
   grid-template-columns: 1fr 320px;
-  gap: 10px;
+  gap: 6px;
 }
 
 .exec-panel {
   background: linear-gradient(180deg, rgba(10,30,48,0.95), rgba(4,14,24,0.98));
   border: 1px solid var(--cyan-border);
-  border-radius: 10px;
-  padding: 12px;
+  border-radius: 8px;
+  padding: 8px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
 .exec-panel--sites {
-  overflow: auto;
+  overflow: hidden;
 }
 
 .exec-right {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
   overflow: hidden;
 }
 
 .exec-panel--providers { flex: 0 0 auto; }
 .exec-panel--forecast  { flex: 0 0 auto; }
-.exec-panel--notice    { flex: 1; min-height: 0; overflow: auto; }
+.exec-panel--notice    { flex: 1; min-height: 0; overflow: hidden; }
 
 .panel-title {
-  font-size: 10px;
+  font-size: 8px;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text-1);
-  margin-bottom: 8px;
+  margin-bottom: 5px;
   flex-shrink: 0;
 }
 
@@ -381,7 +382,7 @@ onMounted(load)
 }
 
 .loading-row {
-  font-size: 12px;
+  font-size: 10px;
   color: var(--text-2);
   padding: 8px 0;
 }
@@ -390,31 +391,31 @@ onMounted(load)
 .dl-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 11px;
+  font-size: 9px;
 }
 
 .dl-table th {
   text-align: left;
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-2);
-  padding: 4px 8px 6px;
+  padding: 3px 5px 4px;
   border-bottom: 1px solid var(--cyan-border);
 }
 
 .dl-table td {
-  padding: 5px 8px;
+  padding: 3px 5px;
   color: var(--text-0);
   border-bottom: 1px solid rgba(96,190,255,0.06);
   white-space: nowrap;
 }
 
-.td-name { color: var(--text-0); font-weight: 500; max-width: 160px; overflow: hidden; text-overflow: ellipsis; }
-.td-mono { font-family: 'Menlo', monospace; font-size: 10px; color: var(--text-1); }
+.td-name { color: var(--text-0); font-weight: 500; max-width: 140px; overflow: hidden; text-overflow: ellipsis; }
+.td-mono { font-family: 'Menlo', monospace; font-size: 9px; color: var(--text-1); }
 .td-num  { text-align: right; font-variant-numeric: tabular-nums; color: var(--text-1); }
-.td-ts   { font-size: 10px; }
+.td-ts   { font-size: 9px; }
 
 .type-pill {
   font-size: 9px;
@@ -433,27 +434,27 @@ onMounted(load)
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 11px;
+  font-size: 9px;
 }
 
-.prov-name  { flex: 1; color: var(--text-1); font-family: 'Menlo', monospace; font-size: 10px; }
+.prov-name  { flex: 1; color: var(--text-1); font-family: 'Menlo', monospace; font-size: 9px; }
 .prov-status { font-size: 9px; font-weight: 700; letter-spacing: 0.06em; padding: 1px 5px; border-radius: 3px; }
 .prov-status--ok   { background: rgba(102,211,110,0.15); color: #66d36e; }
 .prov-status--bad  { background: rgba(255,80,80,0.15);   color: #ff5050; }
 .prov-status--warn { background: rgba(255,201,51,0.15);  color: #ffc133; }
-.prov-latency  { font-size: 10px; color: var(--text-2); font-variant-numeric: tabular-nums; min-width: 52px; text-align: right; }
-.prov-degraded { font-size: 9px; color: #ffc133; }
+.prov-latency  { font-size: 9px; color: var(--text-2); font-variant-numeric: tabular-nums; min-width: 44px; text-align: right; }
+.prov-degraded { font-size: 8px; color: #ffc133; }
 
 /* Forecast summary */
 .forecast-summary { display: flex; flex-direction: column; gap: 6px; }
 .fc-row { display: flex; justify-content: space-between; align-items: baseline; }
-.fc-label { font-size: 10px; color: var(--text-2); }
-.fc-value { font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--text-0); }
+.fc-label { font-size: 9px; color: var(--text-2); }
+.fc-value { font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--text-0); }
 .fc-value--dim    { color: var(--text-1); }
 .fc-value--bright { color: var(--cyan); }
-.fc-row--sites .fc-value { font-size: 12px; }
+.fc-row--sites .fc-value { font-size: 10px; }
 
 /* Notice */
-.notice-text { font-size: 11px; color: var(--text-1); line-height: 1.5; }
-.notice-source { font-size: 10px; color: var(--text-2); margin-top: 6px; font-family: 'Menlo', monospace; }
+.notice-text { font-size: 9px; color: var(--text-1); line-height: 1.4; }
+.notice-source { font-size: 8px; color: var(--text-2); margin-top: 4px; font-family: 'Menlo', monospace; }
 </style>

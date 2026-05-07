@@ -218,7 +218,7 @@ class DecisionRanker:
         return DecisionSet(
             portfolio_id="",
             site_id=prediction.site_id,
-            signal_events=recs,
+            recommendations=recs,
         )
 
     def _add_battery_recommendations(
@@ -338,6 +338,6 @@ class DecisionRanker:
         return DecisionSet(
             portfolio_id=portfolio_prediction.portfolio_id,
             site_id=None,
-            signal_events=recs,
+            recommendations=recs,
         )
 

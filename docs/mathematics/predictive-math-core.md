@@ -1,53 +1,28 @@
-﻿<!-- Proprietary (c) Ryan Walsh / Walsh Tech Group -->
-<!-- All rights reserved. Professional preview only. -->
+﻿# Predictive Math Core
 
-# Predictive Core (Manager-Facing)
+This note summarizes the core computations exposed to the dashboard.
 
-This document explains the predictive core in practical operational terms.
+## 1) Weather-to-Power Modeling
 
-## Purpose
+A modeled hourly generation series is derived from archive weather/resource fields.
 
-The predictive core helps teams estimate near-term context and confidence so planning can be adjusted when conditions change.
+## 2) Holdout Evaluation
 
-## Inputs Used
+Monthly totals are split into training and holdout sets.
 
-- weather conditions (for example wind, irradiance, temperature)
-- optional grid/market context
-- recent residual behavior
-- site/asset metadata
+- Holdout year target: 2025
+- Hit condition: relative error <= 6%
 
-## Processing Stages
+## 3) Interval Forecasting
 
-1. Signal scoring
-- evaluate timeliness, quality, and relevance of available inputs
+Projection values are emitted as p10, p50, p90 per timestamp.
 
-2. Structural summarization
-- compress current conditions into a compact site-state representation
+## 4) Spectral Analysis
 
-3. Forecast context generation
-- produce planning-oriented expected context across requested window
+A DFT/FFT-style decomposition ranks dominant periodic components by amplitude.
+Variance share is computed from squared amplitudes.
 
-4. Confidence and drift evaluation
-- compute trust/confidence signals and identify instability patterns
+## 5) Regime Diagnostics
 
-5. Trace capture
-- record key inputs/outputs/reasoning for audit and debugging
+Rolling correlation-derived eigenvalue proxies provide structural drift signals.
 
-## Outputs for Operations
-
-- expected context values
-- confidence/trust score and label
-- warnings for unstable or low-quality conditions
-- decision-trace metadata
-
-## Interpretation Guidance
-
-- Confidence supports decisions; it does not guarantee outcomes.
-- Low confidence means increase operational margin and investigate source quality.
-- Drift warnings indicate behavior change, not automatic fault attribution.
-
-## Practical Limits
-
-- output quality depends on input quality and freshness
-- missing or degraded sources reduce reliability
-- model output should always be read with warning/source context

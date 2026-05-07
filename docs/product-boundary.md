@@ -1,60 +1,31 @@
-﻿<!-- Proprietary (c) Ryan Walsh / Walsh Tech Group -->
-<!-- All rights reserved. Professional preview only. -->
+﻿# Product Boundary
 
-# Product Boundary
-
-This document defines what DispatchLayer is, what it is not, and how to communicate capability honestly.
-
-## Mission Boundary
-
-DispatchLayer is an operations analytics and decision-support layer for renewable portfolios.
-It is not a plant control system.
+This document clarifies what DispatchLayer does and does not claim.
 
 ## In Scope
 
-- Read-oriented source and telemetry visibility
-- Forecast context and confidence signaling
-- Residual/drift interpretation for operations
-- Manager-facing dashboard and API workflows
-- Traceable warning and status communication
+- Archive-backed generation modeling and validation
+- Forecast interval outputs (P10, P50, P90)
+- Holdout scoring against monthly actual aggregates
+- Spectral diagnostics and regime indicators
+- Recommendation and trace artifacts from pipeline output
 
 ## Out of Scope
 
-- Autonomous control of plant equipment
-- Live command dispatch to field systems
-- Market bid execution automation
-- Replacing DCS/SCADA command stacks
+- Claiming perfect or exact future predictions
+- Sub-minute control or real-time SCADA replacement
+- Weather nowcasting at storm-cell granularity
+- Guaranteed financial outcomes from dispatch recommendations
 
-## Capability Honesty Rules
+## Forecast Page Product Contract
 
-Documentation and UI must clearly distinguish:
-- implemented now
-- partially implemented
-- planned/not yet implemented
+Forecast page must expose all of the following:
 
-Never represent planned behavior as current runtime capability.
+- Training/holdout split details
+- Holdout hit and coverage metrics
+- Full input-state variable visibility
+- Concrete forecast output table
+- Identified spectral signal table
 
-## Demo vs Production Boundary
+If any of these are missing, the page is considered incomplete for review.
 
-Allowed in professional preview:
-- snapshot-backed and generated-series workflows for UI/API realism
-
-Required for production claims:
-- validated live integrations
-- operational SLOs
-- hardening controls
-- incident runbooks
-
-## Messaging Rules
-
-When presenting to stakeholders:
-- lead with current implemented behavior
-- state known limits explicitly
-- identify dependency requirements (credentials, provider availability, connector state)
-
-## Change Governance
-
-When adding major capability:
-1. update this boundary document
-2. update README/API/architecture references
-3. verify no conflicting UI or docs statements

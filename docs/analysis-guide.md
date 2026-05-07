@@ -1,108 +1,52 @@
-﻿<!-- Proprietary (c) Ryan Walsh / Walsh Tech Group -->
-<!-- All rights reserved. Professional preview only. -->
+﻿# Analysis Guide
 
-# Analysis Guide (Power Plant Manager)
+This guide describes how to analyze forecast behavior and proof quality using the current dashboard.
 
-This guide defines the practical daily and weekly analysis workflow for operations teams using DispatchLayer.
+## Scope
 
-## Purpose
+Use this workflow for the Forecast page under a 5-year archive window.
 
-DispatchLayer analysis is meant to support operational judgment, not replace it.
-Use this guide to answer:
-- Are we operating on trustworthy data right now?
-- Are site conditions stable or drifting?
-- Do we need to escalate to engineering or field teams?
+Required assumptions:
 
-## Shift-Start Workflow (10-15 Minutes)
+- history window: 43800h
+- holdout policy: force holdout year to 2025
+- training window: 2021-2024
+- holdout monthly hit threshold: 6%
 
-1. Check source health
-- Open Sources view
-- Confirm connected vs auth-required vs cached vs degraded
-- Log any critical feed unavailable for more than one review interval
+## Step-by-Step Review
 
-2. Check telemetry currency
-- Review latest site/asset snapshot timestamps
-- Flag stale updates or missing key metrics
+1. Open /forecast and select site plus 5 y history.
+2. Confirm training and holdout labels in Validation Summary.
+3. Review proof metrics:
+   - holdout hits
+   - P10 coverage
+   - P90 coverage
+4. Open Forecast Bands and inspect:
+   - input state table
+   - forecast output table (next 24 steps)
+   - identified spectral signals table
+5. Open Spectral Checks and compare top harmonics and eigenvalue drift.
 
-3. Check forecast context and confidence
-- Open Bands and related forecast views
-- Compare confidence level to previous shift
-- Note widening bands or persistent confidence decline
+## Interpretation Guidance
 
-4. Check residual behavior
-- Look for sustained residual bias (same-side errors)
-- Look for rising residual spread (loss of stability)
+- High holdout hit with poor P10/P90 coverage indicates miscalibration.
+- Narrow bands with repeated misses indicate under-dispersion.
+- Dominant 24h harmonic is expected for solar production cycles.
+- Large low-frequency components can indicate seasonal or structural shifts.
 
-5. Record and assign
-- Document operational posture (normal/caution/escalation)
-- Assign follow-up owner and review time
+## Red Flags
 
-## Daily Operating Decisions
+- Holdout hit equals 100% with zero or near-zero residual spread.
+- Training window includes holdout months.
+- Projection fallback to actuals in scored holdout rows.
+- Missing projection values counted as hits.
 
-### Normal
-Use when:
-- core sources healthy
-- confidence stable
-- residual behavior within expected range
+## Suggested Outputs for Reviews
 
-Action:
-- continue normal planning cadence
+- Site and period under test
+- Training and holdout windows
+- Holdout hit count and percentage
+- P10/P90 coverage percentages
+- Top 5 spectral signals and variance shares
+- Notes on known data gaps and uncertainty drivers
 
-### Caution
-Use when:
-- one or more important feeds degraded
-- confidence dips but not persistently low
-- residual spread increasing but not extreme
-
-Action:
-- tighten operating margin
-- increase review frequency
-- notify engineering for watch
-
-### Escalation
-Use when:
-- multiple critical sources unavailable
-- confidence remains low across multiple intervals
-- residuals show persistent bias/regime shift
-
-Action:
-- open incident ticket
-- notify engineering lead and operations manager
-- shift planning assumptions to conservative mode
-
-## Escalation Triggers
-
-Escalate immediately when any of the following is true:
-- confidence drops sharply and remains low for consecutive windows
-- two or more core inputs are degraded simultaneously
-- site-level snapshots stop refreshing
-- residuals show sustained directional bias plus spread expansion
-
-## Decision Log Template
-
-Capture each significant decision with:
-- timestamp UTC
-- site/portfolio scope
-- source state summary
-- confidence/trust summary
-- residual/drift summary
-- decision made
-- owner
-- next review checkpoint
-
-## Weekly Review Cadence
-
-Each week, review:
-- repeated degraded sources by provider/connector
-- recurring low-confidence windows by site
-- incident count tied to source quality or residual drift
-- unresolved warnings older than one week
-
-Outcome should be a short action list with owners.
-
-## Practical Rules
-
-- If data quality is uncertain, operate conservatively.
-- Never present degraded mode as healthy state.
-- Keep written assumptions in the decision log.
-- Use confidence as guidance, not certainty.

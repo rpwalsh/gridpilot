@@ -17,7 +17,7 @@ const router = createRouter({
     { path: '/telemetry',    component: () => import('./pages/TelemetryReplay.vue') },
     { path: '/replay',       component: () => import('./pages/TelemetryReplay.vue') },
     { path: '/telemetry-live', component: () => import('./pages/TelemetryDashboard.vue') },
-    { path: '/forecast',     component: () => import('./pages/ForecastingPage.vue') },
+    { path: '/forecast',     component: () => import('./pages/GenerationForecast.vue') },
     { path: '/sources',      component: () => import('./pages/SourceLineage.vue') },
     { path: '/lineage',      redirect: '/sources' },
     { path: '/history',      component: () => import('./pages/HistoryPage.vue') },
