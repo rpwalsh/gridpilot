@@ -65,7 +65,7 @@ def detect_residual_drift(
     Parameters
     ----------
     recent_residuals:
-        Forecast error history for the most recent window (e.g. last 612 observations).
+        Forecast error history for the most recent window (e.g. last 6–12 observations).
     baseline_residuals:
         Trailing baseline (e.g. last 14 days of forecast errors).
     drift_threshold_std:
@@ -106,7 +106,7 @@ def detect_residual_drift(
         risk = DriftRisk.MEDIUM
         reason = f"Residual distribution has shifted ({direction}). Regime may be transitioning."
         effects = [
-            "forecast confidence degraded for next 1218 hours",
+            "forecast confidence degraded for next 12–18 hours",
             "dispatch decisions should carry wider uncertainty margin",
         ]
         action = "Refresh forecast reconciliation before next dispatch planning cycle."
