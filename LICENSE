@@ -1,17 +1,11 @@
-﻿DispatchLayer Proprietary License
+Copyright (c) 2026 Ryan Walsh. All rights reserved.
 
-Copyright (c) Ryan Walsh / Walsh Tech Group. All rights reserved.
+This repository is published for public viewing and professional reference only.
 
-This repository and its contents are proprietary and confidential.
-No permission is granted to use, copy, modify, merge, publish,
-distribute, sublicense, or sell this software or related documentation,
-in whole or in part, without explicit prior written authorization from
-Ryan Walsh / Walsh Tech Group.
+No license is granted to use, copy, modify, merge, distribute, sublicense, sell, deploy, or create derivative works from this software or its associated materials, in whole or in part, without prior written permission from Ryan Walsh.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+This codebase contains proprietary commercial software and is not open source.
+
+Possession of or access to the source code does not convey any right to reproduce, use, or exploit the software for any purpose.
+
+Third-party components remain subject to their own applicable licenses.
