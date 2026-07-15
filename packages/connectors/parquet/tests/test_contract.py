@@ -1,4 +1,4 @@
-﻿# Proprietary (c) Ryan Walsh / Walsh Tech Group
+﻿# Proprietary (c) Sarah Walsh / Walsh Tech Group
 # All rights reserved. Professional preview only.
 
 """Contract test for S3/Parquet archive connector using local fixture."""

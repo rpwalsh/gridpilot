@@ -1,4 +1,4 @@
-﻿# Proprietary (c) Ryan Walsh / Walsh Tech Group
+﻿# Proprietary (c) Sarah Walsh / Walsh Tech Group
 # All rights reserved. Professional preview only.
 
 """Capture 5-year Open-Meteo archive hourly data (no API key) into a source snapshot."""
