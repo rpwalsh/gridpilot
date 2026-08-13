@@ -1,4 +1,4 @@
-﻿# Proprietary (c) Sarah Walsh / Walsh Tech Group
+﻿# Proprietary (c) Ryan P. Walsh / Walsh Tech Group
 # All rights reserved. Professional preview only.
 
 """Contract test for ENTSO-E adapter using local fixture."""

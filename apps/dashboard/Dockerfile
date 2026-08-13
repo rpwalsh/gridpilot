@@ -1,4 +1,4 @@
-﻿# Proprietary (c) Sarah Walsh / Walsh Tech Group
+﻿# Proprietary (c) Ryan P. Walsh / Walsh Tech Group
 # All rights reserved. Professional preview only.
 
 FROM node:20-alpine AS builder

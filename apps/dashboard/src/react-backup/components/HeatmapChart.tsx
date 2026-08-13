@@ -1,5 +1,5 @@
 ﻿/*
- * Proprietary (c) Sarah Walsh / Walsh Tech Group
+ * Proprietary (c) Ryan P. Walsh / Walsh Tech Group
  * All rights reserved. Professional preview only.
  */
 
