@@ -4,8 +4,6 @@ DispatchLayer is an archive-first forecasting and decision-support stack for gri
 It combines weather/resource history, physics-informed generation modeling, uncertainty bands,
 and operational recommendations.
 
-![DispatchLayer forecast dashboard showing validation summary, forecast bands, and spectral diagnostics](docs/screenshots/dashboard.jpg)
-
 ## Current Data and Validation Posture
 
 - Public demo dataset: 10 sites (5 solar, 5 wind)

@@ -1,0 +1,54 @@
+{
+  "nodes": [
+    {
+      "node_id": "ns=2;s=SCADA.WIND.WTG001.ActivePower",
+      "browse_name": "ActivePower",
+      "namespace": 2,
+      "value": 1843.5,
+      "source_timestamp": "2025-05-21T14:36:00+00:00",
+      "server_timestamp": "2025-05-21T14:36:01+00:00",
+      "quality": "GOOD",
+      "unit": "kW"
+    },
+    {
+      "node_id": "ns=2;s=SCADA.WIND.WTG001.WindSpeed",
+      "browse_name": "WindSpeed",
+      "namespace": 2,
+      "value": 9.4,
+      "source_timestamp": "2025-05-21T14:36:00+00:00",
+      "server_timestamp": "2025-05-21T14:36:01+00:00",
+      "quality": "GOOD",
+      "unit": "m/s"
+    },
+    {
+      "node_id": "ns=2;s=SCADA.SOLAR.INV001.DcVoltage",
+      "browse_name": "DcVoltage",
+      "namespace": 2,
+      "value": 748.2,
+      "source_timestamp": "2025-05-21T14:36:00+00:00",
+      "server_timestamp": "2025-05-21T14:36:01+00:00",
+      "quality": "GOOD",
+      "unit": "V"
+    },
+    {
+      "node_id": "ns=2;s=SCADA.BESS.UNIT01.StateOfCharge",
+      "browse_name": "StateOfCharge",
+      "namespace": 2,
+      "value": 72.1,
+      "source_timestamp": "2025-05-21T14:36:00+00:00",
+      "server_timestamp": "2025-05-21T14:36:01+00:00",
+      "quality": "GOOD",
+      "unit": "%"
+    },
+    {
+      "node_id": "ns=2;s=SCADA.METER.SUB01.Frequency",
+      "browse_name": "GridFrequency",
+      "namespace": 2,
+      "value": 59.98,
+      "source_timestamp": "2025-05-21T14:36:00+00:00",
+      "server_timestamp": "2025-05-21T14:36:01+00:00",
+      "quality": "GOOD",
+      "unit": "Hz"
+    }
+  ]
+}

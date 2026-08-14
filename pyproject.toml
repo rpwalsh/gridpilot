@@ -1,0 +1,23 @@
+﻿# Proprietary (c) Ryan P. Walsh / Walsh Tech Group
+# All rights reserved. Professional preview only.
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "dispatchlayer"
+version = "0.1.0"
+description = "DispatchLayer renewable-energy operations intelligence platform"
+requires-python = ">=3.11"
+readme = "README.md"
+
+[tool.hatch.build.targets.wheel]
+packages = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-asyncio>=0.21",
+    "httpx>=0.24",
+]

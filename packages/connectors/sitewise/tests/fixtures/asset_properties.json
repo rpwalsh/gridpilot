@@ -1,0 +1,40 @@
+{
+  "properties": [
+    {
+      "asset_id":    "a1b2c3d4-solar-plant-01",
+      "property_id": "p001-active-power",
+      "alias":       "/plant/SOLAR_01/active_power",
+      "timestamp":   "2025-05-21T14:36:00+00:00",
+      "value":       3421.7,
+      "quality":     "GOOD",
+      "unit":        "kW"
+    },
+    {
+      "asset_id":    "a2b3c4d5-wind-farm-03",
+      "property_id": "p002-active-power",
+      "alias":       "/plant/WIND_03/active_power",
+      "timestamp":   "2025-05-21T14:35:47+00:00",
+      "value":       2118.9,
+      "quality":     "GOOD",
+      "unit":        "kW"
+    },
+    {
+      "asset_id":    "a3b4c5d6-bess-unit-07",
+      "property_id": "p003-soc",
+      "alias":       "/plant/BESS_07/state_of_charge",
+      "timestamp":   "2025-05-21T14:34:55+00:00",
+      "value":       72.1,
+      "quality":     "GOOD",
+      "unit":        "%"
+    },
+    {
+      "asset_id":    "a4b5c6d7-substation-345kv",
+      "property_id": "p004-voltage",
+      "alias":       "/substation/SUB_345KV/voltage_l1",
+      "timestamp":   "2025-05-21T14:33:21+00:00",
+      "value":       342800.0,
+      "quality":     "UNCERTAIN",
+      "unit":        "V"
+    }
+  ]
+}

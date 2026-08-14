@@ -1,0 +1,114 @@
+[
+  {
+    "name": ".gitignore",
+    "path": ".gitignore",
+    "sha": "496ee2ca6a2f08396a4076fe43dedf3dc0da8b6d",
+    "size": 9,
+    "url": "https://api.github.com/repos/sltzgs/OpenWindSCADA/contents/.gitignore?ref=main",
+    "html_url": "https://github.com/sltzgs/OpenWindSCADA/blob/main/.gitignore",
+    "git_url": "https://api.github.com/repos/sltzgs/OpenWindSCADA/git/blobs/496ee2ca6a2f08396a4076fe43dedf3dc0da8b6d",
+    "download_url": "https://raw.githubusercontent.com/sltzgs/OpenWindSCADA/main/.gitignore",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/sltzgs/OpenWindSCADA/contents/.gitignore?ref=main",
+      "git": "https://api.github.com/repos/sltzgs/OpenWindSCADA/git/blobs/496ee2ca6a2f08396a4076fe43dedf3dc0da8b6d",
+      "html": "https://github.com/sltzgs/OpenWindSCADA/blob/main/.gitignore"
+    }
+  },
+  {
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "sha": "f288702d2fa16d3cdf0035b15a9fcbc552cd88e7",
+    "size": 35149,
+    "url": "https://api.github.com/repos/sltzgs/OpenWindSCADA/contents/LICENSE?ref=main",
+    "html_url": "https://github.com/sltzgs/OpenWindSCADA/blob/main/LICENSE",
+    "git_url": "https://api.github.com/repos/sltzgs/OpenWindSCADA/git/blobs/f288702d2fa16d3cdf0035b15a9fcbc552cd88e7",
+    "download_url": "https://raw.githubusercontent.com/sltzgs/OpenWindSCADA/main/LICENSE",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/sltzgs/OpenWindSCADA/contents/LICENSE?ref=main",
+      "git": "https://api.github.com/repos/sltzgs/OpenWindSCADA/git/blobs/f288702d2fa16d3cdf0035b15a9fcbc552cd88e7",
+      "html": "https://github.com/sltzgs/OpenWindSCADA/blob/main/LICENSE"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "10dd154b7407707e344ce6d5437d7e9d118010d5",
+    "size": 14852,
+    "url": "https://api.github.com/repos/sltzgs/OpenWindSCADA/contents/README.md?ref=main",
+    "html_url": "https://github.com/sltzgs/OpenWindSCADA/blob/main/README.md",
+    "git_url": "https://api.github.com/repos/sltzgs/OpenWindSCADA/git/blobs/10dd154b7407707e344ce6d5437d7e9d118010d5",
+    "download_url": "https://raw.githubusercontent.com/sltzgs/OpenWindSCADA/main/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/sltzgs/OpenWindSCADA/contents/README.md?ref=main",
+      "git": "https://api.github.com/repos/sltzgs/OpenWindSCADA/git/blobs/10dd154b7407707e344ce6d5437d7e9d118010d5",
+      "html": "https://github.com/sltzgs/OpenWindSCADA/blob/main/README.md"
+    }
+  },
+  {
+    "name": "communiy_annotations",
+    "path": "communiy_annotations",
+    "sha": "63ea0b94bfdc555ee2f627c9bda036debb892eb1",
+    "size": 0,
+    "url": "https://api.github.com/repos/sltzgs/OpenWindSCADA/contents/communiy_annotations?ref=main",
+    "html_url": "https://github.com/sltzgs/OpenWindSCADA/tree/main/communiy_annotations",
+    "git_url": "https://api.github.com/repos/sltzgs/OpenWindSCADA/git/trees/63ea0b94bfdc555ee2f627c9bda036debb892eb1",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sltzgs/OpenWindSCADA/contents/communiy_annotations?ref=main",
+      "git": "https://api.github.com/repos/sltzgs/OpenWindSCADA/git/trees/63ea0b94bfdc555ee2f627c9bda036debb892eb1",
+      "html": "https://github.com/sltzgs/OpenWindSCADA/tree/main/communiy_annotations"
+    }
+  },
+  {
+    "name": "data",
+    "path": "data",
+    "sha": "a4ae3a10ab8415929c1dbf159e132026c3234044",
+    "size": 0,
+    "url": "https://api.github.com/repos/sltzgs/OpenWindSCADA/contents/data?ref=main",
+    "html_url": "https://github.com/sltzgs/OpenWindSCADA/tree/main/data",
+    "git_url": "https://api.github.com/repos/sltzgs/OpenWindSCADA/git/trees/a4ae3a10ab8415929c1dbf159e132026c3234044",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sltzgs/OpenWindSCADA/contents/data?ref=main",
+      "git": "https://api.github.com/repos/sltzgs/OpenWindSCADA/git/trees/a4ae3a10ab8415929c1dbf159e132026c3234044",
+      "html": "https://github.com/sltzgs/OpenWindSCADA/tree/main/data"
+    }
+  },
+  {
+    "name": "images",
+    "path": "images",
+    "sha": "8ec9ec9a06122b9a393a8339b453c79980cc30fe",
+    "size": 0,
+    "url": "https://api.github.com/repos/sltzgs/OpenWindSCADA/contents/images?ref=main",
+    "html_url": "https://github.com/sltzgs/OpenWindSCADA/tree/main/images",
+    "git_url": "https://api.github.com/repos/sltzgs/OpenWindSCADA/git/trees/8ec9ec9a06122b9a393a8339b453c79980cc30fe",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sltzgs/OpenWindSCADA/contents/images?ref=main",
+      "git": "https://api.github.com/repos/sltzgs/OpenWindSCADA/git/trees/8ec9ec9a06122b9a393a8339b453c79980cc30fe",
+      "html": "https://github.com/sltzgs/OpenWindSCADA/tree/main/images"
+    }
+  },
+  {
+    "name": "notebooks",
+    "path": "notebooks",
+    "sha": "19b95ca19b723841bc012fe72c0c8d1d9a902bf8",
+    "size": 0,
+    "url": "https://api.github.com/repos/sltzgs/OpenWindSCADA/contents/notebooks?ref=main",
+    "html_url": "https://github.com/sltzgs/OpenWindSCADA/tree/main/notebooks",
+    "git_url": "https://api.github.com/repos/sltzgs/OpenWindSCADA/git/trees/19b95ca19b723841bc012fe72c0c8d1d9a902bf8",
+    "download_url": null,
+    "type": "dir",
+    "_links": {
+      "self": "https://api.github.com/repos/sltzgs/OpenWindSCADA/contents/notebooks?ref=main",
+      "git": "https://api.github.com/repos/sltzgs/OpenWindSCADA/git/trees/19b95ca19b723841bc012fe72c0c8d1d9a902bf8",
+      "html": "https://github.com/sltzgs/OpenWindSCADA/tree/main/notebooks"
+    }
+  }
+]

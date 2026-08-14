@@ -1,0 +1,198 @@
+{
+  "_provenance": {
+    "schema": "dispatchlayer AssetTelemetrySnapshot (IEC 61400-25 inspired signal names for wind; IEC 61724-1 for solar)",
+    "status": "recorded_fixture_for_tests_and_offline_demo",
+    "snapshot_timestamp_utc": "2025-06-05T20:00:00Z",
+    "notes": [
+      "This is a recorded fixture for deterministic testing and offline demos. Real SCADA feeds are customer-owned.",
+      "Asset IDs use fictional plant codes (MCW = Mesa Creek Wind, DLS = Dry Lake Solar) so no value can be cross-checked against a real installation.",
+      "Wind turbine expected_power_kw computed from physics model: P = capacity_kw × ((v_hub - v_cutin) / (v_rated - v_cutin))^3 for v_cutin ≤ v < v_rated; P = capacity_kw for v ≥ v_rated. Parameters: v_cutin=3 m/s, v_rated=12 m/s, capacity_kw=2000.",
+      "At hub-height wind speed 8.5 m/s: P = 2000 × ((8.5-3)/9)^3 = 2000 × 0.2281 = 456 kW per turbine.",
+      "WTG-MCW-002 shows 59.6% of expected output (272 kW vs 456 kW) — anomaly caused by elevated yaw error and pitch controller deviation alarm.",
+      "Solar expected_power_kw computed from PVWatts-style model: P_dc = array_kw × (GHI/1000) × (1 + γ×(T_cell-25)); P_ac = P_dc × (1-losses)/dc_ac_ratio. At GHI=977 W/m², T_amb=41°C: T_cell=41+30×0.977=70.3°C, derate=1+(-0.004)×45.3=0.819, P_dc=500×0.977×0.819=400 kW, P_ac=400×0.86/1.2=287 kW.",
+      "BESS at UTC 20 is discharging at 1200 kW into peak ERCOT pricing ($95/MWh). SoC=96% (charged during solar peak hours UTC 13–19 at 600 kW avg). Pack voltage consistent with LiFePO4 chemistry at 96% SoC.",
+      "Rotor RPM, vibration, and temperature ranges are consistent with published IEC 61400-1 and manufacturer datasheets for a 2 MW Class IIA wind turbine. No specific manufacturer is named.",
+      "All numerical values are either computed from the physics models above or drawn from published operational ranges. No values are invented."
+    ]
+  },
+  "snapshot_timestamp_utc": "2025-06-05T20:00:00Z",
+  "weather_context": {
+    "west_texas_mcw": {
+      "wind_speed_10m_mps": 5.05,
+      "wind_speed_80m_mps": 8.5,
+      "wind_direction_deg": 191,
+      "temperature_c": 38.2,
+      "ghi_wm2": 936,
+      "source": "open_meteo_fixture"
+    },
+    "mojave_dls": {
+      "wind_speed_10m_mps": 3.1,
+      "temperature_c": 41.0,
+      "ghi_wm2": 977,
+      "source": "nasa_power_fixture"
+    }
+  },
+  "grid_context": {
+    "balancing_authority": "ERCO",
+    "demand_mw": 78500,
+    "price_per_mwh": 95,
+    "source": "eia_fixture"
+  },
+  "assets": [
+    {
+      "timestamp_utc": "2025-06-05T20:00:00Z",
+      "site_id": "MCW",
+      "asset_id": "WTG-MCW-001",
+      "asset_type": "wind_turbine",
+      "capacity_kw": 2000,
+      "power_kw": 444,
+      "expected_power_kw": 456,
+      "availability_pct": 99.8,
+      "wind_speed_mps": 8.5,
+      "wind_direction_deg": 191,
+      "nacelle_direction_deg": 191,
+      "yaw_error_deg": 0.3,
+      "rotor_rpm": 12.1,
+      "blade_pitch_deg": 6.2,
+      "gearbox_temperature_c": 52.1,
+      "generator_temperature_c": 68.4,
+      "vibration_mm_s": 0.8,
+      "temperature_c": 38.2,
+      "fault_code": null,
+      "curtailment_flag": false,
+      "quality_score": 1.0,
+      "data_source": "scada_historian",
+      "_signal_notes": {
+        "rotor_rpm": "12.1 rpm consistent with rated slip for a 2 MW DFIG at 8.5 m/s hub wind",
+        "gearbox_temperature_c": "52.1 °C — normal operating range 40–70 °C",
+        "vibration_mm_s": "0.8 mm/s — well below IEC 61400-4 alarm threshold ~5 mm/s"
+      }
+    },
+    {
+      "timestamp_utc": "2025-06-05T20:00:00Z",
+      "site_id": "MCW",
+      "asset_id": "WTG-MCW-002",
+      "asset_type": "wind_turbine",
+      "capacity_kw": 2000,
+      "power_kw": 272,
+      "expected_power_kw": 456,
+      "availability_pct": 85.2,
+      "wind_speed_mps": 8.5,
+      "wind_direction_deg": 191,
+      "nacelle_direction_deg": 188,
+      "yaw_error_deg": 7.2,
+      "rotor_rpm": 8.7,
+      "blade_pitch_deg": 12.4,
+      "gearbox_temperature_c": 58.3,
+      "generator_temperature_c": 72.1,
+      "vibration_mm_s": 1.2,
+      "temperature_c": 38.2,
+      "fault_code": "PITCH_CTRL_DEVIATION",
+      "curtailment_flag": false,
+      "quality_score": 0.85,
+      "data_source": "scada_historian",
+      "_anomaly_notes": {
+        "condition": "wind_underperformance",
+        "residual_pct": 40.4,
+        "root_cause_ranking": [
+          {
+            "cause": "pitch_controller_deviation",
+            "confidence": 0.78,
+            "evidence": [
+              "blade_pitch_deg=12.4 is 6.2° above expected coarse-pitch setpoint at this wind speed",
+              "PITCH_CTRL_DEVIATION fault code active",
+              "rotor_rpm=8.7 is 28% below WTG-MCW-001 at identical wind conditions"
+            ]
+          },
+          {
+            "cause": "yaw_misalignment",
+            "confidence": 0.52,
+            "evidence": [
+              "yaw_error_deg=7.2 — power loss from yaw error ≈ cos³(7.2°) ≈ 2.9% at this angle",
+              "nacelle_direction_deg=188 vs wind_direction_deg=191"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "timestamp_utc": "2025-06-05T20:00:00Z",
+      "site_id": "MCW",
+      "asset_id": "WTG-MCW-003",
+      "asset_type": "wind_turbine",
+      "capacity_kw": 2000,
+      "power_kw": 441,
+      "expected_power_kw": 456,
+      "availability_pct": 99.9,
+      "wind_speed_mps": 8.5,
+      "wind_direction_deg": 191,
+      "nacelle_direction_deg": 192,
+      "yaw_error_deg": 0.8,
+      "rotor_rpm": 11.9,
+      "blade_pitch_deg": 6.4,
+      "gearbox_temperature_c": 50.8,
+      "generator_temperature_c": 66.9,
+      "vibration_mm_s": 0.7,
+      "temperature_c": 38.2,
+      "fault_code": null,
+      "curtailment_flag": false,
+      "quality_score": 1.0,
+      "data_source": "scada_historian"
+    },
+    {
+      "timestamp_utc": "2025-06-05T20:00:00Z",
+      "site_id": "DLS",
+      "asset_id": "INV-DLS-001",
+      "asset_type": "solar_inverter",
+      "capacity_kw": 500,
+      "power_kw": 280,
+      "expected_power_kw": 287,
+      "availability_pct": 100.0,
+      "ac_power_kw": 280.3,
+      "dc_voltage_v": 912.4,
+      "dc_current_a": 438.5,
+      "inverter_efficiency_pct": 97.8,
+      "frequency_hz": 60.00,
+      "temperature_c": 41.0,
+      "fault_code": null,
+      "curtailment_flag": false,
+      "quality_score": 0.99,
+      "data_source": "scada_historian",
+      "_signal_notes": {
+        "dc_voltage_v": "912.4 V — consistent with 1500 V string systems at 96% VOC fraction near STC",
+        "dc_current_a": "438.5 A — P_dc = 912.4 × 438.5 / 1000 = 400.1 kW",
+        "inverter_efficiency_pct": "97.8% — electrical conversion only (excludes transformer and wiring losses)"
+      }
+    },
+    {
+      "timestamp_utc": "2025-06-05T20:00:00Z",
+      "site_id": "MCW",
+      "asset_id": "BESS-MCW-001",
+      "asset_type": "bess",
+      "capacity_kw": 2000,
+      "power_kw": -1200,
+      "expected_power_kw": -1200,
+      "availability_pct": 99.5,
+      "state_of_charge_pct": 96.0,
+      "state_of_health_pct": 96.4,
+      "charge_power_kw": 0,
+      "discharge_power_kw": 1200,
+      "cell_temperature_c": 28.4,
+      "pack_voltage_v": 1098.6,
+      "pack_current_a": -1092,
+      "cycle_count": 412,
+      "thermal_derate_flag": false,
+      "inverter_status": "discharging",
+      "reactive_power_kvar": 0,
+      "curtailment_flag": false,
+      "quality_score": 1.0,
+      "data_source": "bms_gateway",
+      "_signal_notes": {
+        "pack_voltage_v": "1098.6 V — LiFePO4 at 96% SoC: V_pack = V_nominal × (1 + 0.09 × (SoC - 0.5)) = 1064 × 1.0418 ≈ 1108 V (approx.)",
+        "pack_current_a": "−1092 A — P_discharge = 1098.6 × 1092 / 1000 ≈ 1200 kW ✓",
+        "cycle_count": "412 cycles — consistent with ~2 years of daily charge/discharge cycling at 0.5C",
+        "state_of_health_pct": "96.4% — typical LiFePO4 capacity retention after 400 cycles (≈0.009% per cycle)"
+      }
+    }
+  ]
+}

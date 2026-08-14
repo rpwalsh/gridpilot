@@ -1,0 +1,26 @@
+{
+  "properties": {
+    "periods": [
+      {
+        "number": 1,
+        "startTime": "2024-01-15T06:00:00+00:00",
+        "endTime": "2024-01-15T07:00:00+00:00",
+        "temperature": 32,
+        "temperatureUnit": "F",
+        "windSpeed": "10 mph",
+        "windDirection": "NW",
+        "shortForecast": "Partly Cloudy"
+      },
+      {
+        "number": 2,
+        "startTime": "2024-01-15T07:00:00+00:00",
+        "endTime": "2024-01-15T08:00:00+00:00",
+        "temperature": 33,
+        "temperatureUnit": "F",
+        "windSpeed": "12 mph",
+        "windDirection": "W",
+        "shortForecast": "Mostly Cloudy"
+      }
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+﻿# Proprietary (c) Ryan P. Walsh / Walsh Tech Group
+# All rights reserved. Professional preview only.
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "dispatchlayer-adapter-eia"
+version = "0.1.0"
+description = "DispatchLayer adapter for U.S. EIA grid demand API"
+requires-python = ">=3.11"
+dependencies = ["dispatchlayer-domain>=0.1.0", "httpx>=0.24", "pydantic>=2.0", "pydantic-settings>=2.0"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/dispatchlayer_adapter_eia"]

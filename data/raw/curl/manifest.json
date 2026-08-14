@@ -1,0 +1,195 @@
+{
+  "generated_utc": "2026-05-06T06:10:01.340078Z",
+  "files": [
+    {
+      "file": "data\\raw\\curl\\manifest.json",
+      "bytes": 7699,
+      "sha256": "3907c8540fb779511d063fb7123df31b61e1e6a14b86d82356681f598f18cb53"
+    },
+    {
+      "file": "data\\raw\\curl\\nasa_power_5y_MCW.json",
+      "bytes": 3242080,
+      "sha256": "1f903f740358301b50ec6cca12f66bbf0d8a5d4f2349ae3c3085fcce506c5ce7"
+    },
+    {
+      "file": "data\\raw\\curl\\open_meteo_archive_5y_MCW.json",
+      "bytes": 1479948,
+      "sha256": "263a93c6e08b374969ee8a3a12dba5f855d88ba0799a3a434124b44dead63701"
+    },
+    {
+      "file": "data\\raw\\curl\\open_meteo_forecast_MCW.json",
+      "bytes": 6010,
+      "sha256": "5c0f8166c2b49976f11c65189f3d2238e688ca9cfc3715c4d1bf2d809176beee"
+    },
+    {
+      "file": "data\\raw\\curl\\openei_submissions_index.html",
+      "bytes": 22801,
+      "sha256": "54c3321ec519d5b8691ff86035e89e1311eb7e5b7d2f2d7db258de58716df3af"
+    },
+    {
+      "file": "data\\raw\\curl\\openwindscada_main.zip",
+      "bytes": 14676960,
+      "sha256": "f178dc5ac7ee858f897cf7b93e4c93aade2beada074af8d2e463fa723ecd4f58"
+    },
+    {
+      "file": "data\\raw\\curl\\openwindscada_README.md",
+      "bytes": 14852,
+      "sha256": "a4a8c236be5fe8e3d135778d64bd25edf3031c3a87262577ba13df7ba7d6dad0"
+    },
+    {
+      "file": "data\\raw\\curl\\openwindscada_repo_root.json",
+      "bytes": 5644,
+      "sha256": "654c174ceff7f6d7c7c3d07ff733d5cf289bb22c84f2297d0f7874834bc54e44"
+    },
+    {
+      "file": "data\\raw\\curl\\production_demo\\catalog.json",
+      "bytes": 18916,
+      "sha256": "e03868045f45a55e364c5ab8526891445041e027edd988e1818e8d1ca4e012e0"
+    },
+    {
+      "file": "data\\raw\\curl\\production_demo\\README.md",
+      "bytes": 1483,
+      "sha256": "1e57bac05492bec58b00cc5cd3794ce15753e0efe2ea779aeb90dd55dc9adf94"
+    },
+    {
+      "file": "data\\raw\\curl\\production_demo\\solar\\pvdaq\\system_10\\metrics__system_10__part000.parquet",
+      "bytes": 3732,
+      "sha256": "9fea2ae7108f519925dd91ad50a2696fd1a01aa720be3052610da1d8aea60def"
+    },
+    {
+      "file": "data\\raw\\curl\\production_demo\\solar\\pvdaq\\system_10\\system_10__5y.csv",
+      "bytes": 325,
+      "sha256": "fb79832ca6aecbacb59c7b18972d0a07d97157e963d9c9e0d0c1ee81f23feab7"
+    },
+    {
+      "file": "data\\raw\\curl\\production_demo\\solar\\pvdaq\\system_33\\metrics__system_33__part000.parquet",
+      "bytes": 3768,
+      "sha256": "a85713fd3e5583bb3b63f76a96dcc4a7e5884ec174315f0f364791f102909ced"
+    },
+    {
+      "file": "data\\raw\\curl\\production_demo\\solar\\pvdaq\\system_33\\system_33__5y.csv",
+      "bytes": 325,
+      "sha256": "223808f3a68f10b605aa04f4d2a15136c53eabb99f42338e6f4a57fbd6dbfdbf"
+    },
+    {
+      "file": "data\\raw\\curl\\production_demo\\solar\\pvdaq\\system_4\\metrics__system_4__part000.parquet",
+      "bytes": 3754,
+      "sha256": "6e377cb9698d4967ba7c5307dc077b3a7348c0c8ff989686afee3b9ab5487c16"
+    },
+    {
+      "file": "data\\raw\\curl\\production_demo\\solar\\pvdaq\\system_4\\system_4__5y.csv",
+      "bytes": 324,
+      "sha256": "c3da519e12de67fe5b2d673c62023d0ef072f24597fae702b64c58a237e8f5a3"
+    },
+    {
+      "file": "data\\raw\\curl\\production_demo\\solar\\pvdaq\\system_50\\metrics__system_50__part000.parquet",
+      "bytes": 3939,
+      "sha256": "fb34aaa5db47839e68aca1d81822aecce0e602d26abf997a320b25f141a41b14"
+    },
+    {
+      "file": "data\\raw\\curl\\production_demo\\solar\\pvdaq\\system_50\\system_50__5y.csv",
+      "bytes": 325,
+      "sha256": "643b176c2f66da954d6c9b9b5f847ed319e8fcb0aef15a26342b583ee79befc9"
+    },
+    {
+      "file": "data\\raw\\curl\\production_demo\\solar\\pvdaq\\system_51\\metrics__system_51__part000.parquet",
+      "bytes": 3940,
+      "sha256": "9c756839bfea6bfc9317e0bcbd02f1bb053c801c841618a89b689539343bf09a"
+    },
+    {
+      "file": "data\\raw\\curl\\production_demo\\solar\\pvdaq\\system_51\\system_51__5y.csv",
+      "bytes": 325,
+      "sha256": "357d06192f9942c3fc4306858d1ada5c24d7e68974d95d066be2cfebcaeebdea"
+    },
+    {
+      "file": "data\\raw\\curl\\production_demo\\solar\\solar_albuquerque_1_open_meteo_2021_2025.json",
+      "bytes": 7602913,
+      "sha256": "b52aace8d20a2081012d63e8590b935c3bfa0aaa9fee5d17e55e52e359a6a46e"
+    },
+    {
+      "file": "data\\raw\\curl\\production_demo\\solar\\solar_bakersfield_1_open_meteo_2021_2025.json",
+      "bytes": 7582443,
+      "sha256": "61aae5e5e4db982c59446ec5d353210c9090a061189b29bb1a176c58e95a55ab"
+    },
+    {
+      "file": "data\\raw\\curl\\production_demo\\solar\\solar_las_vegas_1_open_meteo_2021_2025.json",
+      "bytes": 7580823,
+      "sha256": "22e1fa089ba1d9008c431ecc4e2463866eff7ade18c9e2e078ff36f63cfa9f76"
+    },
+    {
+      "file": "data\\raw\\curl\\production_demo\\solar\\solar_nrel_golden_1_open_meteo_2021_2025.json",
+      "bytes": 7634610,
+      "sha256": "6dbb52109b0fc2d4384e5ecd49a8f75d17d6e5422651b7d55c3b3428a16183a1"
+    },
+    {
+      "file": "data\\raw\\curl\\production_demo\\solar\\solar_phoenix_1_open_meteo_2021_2025.json",
+      "bytes": 7590707,
+      "sha256": "c6dda7d994d4bfd2e2ef11ebfe571254be11abc93b675f3cfa52c6d890d16cf4"
+    },
+    {
+      "file": "data\\raw\\curl\\production_demo\\wind\\wind_abilene_1_open_meteo_2021_2025.json",
+      "bytes": 7637972,
+      "sha256": "1d3cff39b8aabff5d9d44c578677de75671312f2b99b57674f808591700dcbe8"
+    },
+    {
+      "file": "data\\raw\\curl\\production_demo\\wind\\wind_cheyenne_1_open_meteo_2021_2025.json",
+      "bytes": 7667851,
+      "sha256": "5ec5bf280960c0757243da927e966f14c775b82527f5b9293cd779e153623161"
+    },
+    {
+      "file": "data\\raw\\curl\\production_demo\\wind\\wind_des_moines_1_open_meteo_2021_2025.json",
+      "bytes": 7663423,
+      "sha256": "dd72c6e98811f4056f62ca5875beb9d8e488366b4e55c99a0c02f259693c150f"
+    },
+    {
+      "file": "data\\raw\\curl\\production_demo\\wind\\wind_dodge_city_1_open_meteo_2021_2025.json",
+      "bytes": 94,
+      "sha256": "c900b76da7f493a35fcebd8d67fc2a87b9febcbf315601b5aff60f7fd23a0cf1"
+    },
+    {
+      "file": "data\\raw\\curl\\production_demo\\wind\\wind_guymon_1_open_meteo_2021_2025.json",
+      "bytes": 7631058,
+      "sha256": "50dfd51b54749df5558be3deff20c07b1e942d3043513023aa982b407882564c"
+    },
+    {
+      "file": "data\\raw\\curl\\pvdaq_datagov_dataset_page.html",
+      "bytes": 138610,
+      "sha256": "e5ac504f808187fc84dc2cf1ab81a75536f9810eddcb1d78bc5f6eaad349c80d"
+    },
+    {
+      "file": "data\\raw\\curl\\pvdaq_datagov_search.json",
+      "bytes": 36,
+      "sha256": "8645212e2a6dda613ea2084ea24cf62a4e6aac2c3a34c74d1e219337d3a1f609"
+    },
+    {
+      "file": "data\\raw\\curl\\pvdaq_datagov_search_alt.json",
+      "bytes": 110923,
+      "sha256": "eb361e0064267a926bcffe6b655e87b71fdc2050588f878818a8c74676348a5e"
+    },
+    {
+      "file": "data\\raw\\curl\\pvdaq_openei_page.html",
+      "bytes": 236,
+      "sha256": "9448f8a1159c9b14e3e1b9d8eab1a6ddf88d26e1f888a34cef430c756e4e6e1e"
+    },
+    {
+      "file": "data\\raw\\curl\\pvdaq_openei_submission_4568.html",
+      "bytes": 87963,
+      "sha256": "b5180f457f2c5bcaca6b478989afa585ebb940a4ebcea361f08366d5632e0ec9"
+    },
+    {
+      "file": "data\\raw\\curl\\pvdaq_s3_listing_csv.xml",
+      "bytes": 74627,
+      "sha256": "137d869cb2553878dc8c36e8ea2b15667bb539bc1e2f6bf774b5983cc24e605c"
+    },
+    {
+      "file": "data\\raw\\curl\\pvdaq_s3_listing_parquet.xml",
+      "bytes": 70505,
+      "sha256": "598068b6d028533e0b3e05dcc3bcc999bbf921209096fc309f3cc0d2e0cebcf9"
+    },
+    {
+      "file": "data\\raw\\curl\\pvdaq_systems_20250729.csv",
+      "bytes": 383559,
+      "sha256": "54ddbd1ef044a7eb822ddf8bf3e53f319606598cc37b20d05c96b4631e03d65c"
+    }
+  ]
+}
